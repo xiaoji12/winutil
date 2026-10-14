@@ -29,7 +29,7 @@ function Get-WinUtilEnvironmentReport {
             $hardware.totalMemoryGB = [math]::Round(([double]$operatingSystem.TotalVisibleMemorySize / 1MB), 2)
         }
     } catch {
-        $message = "Failed to collect Windows/memory info from Win32_OperatingSystem: $($_.Exception.Message)"
+        $message = "从 Win32_OperatingSystem 收集 Windows/内存信息失败：$($_.Exception.Message)"
         Write-WinUtilLog -Component "EnvironmentReport" -Level "WARN" -Message $message
         [void]$reportWarnings.Add($message)
     }
@@ -41,7 +41,7 @@ function Get-WinUtilEnvironmentReport {
             $hardware.logicalProcessorCount = [int](($processors | Measure-Object -Property NumberOfLogicalProcessors -Sum).Sum)
         }
     } catch {
-        $message = "Failed to collect CPU info from Win32_Processor: $($_.Exception.Message)"
+        $message = "从 Win32_Processor 收集 CPU 信息失败：$($_.Exception.Message)"
         Write-WinUtilLog -Component "EnvironmentReport" -Level "WARN" -Message $message
         [void]$reportWarnings.Add($message)
     }
@@ -55,7 +55,7 @@ function Get-WinUtilEnvironmentReport {
     try {
         $powershell.executionPolicy = (Get-ExecutionPolicy).ToString()
     } catch {
-        $message = "Failed to read PowerShell execution policy: $($_.Exception.Message)"
+        $message = "读取 PowerShell 执行策略失败：$($_.Exception.Message)"
         Write-WinUtilLog -Component "EnvironmentReport" -Level "WARN" -Message $message
         [void]$reportWarnings.Add($message)
     }
@@ -65,7 +65,7 @@ function Get-WinUtilEnvironmentReport {
     try {
         $chocolatey.installed = (Test-WinUtilPackageManager -choco 6>$null) -eq "installed"
     } catch {
-        $message = "Failed to check Chocolatey availability: $($_.Exception.Message)"
+        $message = "检查 Chocolatey 可用性失败：$($_.Exception.Message)"
         Write-WinUtilLog -Component "EnvironmentReport" -Level "WARN" -Message $message
         [void]$reportWarnings.Add($message)
     }
@@ -75,11 +75,11 @@ function Get-WinUtilEnvironmentReport {
             $global:LASTEXITCODE = 0
             $versionOutput = @(choco -v 2>&1)
             if ($LASTEXITCODE -ne 0) {
-                throw "Chocolatey version probe exited with code $LASTEXITCODE."
+                throw "Chocolatey 版本探测退出，代码为 $LASTEXITCODE。"
             }
             $chocolatey.version = ($versionOutput | Select-Object -First 1).ToString().Trim()
         } catch {
-            $message = "Failed to read Chocolatey version: $($_.Exception.Message)"
+            $message = "读取 Chocolatey 版本失败：$($_.Exception.Message)"
             Write-WinUtilLog -Component "EnvironmentReport" -Level "WARN" -Message $message
             [void]$reportWarnings.Add($message)
         }
@@ -89,7 +89,7 @@ function Get-WinUtilEnvironmentReport {
     try {
         $winget.installed = (Test-WinUtilPackageManager -winget 6>$null) -eq "installed"
     } catch {
-        $message = "Failed to check WinGet availability: $($_.Exception.Message)"
+        $message = "检查 WinGet 可用性失败：$($_.Exception.Message)"
         Write-WinUtilLog -Component "EnvironmentReport" -Level "WARN" -Message $message
         [void]$reportWarnings.Add($message)
     }
@@ -99,7 +99,7 @@ function Get-WinUtilEnvironmentReport {
             $global:LASTEXITCODE = 0
             $versionOutput = @(winget -v 2>&1)
             if ($LASTEXITCODE -ne 0) {
-                throw "WinGet version probe exited with code $LASTEXITCODE."
+                throw "WinGet 版本探测退出，代码为 $LASTEXITCODE。"
             }
             $winget.version = ($versionOutput | Select-Object -First 1).ToString().Trim()
         } catch {

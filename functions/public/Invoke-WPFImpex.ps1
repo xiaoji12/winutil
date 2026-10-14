@@ -54,8 +54,8 @@ function Invoke-WPFImpex {
                     $allConfs = ($sync.selectedApps + $sync.selectedTweaks + $sync.selectedToggles + $sync.selectedFeatures + $sync.selectedAppx) | ForEach-Object { [string]$_ }
                     if (-not $allConfs) {
                         Show-WinUtilMessage -Message (
-                            "No settings are selected to export. Please select at least one app, tweak, toggle, feature, or AppX package before exporting."
-                        ) -Title "Nothing to Export" -Button "OK" -Icon "Warning" | Out-Null
+                            "没有选中任何要导出的设置。请先至少选择一个应用、优化项、开关项、功能或 AppX 应用，然后再导出。"
+                        ) -Title "无可导出内容" -Button "OK" -Icon "Warning" | Out-Null
                         return
                     }
                     $jsonFile = $allConfs | ConvertTo-Json
@@ -63,7 +63,7 @@ function Invoke-WPFImpex {
                     "iex ""& { `$(irm https://christitus.com/win) } -Config '$Config'""" | Set-Clipboard
                 }
             } catch {
-                Write-Error "An error occurred while exporting: $_"
+                Write-Error "导出时发生错误：$_"
             }
         }
         "import" {
@@ -77,7 +77,7 @@ function Invoke-WPFImpex {
                             $jsonFile = Get-Content $Config -ErrorAction Stop | ConvertFrom-Json
                         }
                     } catch {
-                        $message = "Failed to load the JSON file from the specified path or URL: $_"
+                        $message = "无法从指定路径或 URL 加载 JSON 文件：$_"
                         if ($ThrowOnError) { throw $message }
                         Write-Error $message
                         return
@@ -86,7 +86,7 @@ function Invoke-WPFImpex {
                         $null -ne $jsonFile.PSObject.Properties["Install"] -and
                         $null -ne $jsonFile.PSObject.Properties["WPFInstall"]
                     if ($isLegacyConfig) {
-                        Write-WinUtilLog -Component "Impex" -Message "Detected legacy WinUtil config structure; flattening import object."
+                        Write-WinUtilLog -Component "Impex" -Message "检测到旧版 WinUtil 配置结构，正在展平导入对象。"
                         # Legacy exports stored checkbox keys in WPFInstall and duplicated package
                         # source metadata in Install. Current package IDs come from the app catalog,
                         # so only the selection-key properties are restored.
@@ -109,7 +109,7 @@ function Invoke-WPFImpex {
                     }
 
                     if (-not $flattenedJson) {
-                        Show-WinUtilMessage -Message "The selected file contains no settings to import. No changes have been made." -Title "Empty Configuration" -Button "OK" -Icon "Warning" | Out-Null
+                        Show-WinUtilMessage -Message "所选文件中没有可导入的设置，未做任何更改。" -Title "配置为空" -Button "OK" -Icon "Warning" | Out-Null
                         return
                     }
 
@@ -125,12 +125,12 @@ function Invoke-WPFImpex {
 
                         if ($skippedSelections.Count -gt 0) {
                             $skippedSummary = $skippedSelections -join ", "
-                            Write-WinUtilLog -Component "Impex" -Level "WARN" -Message "Skipped unsupported legacy selections: $skippedSummary"
+                            Write-WinUtilLog -Component "Impex" -Level "WARN" -Message "已跳过不受支持的旧版选项：$skippedSummary"
                         }
 
                         if ($skippedSelections.Count -eq @($flattenedJson).Count) {
                             if ($sync.Form) {
-                                Show-WinUtilMessage -Message "This legacy configuration contains no settings supported by this version of WinUtil. No changes have been made." -Title "Unsupported Legacy Configuration" -Icon "Warning" | Out-Null
+                                Show-WinUtilMessage -Message "此旧版配置中没有当前版本 WinUtil 支持的设置，未做任何更改。" -Title "不受支持的旧版配置" -Icon "Warning" | Out-Null
                             }
                             return
                         }
@@ -138,10 +138,10 @@ function Invoke-WPFImpex {
                         if ($skippedSelections.Count -gt 0) {
                             $skippedDisplay = @($skippedSelections | Select-Object -First 10) -join ", "
                             if ($skippedSelections.Count -gt 10) {
-                                $skippedDisplay += "`n...and $($skippedSelections.Count - 10) more. See the WinUtil log for details."
+                                $skippedDisplay += "`n...以及另外 $($skippedSelections.Count - 10) 项。详见 WinUtil 日志。"
                             }
                             if ($sync.Form) {
-                                Show-WinUtilMessage -Message "Supported settings were imported. The following retired settings were skipped:`n`n$skippedDisplay" -Title "Legacy Configuration Partially Imported" -Icon "Warning" | Out-Null
+                                Show-WinUtilMessage -Message "已导入受支持的设置。以下已停用的设置被跳过：`n`n$skippedDisplay" -Title "旧版配置已部分导入" -Icon "Warning" | Out-Null
                             }
                         }
                     } else {
@@ -156,7 +156,7 @@ function Invoke-WPFImpex {
                 }
             } catch {
                 if ($ThrowOnError) { throw }
-                Write-Error "An error occurred while importing: $_"
+                Write-Error "导入时发生错误：$_"
             }
         }
     }

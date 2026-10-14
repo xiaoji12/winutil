@@ -120,6 +120,6 @@ function Write-WinUtilLog {
             $mutex.Dispose()
         }
     } catch {
-        Write-Warning "Unable to write WinUtil log entry: $($_.Exception.Message)"
+        Write-Warning "无法写入 WinUtil 日志条目：$($_.Exception.Message)"
     }
 }

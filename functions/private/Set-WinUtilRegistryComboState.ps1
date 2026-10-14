@@ -18,7 +18,7 @@ function Set-WinUtilRegistryComboState {
     )
 
     if ($Registry[0].Values.PSObject.Properties.Name -notcontains $State) {
-        throw "Unknown registry state '$State'."
+        throw "未知的注册表状态 '$State'。"
     }
 
     # Preserve exact prior values so a partial update can be rolled back.
@@ -46,13 +46,13 @@ function Set-WinUtilRegistryComboState {
                 $currentValue.Exists -and [string]$currentValue.Value -eq [string]$configuredValue
             }
             if (-not $writeMatches) {
-                throw "The registry values did not match the requested state."
+                throw "注册表值与请求的状态不匹配。"
             }
         }
     } catch {
         $applyError = $_.Exception.Message
         if ([string]::IsNullOrWhiteSpace($applyError)) {
-            $applyError = "The registry values did not match the requested state."
+            $applyError = "注册表值与请求的状态不匹配。"
         }
         $rollbackFailed = $false
         foreach ($previousValue in $previousValues) {
@@ -71,8 +71,8 @@ function Set-WinUtilRegistryComboState {
             }
         }
         if ($rollbackFailed) {
-            throw "Unable to apply registry state '$State': $applyError. The previous registry state could not be restored."
+            throw "无法应用注册表状态 '$State'：$applyError。无法还原此前的注册表状态。"
         }
-        throw "Unable to apply registry state '$State': $applyError"
+        throw "无法应用注册表状态 '$State'：$applyError"
     }
 }

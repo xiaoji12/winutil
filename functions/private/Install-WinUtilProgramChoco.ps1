@@ -58,7 +58,7 @@ function Install-WinUtilProgramChoco {
             Step-WinUtilJob -Status "$Action $program ($index/$total)" -Percent $percent
         }
 
-        Write-WinUtilLog -Component "Package" -Message "$Action choco package: $program"
+        Write-WinUtilLog -Component "Package" -Message "$Action choco 软件包：$program"
 
         # --no-progress stops choco redrawing a percentage line that only makes sense on a
         # console nobody is watching
@@ -67,7 +67,7 @@ function Install-WinUtilProgramChoco {
         # command-not-found cannot inherit a successful code from earlier work in the same pool.
         $global:LASTEXITCODE = $null
         if (-not $chocoAvailable) {
-            $output = "Chocolatey is not installed or is not available on PATH."
+            $output = "Chocolatey 未安装或不在 PATH 中。"
             $exitCode = -1
         } else {
             $output = & choco @arguments 2>&1

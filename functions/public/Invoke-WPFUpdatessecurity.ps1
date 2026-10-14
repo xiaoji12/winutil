@@ -12,15 +12,15 @@ function Invoke-WPFUpdatessecurity {
 
     #>
 
-    Write-Host "Disabling driver offering through Windows Update..."
-    Write-WinUtilLog -Component "Updates" -Message "Applying recommended Windows Update settings."
-    Write-WinUtilLog -Component "Updates" -Message "Disabling driver offering through Windows Update."
+    Write-Host "正在禁用通过 Windows 更新提供驱动程序..."
+    Write-WinUtilLog -Component "Updates" -Message "正在应用推荐的 Windows 更新设置。"
+    Write-WinUtilLog -Component "Updates" -Message "正在禁用通过 Windows 更新提供驱动程序。"
 
     $windowsUpdatePolicyPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate"
     $automaticUpdatePolicyPath = Join-Path $windowsUpdatePolicyPath "AU"
 
-    Write-Host "Restoring Windows Update availability..."
-    Write-WinUtilLog -Component "Updates" -Message "Restoring Windows Update services and scheduled tasks before applying recommended settings."
+    Write-Host "正在恢复 Windows 更新的可用性..."
+    Write-WinUtilLog -Component "Updates" -Message "正在应用推荐设置前还原 Windows 更新服务和计划任务。"
 
     Remove-ItemProperty -Path $automaticUpdatePolicyPath -Name "NoAutoUpdate" -ErrorAction SilentlyContinue
     Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Name "DODownloadMode" -ErrorAction SilentlyContinue
@@ -54,8 +54,8 @@ function Invoke-WPFUpdatessecurity {
     New-Item -Path $windowsUpdatePolicyPath -Force
     Set-ItemProperty -Path $windowsUpdatePolicyPath -Name "ExcludeWUDriversInQualityUpdate" -Type DWord -Value 1
 
-    Write-Host "Deferring feature updates by 365 days and quality updates by 4 days..."
-    Write-WinUtilLog -Component "Updates" -Message "Deferring feature updates by 365 days and quality updates by 4 days."
+    Write-Host "正在将功能更新推迟 365 天，将质量更新推迟 4 天..."
+    Write-WinUtilLog -Component "Updates" -Message "正在将功能更新推迟 365 天，将质量更新推迟 4 天。"
 
     Set-ItemProperty -Path $windowsUpdatePolicyPath -Name "DeferFeatureUpdates" -Type DWord -Value 1
     Set-ItemProperty -Path $windowsUpdatePolicyPath -Name "DeferFeatureUpdatesPeriodInDays" -Type DWord -Value 365
@@ -67,8 +67,8 @@ function Invoke-WPFUpdatessecurity {
         Remove-ItemProperty -Path $legacySettingsPath -Name $legacyValue -ErrorAction SilentlyContinue
     }
 
-    Write-Host "Configuring automatic updates to download and notify before installation..."
-    Write-WinUtilLog -Component "Updates" -Message "Configuring automatic updates to download and notify before installation."
+    Write-Host "正在将自动更新配置为下载后在安装前通知..."
+    Write-WinUtilLog -Component "Updates" -Message "正在将自动更新配置为下载后在安装前通知。"
 
     New-Item -Path $automaticUpdatePolicyPath -Force
 
@@ -79,5 +79,5 @@ function Invoke-WPFUpdatessecurity {
     Set-ItemProperty -Path $automaticUpdatePolicyPath -Name "AUOptions" -Type DWord -Value 3
     Set-ItemProperty -Path $automaticUpdatePolicyPath -Name "AUPowerManagement" -Type DWord -Value 0
 
-    Write-WinUtilLog -Component "Updates" -Message "Recommended Windows Update settings workflow completed."
+    Write-WinUtilLog -Component "Updates" -Message "推荐的 Windows 更新设置流程已完成。"
 }

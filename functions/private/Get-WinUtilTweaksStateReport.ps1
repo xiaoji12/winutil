@@ -46,7 +46,7 @@ function Get-WinUtilTweaksStateReport {
             $grouped[$fieldName][$tweakKey] = $appliedTweaks.Contains($tweakKey)
         }
     } catch {
-        Write-WinUtilLog -Component "EnvironmentReport" -Level "WARN" -Message "Failed to collect tweaks/toggle state: $($_.Exception.Message)"
+        Write-WinUtilLog -Component "EnvironmentReport" -Level "WARN" -Message "收集优化项/开关状态失败：$($_.Exception.Message)"
         $collectionStatus = "unavailable"
     }
 

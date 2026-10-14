@@ -68,7 +68,7 @@ function Invoke-WPFButton {
     try {
         Invoke-WPFButtonAction -Button $Button
     } catch {
-        Write-WinUtilErrorRecord -ErrorRecord $_ -Component "UI" -Context "Button '$Button'"
+        Write-WinUtilErrorRecord -ErrorRecord $_ -Component "UI" -Context "按钮 '$Button'"
     }
 }
 

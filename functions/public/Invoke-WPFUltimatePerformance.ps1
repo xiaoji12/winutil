@@ -7,34 +7,34 @@ function Invoke-WPFUltimatePerformance ([switch]$Enable) {
     #>
 
     if ($Enable) {
-        Step-WinUtilJob -Status "Adding the Ultimate Performance power plan" -State "Indeterminate"
-        Write-WinUtilLog -Component "Power" -Message "Duplicating and activating the Ultimate Performance power plan."
+        Step-WinUtilJob -Status "正在添加 Ultimate Performance 电源计划" -State "Indeterminate"
+        Write-WinUtilLog -Component "Power" -Message "正在复制并启用 Ultimate Performance 电源计划。"
 
         $duplicated = powercfg /duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
         if ($LASTEXITCODE -ne 0) {
-            throw "powercfg could not duplicate the Ultimate Performance scheme (exit code $LASTEXITCODE)."
+            throw "powercfg 无法复制 Ultimate Performance 电源方案（退出代码 $LASTEXITCODE）。"
         }
 
         $guid = ($duplicated | Select-String -Pattern '[A-Fa-f0-9-]{36}').Matches.Value
         if (-not $guid) {
-            throw "powercfg did not report a scheme GUID to activate."
+            throw "powercfg 未返回要启用的电源方案 GUID。"
         }
 
         powercfg /setactive $guid
         if ($LASTEXITCODE -ne 0) {
-            throw "powercfg could not activate the Ultimate Performance scheme (exit code $LASTEXITCODE)."
+            throw "powercfg 无法启用 Ultimate Performance 电源方案（退出代码 $LASTEXITCODE）。"
         }
 
-        Write-WinUtilLog -Component "Power" -Message "Ultimate Performance power plan installed and activated."
+        Write-WinUtilLog -Component "Power" -Message "Ultimate Performance 电源计划已安装并启用。"
     } else {
-        Step-WinUtilJob -Status "Restoring the default power plans" -State "Indeterminate"
-        Write-WinUtilLog -Component "Power" -Message "Restoring the default power schemes."
+        Step-WinUtilJob -Status "正在还原默认电源计划" -State "Indeterminate"
+        Write-WinUtilLog -Component "Power" -Message "正在还原默认电源方案。"
 
         powercfg /restoredefaultschemes
         if ($LASTEXITCODE -ne 0) {
-            throw "powercfg could not restore the default power schemes (exit code $LASTEXITCODE)."
+            throw "powercfg 无法还原默认电源方案（退出代码 $LASTEXITCODE）。"
         }
 
-        Write-WinUtilLog -Component "Power" -Message "Power plans were reset to defaults."
+        Write-WinUtilLog -Component "Power" -Message "电源计划已重置为默认值。"
     }
 }

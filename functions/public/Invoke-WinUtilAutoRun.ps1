@@ -27,20 +27,20 @@ function Invoke-WinUtilAutoRun {
     )
 
     $steps = @(
-        [pscustomobject]@{ Name = "Tweaks";          Count = @($sync.selectedTweaks).Count;   Action = { Invoke-WPFtweaksbutton } }
-        [pscustomobject]@{ Name = "Toggles";         Count = @($sync.selectedToggles).Count;  Action = { Invoke-WPFToggleSelections } }
-        [pscustomobject]@{ Name = "Features";        Count = @($sync.selectedFeatures).Count; Action = { Invoke-WPFFeatureInstall } }
-        [pscustomobject]@{ Name = "Applications";    Count = @($sync.selectedApps).Count;     Action = { Invoke-WPFInstall } }
-        [pscustomobject]@{ Name = "AppX removal";    Count = @($sync.selectedAppx).Count;     Action = { Invoke-WPFAppxRemoval } }
+        [pscustomobject]@{ Name = "优化项";          Count = @($sync.selectedTweaks).Count;   Action = { Invoke-WPFtweaksbutton } }
+        [pscustomobject]@{ Name = "开关项";         Count = @($sync.selectedToggles).Count;  Action = { Invoke-WPFToggleSelections } }
+        [pscustomobject]@{ Name = "功能";        Count = @($sync.selectedFeatures).Count; Action = { Invoke-WPFFeatureInstall } }
+        [pscustomobject]@{ Name = "应用";    Count = @($sync.selectedApps).Count;     Action = { Invoke-WPFInstall } }
+        [pscustomobject]@{ Name = "AppX 应用卸载";    Count = @($sync.selectedAppx).Count;     Action = { Invoke-WPFAppxRemoval } }
     )
 
     $planned = @($steps | Where-Object { $_.Count -gt 0 })
     if ($planned.Count -eq 0) {
-        Write-WinUtilLog -Level "WARN" -Component "AutoRun" -Message "Nothing was selected, so there is nothing to do."
+        Write-WinUtilLog -Level "WARN" -Component "AutoRun" -Message "未选择任何项目，因此没有需要执行的操作。"
         return [pscustomobject]@{ Steps = @(); Failed = 0; TimedOut = 0; Errors = 0; Warnings = 0 }
     }
 
-    Write-WinUtilLog -Component "AutoRun" -Message "Headless run starting: $(($planned | ForEach-Object { "$($_.Name) ($($_.Count))" }) -join ', ')"
+    Write-WinUtilLog -Component "AutoRun" -Message "无界面运行开始：$(($planned | ForEach-Object { "$($_.Name) ($($_.Count))" }) -join ', ')"
 
     $results = New-Object System.Collections.ArrayList
     $runClock = [System.Diagnostics.Stopwatch]::StartNew()
@@ -51,19 +51,19 @@ function Invoke-WinUtilAutoRun {
         $stepClock = [System.Diagnostics.Stopwatch]::StartNew()
         $timedOut = $false
 
-        Write-WinUtilLog -Component "AutoRun" -Message "$($step.Name): starting $($step.Count) item(s)."
+        Write-WinUtilLog -Component "AutoRun" -Message "$($step.Name)：开始执行 $($step.Count) 个项目。"
 
         try {
             & $step.Action
         } catch {
-            Write-WinUtilErrorRecord -ErrorRecord $_ -Component "AutoRun" -Context "Starting $($step.Name)"
+            Write-WinUtilErrorRecord -ErrorRecord $_ -Component "AutoRun" -Context "启动 $($step.Name)"
         }
 
         # The action starts a job and returns; the run is over when the worker clears the flag
         while ($sync.ActiveJob) {
             if ($stepClock.Elapsed.TotalSeconds -ge $StepTimeoutSeconds) {
                 $timedOut = $true
-                Write-WinUtilLog -Level "ERROR" -Component "AutoRun" -Message "$($step.Name) did not finish within $StepTimeoutSeconds seconds, moving on."
+                Write-WinUtilLog -Level "ERROR" -Component "AutoRun" -Message "$($step.Name) 在 $StepTimeoutSeconds 秒内未完成，继续执行后续步骤。"
                 break
             }
             Start-Sleep -Milliseconds 200
@@ -82,8 +82,8 @@ function Invoke-WinUtilAutoRun {
             TimedOut = $timedOut
         })
 
-        $outcome = if ($timedOut) { "timed out" } elseif ($newErrors -gt 0) { "finished with $newErrors error(s)" } elseif ($newWarnings -gt 0) { "finished with $newWarnings warning(s)" } else { "finished" }
-        Write-WinUtilLog -Component "AutoRun" -Message "$($step.Name): $outcome after $([int]$stepClock.Elapsed.TotalSeconds)s."
+        $outcome = if ($timedOut) { "已超时" } elseif ($newErrors -gt 0) { "完成，但有 $newErrors 个错误" } elseif ($newWarnings -gt 0) { "完成，但有 $newWarnings 个警告" } else { "已完成" }
+        Write-WinUtilLog -Component "AutoRun" -Message "$($step.Name)：$outcome，用时 $([int]$stepClock.Elapsed.TotalSeconds) 秒。"
 
         if ($timedOut) {
             # The worker is still on the pool. Clearing the slot on its own would let the next
@@ -99,7 +99,7 @@ function Invoke-WinUtilAutoRun {
             $null = Clear-WinUtilActiveJob
 
             if (Test-WinUtilActiveWorkRunning) {
-                Write-WinUtilLog -Level "ERROR" -Component "AutoRun" -Message "$($step.Name) could not be stopped, so the remaining steps are abandoned rather than run beside it."
+                Write-WinUtilLog -Level "ERROR" -Component "AutoRun" -Message "$($step.Name) 无法停止，因此放弃剩余步骤，而不是与其同时运行。"
                 break
             }
         }
@@ -128,36 +128,36 @@ function Write-WinUtilAutoRunSummary {
     )
 
     Write-Host ""
-    Write-Host "=== WinUtil headless run ===" -ForegroundColor Cyan
+    Write-Host "=== WinUtil 无界面运行 ===" -ForegroundColor Cyan
 
     foreach ($step in @($Summary.Steps)) {
-        $state = if ($step.TimedOut) { "TIMED OUT" } elseif ($step.Errors -gt 0) { "$($step.Errors) error(s)" } elseif ($step.Warnings -gt 0) { "$($step.Warnings) warning(s)" } else { "ok" }
+        $state = if ($step.TimedOut) { "已超时" } elseif ($step.Errors -gt 0) { "$($step.Errors) 个错误" } elseif ($step.Warnings -gt 0) { "$($step.Warnings) 个警告" } else { "正常" }
         $colour = if ($step.TimedOut -or $step.Errors -gt 0 -or $step.Warnings -gt 0) { "Yellow" } else { "Green" }
         Write-Host ("  {0,-14} {1,3} item(s)  {2,5}s  {3}" -f $step.Name, $step.Items, $step.Seconds, $state) -ForegroundColor $colour
     }
 
     if (@($Summary.Steps).Count -eq 0) {
-        Write-Host "  nothing was selected" -ForegroundColor Yellow
+        Write-Host "  未选择任何项目" -ForegroundColor Yellow
         Write-Host ""
         return 2
     }
 
     if ($Summary.TimedOut -gt 0 -or $Summary.Failed -gt 0) {
         Write-Host ""
-        Write-Host "Finished with problems. See $($sync.logPath)" -ForegroundColor Yellow
+        Write-Host "已完成，但存在问题。详见 $($sync.logPath)" -ForegroundColor Yellow
         Write-Host ""
         return 1
     }
 
     if ($Summary.Warnings -gt 0) {
         Write-Host ""
-        Write-Host "Completed with warnings. See $($sync.logPath)" -ForegroundColor Yellow
+        Write-Host "已完成，但有警告。详见 $($sync.logPath)" -ForegroundColor Yellow
         Write-Host ""
         return 0
     }
 
     Write-Host ""
-    Write-Host "All steps completed. Log: $($sync.logPath)" -ForegroundColor Green
+    Write-Host "所有步骤已完成。日志：$($sync.logPath)" -ForegroundColor Green
     Write-Host ""
     return 0
 }

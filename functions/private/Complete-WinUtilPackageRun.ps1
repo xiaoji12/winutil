@@ -29,15 +29,15 @@ function Complete-WinUtilPackageRun {
     Write-Host "$Action summary: $summary"
 
     foreach ($result in $skipped) {
-        Write-Host "  skipped  $($result.Package) - $($result.Detail)"
+        Write-Host "  已跳过  $($result.Package) - $($result.Detail)"
     }
     foreach ($result in $failed) {
-        Write-Host "  failed   $($result.Package) - $($result.Detail)" -ForegroundColor Red
+        Write-Host "  失败    $($result.Package) - $($result.Detail)" -ForegroundColor Red
     }
 
     $adminContextSkipped = @($skipped | Where-Object { $_.ExitCode -eq -1978335107 })
     if ($adminContextSkipped.Count -gt 0) {
-        Write-Warning "$($adminContextSkipped.Count) package action(s) were skipped because elevated WinUtil cannot modify user-scoped installations."
+        Write-Warning "已跳过 $($adminContextSkipped.Count) 个软件包操作，因为提升权限的 WinUtil 无法修改用户级安装。"
     }
 
     if ($failed.Count -gt 0) {

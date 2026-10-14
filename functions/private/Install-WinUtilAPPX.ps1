@@ -18,7 +18,7 @@ function Install-WinUtilAPPX {
         [string]$StoreId
     )
 
-    Write-WinUtilLog -Component "AppX" -Message "Installing AppX package: $Name"
+    Write-WinUtilLog -Component "AppX" -Message "正在安装 AppX 应用：$Name"
 
     # AppX and DISM cmdlets are more reliable in Windows PowerShell 5.1. Query both installed and
     # provisioned package metadata because either can expose a local manifest that can be registered.
@@ -57,7 +57,7 @@ function Install-WinUtilAPPX {
     if ($LASTEXITCODE -eq 0 -and $null -ne $manifestOutput) {
         $manifestPath = ($manifestOutput | Select-Object -Last 1).ToString().Trim()
         if (-not [string]::IsNullOrWhiteSpace($manifestPath)) {
-            Write-WinUtilLog -Component "AppX" -Message "Registered local AppX manifest for $Name`: $manifestPath"
+            Write-WinUtilLog -Component "AppX" -Message "已为 $Name 注册本地 AppX 清单：`$manifestPath"
             return [pscustomobject]@{
                 Package = $Name
                 Manager = "appx"
@@ -71,18 +71,18 @@ function Install-WinUtilAPPX {
 
     if ($LASTEXITCODE -ne 0) {
         $failureDetails = ($manifestOutput | Out-String).Trim()
-        Write-WinUtilLog -Level "WARN" -Component "AppX" -Message "Local AppX registration failed for $Name`: $failureDetails"
+        Write-WinUtilLog -Level "WARN" -Component "AppX" -Message "为 $Name 注册本地 AppX 失败：`$failureDetails"
     }
 
     if ([string]::IsNullOrWhiteSpace($StoreId)) {
-        $errorMessage = "Unable to install $Name because no local manifest or Microsoft Store ID is available."
+        $errorMessage = "无法安装 $Name，因为没有可用的本地清单或 Microsoft Store ID。"
         Write-WinUtilLog -Level "ERROR" -Component "AppX" -Message $errorMessage
         $exception = [System.InvalidOperationException]::new($errorMessage)
         $exception.Data["WinUtilErrorReported"] = $true
         throw $exception
     }
 
-    Write-WinUtilLog -Component "AppX" -Message "No usable local manifest found for $Name. Installing Microsoft Store product $StoreId."
+    Write-WinUtilLog -Component "AppX" -Message "未找到 $Name 可用的本地清单，正在安装 Microsoft Store 产品 $StoreId。"
     $null = Install-WinUtilWinget
     Install-WinUtilProgramWinget -Action Install -Programs @("msstore:$StoreId")
 }

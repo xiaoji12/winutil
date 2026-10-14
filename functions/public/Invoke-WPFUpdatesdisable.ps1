@@ -14,10 +14,10 @@ function Invoke-WPFUpdatesdisable {
         return
     }
 
-    Write-WinUtilLog -Component "Updates" -Message "Disabling Windows Update settings."
+    Write-WinUtilLog -Component "Updates" -Message "正在禁用 Windows 更新设置。"
 
-    Write-Host "Configuring registry settings..." -ForegroundColor Yellow
-    Write-WinUtilLog -Component "Updates" -Message "Configuring Windows Update registry policy values for disable mode."
+    Write-Host "正在配置注册表设置..." -ForegroundColor Yellow
+    Write-WinUtilLog -Component "Updates" -Message "正在配置用于禁用模式的 Windows 更新注册表策略值。"
     New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Force
 
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "NoAutoUpdate" -Type DWord -Value 1
@@ -27,18 +27,18 @@ function Invoke-WPFUpdatesdisable {
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Name "DODownloadMode" -Type DWord -Value 0
 
     foreach ($serviceName in @("BITS", "wuauserv", "UsoSvc")) {
-        Write-Host "Stopping and disabling $serviceName service."
-        Write-WinUtilLog -Component "Updates" -Message "Stopping and disabling $serviceName service."
+        Write-Host "正在停止并禁用 $serviceName 服务。"
+        Write-WinUtilLog -Component "Updates" -Message "正在停止并禁用 $serviceName 服务。"
         Stop-Service -Name $serviceName -Force -ErrorAction SilentlyContinue
         Set-Service -Name $serviceName -StartupType Disabled
     }
 
     Remove-Item -Path "C:\Windows\SoftwareDistribution\*" -Recurse -Force -ErrorAction SilentlyContinue
-    Write-Host "Cleared SoftwareDistribution folder."
-    Write-WinUtilLog -Component "Updates" -Message "Cleared SoftwareDistribution folder."
+    Write-Host "已清空 SoftwareDistribution 文件夹。"
+    Write-WinUtilLog -Component "Updates" -Message "已清空 SoftwareDistribution 文件夹。"
 
-    Write-Host "Disabling update related scheduled tasks..." -ForegroundColor Yellow
-    Write-WinUtilLog -Component "Updates" -Message "Disabling update related scheduled tasks."
+    Write-Host "正在禁用与更新相关的计划任务..." -ForegroundColor Yellow
+    Write-WinUtilLog -Component "Updates" -Message "正在禁用与更新相关的计划任务。"
 
     $Tasks =
         '\Microsoft\Windows\InstallService\*',
@@ -53,19 +53,19 @@ function Invoke-WPFUpdatesdisable {
     }
 
 
-    Write-Host "Note: You must restart your system in order for all changes to take effect." -ForegroundColor Yellow
-    Write-WinUtilLog -Component "Updates" -Message "Windows Update disable workflow completed. Restart required."
+    Write-Host "注意：必须重启系统，所有更改才能生效。" -ForegroundColor Yellow
+    Write-WinUtilLog -Component "Updates" -Message "Windows 更新禁用流程已完成，需要重启。"
 }
 
 function Confirm-WPFUpdatesdisable {
     $confirmation = Show-WinUtilMessage `
-        -Message "Disabling Windows Update stops update services, disables scheduled tasks, and clears downloaded update files. Security updates will not be installed until defaults are restored. Continue?" `
-        -Title "Disable Windows Update?" `
+        -Message "禁用 Windows 更新会停止更新服务、禁用计划任务并清除已下载的更新文件。在恢复默认设置之前，安全更新将不会被安装。是否继续？" `
+        -Title "禁用 Windows 更新？" `
         -Button "YesNo" `
         -Icon "Warning"
 
     if ($confirmation -ne "Yes") {
-        Write-WinUtilLog -Component "Updates" -Message "Windows Update disable workflow cancelled."
+        Write-WinUtilLog -Component "Updates" -Message "已取消 Windows 更新禁用流程。"
         return $false
     }
     return $true

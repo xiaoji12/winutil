@@ -15,8 +15,8 @@ function Remove-WinUtilAPPX {
         $Name
     )
 
-    Write-Host "Removing $Name"
-    Write-WinUtilLog -Component "AppX" -Message "Removing AppX package pattern: $Name"
+    Write-Host "正在移除 $Name"
+    Write-WinUtilLog -Component "AppX" -Message "正在移除 AppX 应用（匹配模式）：$Name"
 
     # We explicitly loop through packages instead of using the pipeline because PowerShell 7 pipeline binding
     # for Remove-AppxPackage fails silently, and Get-AppxPackage -AllUsers returns duplicate objects for each user profile.
@@ -27,10 +27,10 @@ function Remove-WinUtilAPPX {
                 Remove-AppxPackage -Package $pkg.PackageFullName -AllUsers -ErrorAction Stop
             }
             catch {
-                Write-WinUtilLog -Level "ERROR" -Component "AppX" -Message "Failed to remove AppX package $($pkg.PackageFullName): $($_.Exception.Message)"
+                Write-WinUtilLog -Level "ERROR" -Component "AppX" -Message "移除 AppX 应用 $($pkg.PackageFullName) 失败：$($_.Exception.Message)"
             }
         }
     }
 
-    Write-WinUtilLog -Component "AppX" -Message "AppX removal completed for package pattern: $Name"
+    Write-WinUtilLog -Component "AppX" -Message "AppX 应用移除已完成（匹配模式）：$Name"
 }

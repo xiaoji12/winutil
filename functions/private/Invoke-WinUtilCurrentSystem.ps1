@@ -31,7 +31,7 @@ Function Invoke-WinUtilCurrentSystem {
             [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
             $installedProgramOutput = @(winget list --accept-source-agreements --disable-interactivity 2>&1)
             if ($LASTEXITCODE -ne 0) {
-                throw "winget list failed with exit code $LASTEXITCODE."
+                throw "winget list 失败，退出代码 $LASTEXITCODE。"
             }
         } finally {
             [Console]::OutputEncoding = $originalEncoding

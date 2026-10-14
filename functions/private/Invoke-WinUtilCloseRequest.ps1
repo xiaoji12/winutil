@@ -18,31 +18,31 @@ function Invoke-WinUtilCloseRequest {
 
     # The question carries the meaning rather than naming buttons: Windows labels them in its own
     # language, so "Yes" in the text would not match a button reading "Ja".
-    $answer = Show-WinUtilMessage -Button "YesNoCancel" -Icon "Warning" -Title "$RunningJob is still running" -Message @"
-$RunningJob has not finished yet.
+    $answer = Show-WinUtilMessage -Button "YesNoCancel" -Icon "Warning" -Title "$RunningJob 仍在运行" -Message @"
+$RunningJob 尚未完成。
 
-Close the window and let it finish in the console?
+是否关闭窗口，让它在控制台中继续完成？
 
-WinUtil will exit on its own once it is done. If you do not, it will be
-stopped and everything closes now. Cancel keeps WinUtil open.
+完成后 WinUtil 会自动退出。如果不这样做，它将被停止，
+所有内容会立即关闭。选择“取消”可保持 WinUtil 打开。
 "@
 
     switch ("$answer") {
         "Yes" {
-            Write-WinUtilLog -Component "UI" -Message "Close requested: closing the window, $RunningJob continues in the console."
+            Write-WinUtilLog -Component "UI" -Message "收到关闭请求：正在关闭窗口，$RunningJob 将在控制台中继续。"
             $sync.FinishInConsole = $true
             $sync.ForceClose = $true
 
             Write-Host ""
-            Write-Host "WinUtil's window is closed. $RunningJob is still running here, and this window will close when it finishes." -ForegroundColor Cyan
+            Write-Host "WinUtil 的窗口已关闭。$RunningJob 仍在此处运行，完成后本窗口将自动关闭。" -ForegroundColor Cyan
             Write-Host ""
 
             # Posted rather than closed from inside the handler that is already unwinding
             Request-WinUtilWindowClose
         }
         "No" {
-            Write-WinUtilLog -Component "UI" -Message "Close requested: stopping $RunningJob."
-            Step-WinUtilJob -Status "Stopping $RunningJob" -State "Indeterminate"
+            Write-WinUtilLog -Component "UI" -Message "收到关闭请求：正在停止 $RunningJob。"
+            Step-WinUtilJob -Status "正在停止 $RunningJob" -State "Indeterminate"
             $sync.ForceClose = $true
 
             # Close the window first. The main thread owns pool shutdown after ShowDialog
@@ -51,7 +51,7 @@ stopped and everything closes now. Cancel keeps WinUtil open.
             Request-WinUtilWindowClose
         }
         default {
-            Write-WinUtilLog -Component "UI" -Message "Close cancelled, $RunningJob is still running."
+            Write-WinUtilLog -Component "UI" -Message "已取消关闭，$RunningJob 仍在运行。"
         }
     }
 }
@@ -94,8 +94,8 @@ function Wait-WinUtilRemainingWork {
     }
 
     $job = $sync.ActiveJob
-    Write-WinUtilLog -Component "UI" -Message "Window closed, waiting for $job to finish."
-    Write-Host "Waiting for $job to finish..." -ForegroundColor Cyan
+    Write-WinUtilLog -Component "UI" -Message "窗口已关闭，正在等待 $job 完成。"
+    Write-Host "正在等待 $job 完成..." -ForegroundColor Cyan
 
     $clock = [System.Diagnostics.Stopwatch]::StartNew()
     while ($sync.ActiveJob -and $clock.Elapsed.TotalMinutes -lt $TimeoutMinutes) {
@@ -106,11 +106,11 @@ function Wait-WinUtilRemainingWork {
     Complete-WinUtilConsoleProgress
 
     if ($sync.ActiveJob) {
-        Write-WinUtilLog -Level "WARN" -Component "UI" -Message "$job did not finish within $TimeoutMinutes minutes, exiting anyway."
-        Write-Host "$job is taking longer than $TimeoutMinutes minutes. Exiting." -ForegroundColor Yellow
+        Write-WinUtilLog -Level "WARN" -Component "UI" -Message "$job 在 $TimeoutMinutes 分钟内未完成，仍然退出。"
+        Write-Host "$job 用时已超过 $TimeoutMinutes 分钟，正在退出。" -ForegroundColor Yellow
         return
     }
 
-    Write-WinUtilLog -Component "UI" -Message "$job finished after the window closed, in $([int]$clock.Elapsed.TotalSeconds)s."
-    Write-Host "$job finished. Closing." -ForegroundColor Green
+    Write-WinUtilLog -Component "UI" -Message "$job 在窗口关闭后完成，用时 $([int]$clock.Elapsed.TotalSeconds) 秒。"
+    Write-Host "$job 已完成，正在关闭。" -ForegroundColor Green
 }

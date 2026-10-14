@@ -31,33 +31,33 @@ function Set-WinUtilRegistry {
         if(!(Test-Path 'HKU:\')) {New-PSDrive -PSProvider Registry -Name HKU -Root HKEY_USERS | Out-Null}
 
         If (!(Test-Path $Path)) {
-            Write-Host "$Path was not found. Creating..."
-            Write-WinUtilLog -Component "Registry" -Message "Creating registry path: $Path"
+            Write-Host "未找到 $Path，正在创建..."
+            Write-WinUtilLog -Component "Registry" -Message "正在创建注册表路径：$Path"
             New-Item -Path $Path -Force -ErrorAction Stop | Out-Null
         }
 
         if ($Value -ne "<RemoveEntry>") {
-            Write-Host "Set $Path\$Name to $Value"
-            Write-WinUtilLog -Component "Registry" -Message "Setting $Path\$Name ($Type) to $Value"
+            Write-Host "已将 $Path\$Name 设置为 $Value"
+            Write-WinUtilLog -Component "Registry" -Message "正在将 $Path\$Name ($Type) 设置为 $Value"
             Set-ItemProperty -Path $Path -Name $Name -Type $Type -Value $Value -Force -ErrorAction Stop | Out-Null
         }
         else{
-            Write-Host "Remove $Path\$Name"
-            Write-WinUtilLog -Component "Registry" -Message "Removing $Path\$Name"
+            Write-Host "正在删除 $Path\$Name"
+            Write-WinUtilLog -Component "Registry" -Message "正在删除 $Path\$Name"
             Remove-ItemProperty -Path $Path -Name $Name -Force -ErrorAction Stop | Out-Null
         }
     } catch [System.Security.SecurityException] {
-        Write-Warning "Unable to set $Path\$Name to $Value due to a Security Exception."
-        Write-WinUtilLog -Level "ERROR" -Component "Registry" -Message "Security exception while changing $Path\$Name to $Value`: $($psitem.Exception.Message)"
+        Write-Warning "由于安全异常，无法将 $Path\$Name 设置为 $Value。"
+        Write-WinUtilLog -Level "ERROR" -Component "Registry" -Message "更改 $Path\$Name 为 $Value 时发生安全异常：`$($psitem.Exception.Message)"
     } catch [System.Management.Automation.ItemNotFoundException] {
         Write-Warning $psitem.Exception.ErrorRecord
-        Write-WinUtilLog -Level "ERROR" -Component "Registry" -Message "Registry item not found while changing $Path\$Name`: $($psitem.Exception.Message)"
+        Write-WinUtilLog -Level "ERROR" -Component "Registry" -Message "更改 $Path\$Name 时未找到注册表项：`$($psitem.Exception.Message)"
     } catch [System.UnauthorizedAccessException] {
        Write-Warning $psitem.Exception.Message
-       Write-WinUtilLog -Level "ERROR" -Component "Registry" -Message "Unauthorized while changing $Path\$Name`: $($psitem.Exception.Message)"
+       Write-WinUtilLog -Level "ERROR" -Component "Registry" -Message "更改 $Path\$Name 时未获授权：`$($psitem.Exception.Message)"
     } catch {
-        Write-Warning "Unable to set $Name due to unhandled exception."
+        Write-Warning "由于未处理的异常，无法设置 $Name。"
         Write-Warning $psitem.Exception.StackTrace
-        Write-WinUtilLog -Level "ERROR" -Component "Registry" -Message "Unhandled exception while changing $Path\$Name`: $($psitem.Exception.Message)"
+        Write-WinUtilLog -Level "ERROR" -Component "Registry" -Message "更改 $Path\$Name 时发生未处理的异常：`$($psitem.Exception.Message)"
     }
 }

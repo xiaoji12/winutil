@@ -31,22 +31,22 @@ function Start-WinUtilUserInterface {
         $readerOperationSuccessful = $true
     } catch [System.Management.Automation.MethodInvocationException] {
         $readerFailure = $_
-        Write-Host "We ran into a problem with the XAML code.  Check the syntax for this control..." -ForegroundColor Red
+        Write-Host "处理 XAML 代码时出现问题，请检查该控件的语法..." -ForegroundColor Red
         Write-Host $error[0].Exception.Message -ForegroundColor Red
 
         If ($error[0].Exception.Message -like "*button*") {
-            write-Host "Ensure your &lt;button in the `$inputXML does NOT have a Click=ButtonClick property.  PS can't handle this`n`n`n`n" -ForegroundColor Red
+            write-Host "请确保 `$inputXML 中的 &lt;button 没有 Click=ButtonClick 属性，PowerShell 无法处理这种情况`n`n`n`n" -ForegroundColor Red
         }
     } catch {
         $readerFailure = $_
-        Write-Host "Unable to load Windows.Markup.XamlReader. Double-check syntax and ensure .net is installed." -ForegroundColor Red
+        Write-Host "无法加载 Windows.Markup.XamlReader。请仔细检查语法并确保已安装 .NET。" -ForegroundColor Red
     }
 
     if (-NOT ($readerOperationSuccessful)) {
-        Write-Host "Failed to parse xaml content using Windows.Markup.XamlReader's Load Method." -ForegroundColor Red
-        Write-Host "Quitting WinUtil..." -ForegroundColor Red
-        Write-WinUtilLog -Level "ERROR" -Component "UI" -Message "Failed to parse the XAML content. WinUtil cannot start."
-        throw [System.InvalidOperationException]::new("Failed to parse the XAML content. WinUtil cannot start.", $readerFailure.Exception)
+        Write-Host "使用 Windows.Markup.XamlReader 的 Load 方法解析 XAML 内容失败。" -ForegroundColor Red
+        Write-Host "正在退出 WinUtil..." -ForegroundColor Red
+        Write-WinUtilLog -Level "ERROR" -Component "UI" -Message "解析 XAML 内容失败，WinUtil 无法启动。"
+        throw [System.InvalidOperationException]::new("解析 XAML 内容失败，WinUtil 无法启动。", $readerFailure.Exception)
     }
 
     # Setup the Window to follow listen for windows Theme Change events and update the winutil theme
@@ -173,13 +173,13 @@ function Start-WinUtilUserInterface {
         # Work that is meant to outlive the window needs the pool it is running on. main.ps1
         # waits for it and shuts the pool down once it is done.
         if ($sync.FinishInConsole) {
-            Write-WinUtilLog -Component "UI" -Message "Window closing, leaving $($sync.ActiveJob) to finish in the console."
+            Write-WinUtilLog -Component "UI" -Message "窗口正在关闭，让 $($sync.ActiveJob) 在控制台中继续完成。"
             return
         }
 
         # main.ps1 owns pool shutdown after the window has finished closing. Doing it from this
         # dispatcher callback can deadlock with a worker that is in its UI-thread cleanup block.
-        Write-WinUtilLog -Component "UI" -Message "Window closing; the main thread will shut down the worker pool."
+        Write-WinUtilLog -Component "UI" -Message "窗口正在关闭；主线程将关闭辅助线程池。"
     })
 
     # Attach the event handler to the Click event
@@ -285,13 +285,13 @@ function Start-WinUtilUserInterface {
             # Disable the install tab
             $sync.WPFTab1BT.IsEnabled = $false
             $sync.WPFTab1BT.Opacity = 0.5
-            $sync.WPFTab1BT.ToolTip = "Internet connection required for installing applications."
+            $sync.WPFTab1BT.ToolTip = "安装应用需要网络连接。"
 
             # The install action buttons are generated with the Install tab, so
             # Initialize-WinUtilInstallTabControls disables them when that tab is built
 
             # Show offline indicator
-            Write-Host "Offline mode detected - Install tab disabled." -ForegroundColor Yellow
+            Write-Host "检测到离线模式，已禁用“安装”选项卡。" -ForegroundColor Yellow
 
             # Optionally switch to a different tab if install tab was going to be default
             Invoke-WPFTab "WPFTab2BT" -Yield  # Switch to Tweaks tab instead
@@ -427,7 +427,7 @@ Runspace : <a href="https://github.com/DeveloperDurp">@DeveloperDurp</a>, <a hre
 GitHub   : <a href="https://github.com/ChrisTitusTech/winutil">ChrisTitusTech/winutil</a>
 Version  : <a href="https://github.com/ChrisTitusTech/winutil/releases/tag/$($sync.version)">$($sync.version)</a>
 "@
-        Show-CustomDialog -Title "About" -Message $authorInfo
+        Show-CustomDialog -Title "关于" -Message $authorInfo
     })
     $sync["DocumentationMenuItem"].Add_Click({
         Invoke-WPFPopup -Action "Hide" -Popups @("Settings")
@@ -437,7 +437,7 @@ Version  : <a href="https://github.com/ChrisTitusTech/winutil/releases/tag/$($sy
         Invoke-WPFPopup -Action "Hide" -Popups @("Settings")
 
         $authorInfo = @"
-<a href="https://github.com/sponsors/ChrisTitusTech">Current sponsors for ChrisTitusTech:</a>
+<a href="https://github.com/sponsors/ChrisTitusTech">ChrisTitusTech 的当前赞助者：</a>
 "@
         $authorInfo += "`n"
         try {
@@ -446,9 +446,9 @@ Version  : <a href="https://github.com/ChrisTitusTech/winutil/releases/tag/$($sy
                 $authorInfo += "<a href=`"https://github.com/sponsors/ChrisTitusTech`">$sponsor</a>`n"
             }
         } catch {
-            $authorInfo += "An error occurred while fetching or processing the sponsors: $_`n"
+            $authorInfo += "获取或处理赞助者信息时发生错误：$_`n"
         }
-        Show-CustomDialog -Title "Sponsors" -Message $authorInfo -EnableScroll $true
+        Show-CustomDialog -Title "赞助者" -Message $authorInfo -EnableScroll $true
     })
 
     # Font Scaling Event Handlers
@@ -521,14 +521,14 @@ Version  : <a href="https://github.com/ChrisTitusTech/winutil/releases/tag/$($sy
     })
 
     $buildClock.Stop()
-    Write-WinUtilLog -Level "DEBUG" -Component "UI" -Message "Interface built in $($buildClock.ElapsedMilliseconds) ms, showing the window."
+    Write-WinUtilLog -Level "DEBUG" -Component "UI" -Message "界面已在 $($buildClock.ElapsedMilliseconds) 毫秒内构建完成，正在显示窗口。"
     Write-WinUtilTimingSummary -Scope "UI" -TotalMilliseconds $buildClock.ElapsedMilliseconds
 
     # Input priority runs behind everything already queued, so this fires at the first moment
     # the window could actually service a click
     $sync["Form"].Dispatcher.BeginInvoke([System.Windows.Threading.DispatcherPriority]::Input, [action]{
         $sinceStart = [int]((Get-Date) - $sync.StartedAt).TotalMilliseconds
-        Write-WinUtilLog -Level "DEBUG" -Component "UI" -Message "timing: interface ready for input $sinceStart ms after start."
+        Write-WinUtilLog -Level "DEBUG" -Component "UI" -Message "计时：界面在启动后 $sinceStart 毫秒即可接受输入。"
     }) | Out-Null
 
     $sync["Form"].ShowDialog() | Out-Null

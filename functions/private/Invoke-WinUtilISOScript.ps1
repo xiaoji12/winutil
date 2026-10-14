@@ -58,7 +58,7 @@ function Invoke-WinUtilISOScript {
             try {
                 return (Get-Content -LiteralPath $InfFile.FullName -Raw -ErrorAction Stop) -match '(?im)^\s*Class\s*=\s*(SCSIAdapter|HDC)\s*(?:;.*)?$'
             } catch {
-                & $Logger "Warning: could not classify storage driver '$($InfFile.FullName)': $_"
+                & $Logger "Warning: 无法对存储驱动程序 '$($InfFile.FullName)' 进行分类：$_"
                 return $false
             }
         }
@@ -69,7 +69,7 @@ function Invoke-WinUtilISOScript {
             try {
                 $infText = Get-Content -LiteralPath $InfFile.FullName -Raw -ErrorAction Stop
             } catch {
-                $null = & $Logger "Warning: could not read '$($InfFile.FullName)' to determine its driver version: $_"
+                $null = & $Logger "Warning: 无法读取 '$($InfFile.FullName)' 以确定其驱动程序版本：$_"
                 return $null
             }
 
@@ -89,7 +89,7 @@ function Invoke-WinUtilISOScript {
                 }
                 $version = [version]$versionText
             } catch {
-                $null = & $Logger "Warning: could not parse DriverVer '$($match.Value.Trim())' in '$($InfFile.FullName)': $_"
+                $null = & $Logger "Warning: 无法解析 DriverVer '$($match.Value.Trim())'（文件 '$($InfFile.FullName)'）：$_"
                 return $null
             }
 
@@ -106,7 +106,7 @@ function Invoke-WinUtilISOScript {
             try {
                 $infText = Get-Content -LiteralPath $InfFile.FullName -Raw -ErrorAction Stop
             } catch {
-                $null = & $Logger "Warning: could not read '$($InfFile.FullName)' to determine its provider: $_"
+                $null = & $Logger "Warning: 无法读取 '$($InfFile.FullName)' 以确定其提供程序：$_"
                 return ''
             }
 
@@ -163,7 +163,7 @@ function Invoke-WinUtilISOScript {
 
                 $withVersion = @($ranked | Where-Object { $_.Version })
                 if ($withVersion.Count -eq 0) {
-                    $null = & $Logger "Warning: could not determine DriverVer for any duplicate of '$dedupKey'; keeping all $($ranked.Count) package(s) rather than guessing."
+                    $null = & $Logger "Warning: 无法确定 '$dedupKey' 任何重复项的 DriverVer；保留全部 $($ranked.Count) 个软件包而不进行猜测。"
                     foreach ($candidate in $ranked) {
                         $survivingFolders.Add($candidate.Folder)
                     }
@@ -186,18 +186,18 @@ function Invoke-WinUtilISOScript {
         }
 
         $knownExitCode = @{
-            112 = "Disk is full"
-            5 = "Access denied"
-            2 = "File not found"
-            3 = "Path not found"
-            87 = "Invalid parameter"
-            1168 = "Element not found"
-            1392 = "File or directory is corrupted"
-            32 = "File in use / sharing violation"
-            21 = "Device not ready"
-            1460 = "Operation timed out"
-            1223 = "Operation cancelled by user"
-            50 = "Request not supported"
+            112 = "磁盘已满"
+            5 = "拒绝访问"
+            2 = "找不到文件"
+            3 = "找不到路径"
+            87 = "参数无效"
+            1168 = "找不到元素"
+            1392 = "文件或目录已损坏"
+            32 = "文件正在使用/共享冲突"
+            21 = "设备未就绪"
+            1460 = "操作超时"
+            1223 = "操作已被用户取消"
+            50 = "不支持该请求"
         }
 
         function Invoke-WinUtilISODism {
@@ -215,13 +215,13 @@ function Invoke-WinUtilISOScript {
                     }
                 }
                 if ($knownExitCode.ContainsKey($exitCode)) {
-                    throw "DISM $Operation failed with exit code $exitCode ($($knownExitCode[$exitCode]))."
+                    throw "DISM $Operation 失败，退出代码 $exitCode（$($knownExitCode[$exitCode])）。"
                 } else {
-                    throw "DISM $Operation failed with exit code $exitCode."
+                    throw "DISM $Operation 失败，退出代码 $exitCode。"
                 }
             }
             if ($Operation -ne 'metadata') {
-                & $Logger "DISM $Operation completed."
+                & $Logger "DISM $Operation 已完成。"
             }
             return $output
         }
@@ -248,12 +248,12 @@ function Invoke-WinUtilISOScript {
             foreach ($key in 'Languages', 'Installation', 'Edition', 'ProductSuite', 'ProductType') {
                 $beforeValue = [string]$Before[$key]
                 if ($beforeValue -eq '<undefined>' -or ($key -in 'Installation', 'Edition', 'ProductType' -and [string]::IsNullOrWhiteSpace($beforeValue))) {
-                    throw "install.wim metadata is already invalid: $key is undefined. Driver injection was not attempted."
+                    throw "install.wim 元数据已无效：$key 未定义。未尝试注入驱动程序。"
                 }
                 if ($After) {
                     $afterValue = [string]$After[$key]
                     if ($afterValue -eq '<undefined>' -or ($beforeValue -and $afterValue -ne $beforeValue)) {
-                        throw "install.wim metadata validation failed after driver injection: $key changed from '$beforeValue' to '$afterValue'."
+                        throw "注入驱动程序后 install.wim 元数据校验失败：$key 已从 '$beforeValue' 变为 '$afterValue'。"
                     }
                 }
             }
@@ -294,7 +294,7 @@ function Invoke-WinUtilISOScript {
             )
 
             if ($DriverFolders.Count -eq 0) {
-                & $Logger "No driver packages to add to ${ImageLabel}."
+                & $Logger "没有要添加到 ${ImageLabel} 的驱动程序包。"
                 return 0
             }
 
@@ -303,7 +303,7 @@ function Invoke-WinUtilISOScript {
 
             $remainingDriverFolders = @($DriverFolders)
             while ($remainingDriverFolders.Count -gt 0) {
-                & $Logger "Mounting $ImageLabel index $ImageIndex for driver injection..."
+                & $Logger "正在挂载 $ImageLabel 索引 $ImageIndex 以注入驱动程序..."
                 Invoke-WinUtilISODism -Arguments @('/English', '/Mount-Image', "/ImageFile:$ImagePath", "/Index:$ImageIndex", "/MountDir:$MountDir") -Operation 'mount' | Out-Null
                 $ImageMounted.Value = $true
 
@@ -314,7 +314,7 @@ function Invoke-WinUtilISOScript {
                     try {
                         Invoke-WinUtilISODism -Arguments @('/English', "/Image:$MountDir", '/Add-Driver', "/Driver:$driverFolder", '/Recurse') -Operation "add-driver:$driverName" | Out-Null
                     } catch {
-                        & $Logger "Warning: failed to add driver package '$driverName': $_"
+                        & $Logger "Warning: 添加驱动程序包 '$driverName' 失败：$_"
                         $failedDriverFolder = $driverFolder
                         break
                     }
@@ -324,7 +324,7 @@ function Invoke-WinUtilISOScript {
                     break
                 }
 
-                & $Logger "Discarding the potentially partial $ImageLabel mount before continuing without '$driverName'."
+                & $Logger "在跳过 '$driverName' 继续之前，正在丢弃可能不完整的 $ImageLabel 挂载。"
                 try {
                     Invoke-WinUtilISODism -Arguments @('/English', '/Unmount-Image', "/MountDir:$MountDir", '/Discard') -Operation 'discard' | Out-Null
                     $ImageMounted.Value = $false
@@ -338,28 +338,28 @@ function Invoke-WinUtilISOScript {
             $addedCount = $remainingDriverFolders.Count
             if ($addedCount -eq 0) {
                 if ($ImageLabel -eq 'install.wim') {
-                    & $Logger "Warning: none of the $($DriverFolders.Count) exported driver packages could be added; continuing with an unmodified install.wim."
+                    & $Logger "Warning: 无法添加 $($DriverFolders.Count) 个已导出驱动程序包中的任何一个；继续使用未修改的 install.wim。"
                 } else {
-                    & $Logger "Warning: none of the $($DriverFolders.Count) driver packages could be added to ${ImageLabel}."
+                    & $Logger "Warning: 无法将 $($DriverFolders.Count) 个驱动程序包中的任何一个添加到 ${ImageLabel}。"
                 }
                 return 0
             }
 
-            & $Logger "Added $addedCount of $($DriverFolders.Count) driver packages to ${ImageLabel}."
-            & $Logger "Committing the driver-only $ImageLabel change..."
+            & $Logger "已向 ${ImageLabel} 添加 $addedCount/$($DriverFolders.Count) 个驱动程序包。"
+            & $Logger "正在提交仅包含驱动程序的 $ImageLabel 更改..."
             Invoke-WinUtilISODism -Arguments @('/English', '/Unmount-Image', "/MountDir:$MountDir", '/Commit') -Operation 'commit' | Out-Null
             $ImageMounted.Value = $false
             return $addedCount
         }
 
         if ([IO.Path]::GetExtension($InstallImagePath) -ne '.wim') {
-            throw 'Current-system driver injection requires install.wim; install.esd cannot be serviced in place.'
+            throw '当前系统驱动程序注入需要 install.wim；无法就地维护 install.esd。'
         }
         if (-not (Test-Path -LiteralPath $InstallImagePath)) {
-            throw "install.wim was not found: $InstallImagePath"
+            throw "未找到 install.wim：$InstallImagePath"
         }
         if ($InstallImageIndex -lt 1) {
-            throw 'Current-system driver injection requires a valid install.wim image index.'
+            throw '当前系统驱动程序注入需要有效的 install.wim 映像索引。'
         }
 
         $driverExportRoot = Join-Path $env:TEMP "WinUtil_DriverExport_$(Get-Date -Format 'yyyyMMdd_HHmmss')_$(([guid]::NewGuid()).ToString('N').Substring(0, 8))"
@@ -372,13 +372,13 @@ function Invoke-WinUtilISOScript {
         $imageMounted = $false
 
         try {
-            & $Logger "Exporting current system drivers before WIM driver injection..."
+            & $Logger "正在导出当前系统的驱动程序，然后进行 WIM 驱动程序注入..."
             $dismLog = Join-Path $env:TEMP "WinUtil_DismDriverExport_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
             Invoke-WinUtilISODism -Arguments @('/English', '/Online', '/Export-Driver', "/Destination:$driverExportRoot", "/LogPath:$dismLog") -Operation 'export-driver' | Out-Null
 
             $driverInfs = @(Get-ChildItem -LiteralPath $driverExportRoot -Filter '*.inf' -Recurse -File)
             if ($driverInfs.Count -eq 0) {
-                throw 'DISM exported no driver INF files.'
+                throw 'DISM 未导出任何驱动程序 INF 文件。'
             }
             $driverFolders = @($driverInfs | Group-Object { $_.Directory.FullName })
             $stagedDriverFolders = @(Select-WinUtilISOStagedDriverPackages -DriverFolderGroups $driverFolders -Logger $Logger)
@@ -397,7 +397,7 @@ function Invoke-WinUtilISOScript {
                             Remove-Item -LiteralPath $excludedInf.FullName -Force -ErrorAction Stop
                         }
                     } catch {
-                        throw "Failed to remove excluded driver INF files from package '$excludedFolder' before injection: $_"
+                        throw "注入前无法从软件包 '$excludedFolder' 移除被排除的驱动程序 INF 文件：$_"
                     }
 
                     & $Logger "Keeping excluded driver package directory '$excludedFolder' because it contains a retained nested package, after removing its excluded INF files."
@@ -407,11 +407,11 @@ function Invoke-WinUtilISOScript {
                 try {
                     Remove-Item -LiteralPath $excludedFolder -Recurse -Force -ErrorAction Stop
                 } catch {
-                    throw "Failed to remove excluded driver package '$excludedFolder' before injection: $_"
+                    throw "注入前无法移除被排除的驱动程序包 '$excludedFolder'：$_"
                 }
             }
 
-            & $Logger "Exported $($stagedDriverFolders.Count) of $($driverFolders.Count) driver packages ($($excludedDriverFolderGroups.Count) excluded)."
+            & $Logger "已导出 $($stagedDriverFolders.Count)/$($driverFolders.Count) 个驱动程序包（已排除 $($excludedDriverFolderGroups.Count) 个）。"
 
             # Storage for Setup comes from the same surviving set as install.wim, so stale
             # duplicates never reach boot.wim.
@@ -428,19 +428,19 @@ function Invoke-WinUtilISOScript {
             $bootWim = Join-Path $ContentRoot 'sources\boot.wim'
             if ($storageRootFolders.Count -gt 0) {
                 if (Test-Path -LiteralPath $bootWim) {
-                    & $Logger "Adding $($storageRootFolders.Count) root storage driver packages to boot.wim."
+                    & $Logger "正在向 boot.wim 添加 $($storageRootFolders.Count) 个根存储驱动程序包。"
                     $null = Add-WinUtilISODriversToImage -ImagePath $bootWim -ImageIndex 2 -MountDir $mountDir -DriverFolders $storageRootFolders -ImageLabel 'boot.wim' -ImageMounted $imageMountedRef
                 } else {
-                    & $Logger 'Warning: boot.wim was not found; Windows Setup will not have injected storage drivers.'
+                    & $Logger 'Warning: 未找到 boot.wim；Windows 安装程序将无法获得注入的存储驱动程序。'
                 }
             }
 
-            & $Logger "Adding $($rootPackageFolders.Count) root driver packages to install.wim."
+            & $Logger "正在向 install.wim 添加 $($rootPackageFolders.Count) 个根驱动程序包。"
             $addedCount = Add-WinUtilISODriversToImage -ImagePath $InstallImagePath -ImageIndex $InstallImageIndex -MountDir $mountDir -DriverFolders $rootPackageFolders -ImageLabel 'install.wim' -ImageMounted $imageMountedRef
             if ($addedCount -gt 0) {
                 $metadataAfter = Get-WinUtilISOWimMetadata -ImagePath $InstallImagePath -Index $InstallImageIndex
                 Assert-WinUtilISOWimMetadata -Before $metadataBefore -After $metadataAfter
-                & $Logger 'Driver injection complete; install.wim metadata validation passed.'
+                & $Logger '驱动程序注入完成；install.wim 元数据校验通过。'
                 $DriversInjected.Value = $true
             }
         } finally {
@@ -448,7 +448,7 @@ function Invoke-WinUtilISOScript {
                 try {
                     Invoke-WinUtilISODism -Arguments @('/English', '/Unmount-Image', "/MountDir:$mountDir", '/Discard') -Operation 'discard' | Out-Null
                 } catch {
-                    & $Logger "Warning: could not discard the failed WIM mount: $_"
+                    & $Logger "Warning: 无法丢弃失败的 WIM 挂载：$_"
                 }
             }
             Remove-Item -LiteralPath $mountDir -Recurse -Force -ErrorAction SilentlyContinue
@@ -469,11 +469,11 @@ function Invoke-WinUtilISOScript {
         $pidPath = Join-Path $sourcesDir "PID.txt"
         if (Test-Path $pidPath) {
             Remove-Item -Path $pidPath -Force
-            & $Logger "Removed sources\PID.txt so setup will not force a stale or mismatched product key."
+            & $Logger "已移除 sources\PID.txt，以免安装程序强制使用过期或不匹配的产品密钥。"
         }
 
         if ([string]::IsNullOrWhiteSpace($EditionId)) {
-            & $Logger "Warning: selected edition ID is unknown - skipping sources\ei.cfg fallback."
+            & $Logger "Warning: 所选版本 ID 未知，跳过 sources\ei.cfg 回退。"
             return
         }
 
@@ -488,7 +488,7 @@ Retail
 "@.Trim()
 
         Set-Content -Path $eiCfgPath -Value $eiCfg -Encoding ASCII -Force
-        & $Logger "Written sources\ei.cfg for EditionID '$EditionId'."
+        & $Logger "已为 EditionID '$EditionId' 写入 sources\ei.cfg。"
     }
 
     function Add-WinUtilISOSetupCustomizations {
@@ -515,7 +515,7 @@ Retail
 Start-Transcript -Path `$logPath -Append -ErrorAction SilentlyContinue
 
 try {
-    Write-Host 'WinUtil: Removing provisioned AppX packages...'
+    Write-Host 'WinUtil: 正在移除预置的 AppX 应用...'
     `$packages = @(
 $appxList
     )
@@ -553,7 +553,7 @@ $appxList
         reg.exe delete "`$contentDeliveryManager\SuggestedApps" /f 2>&1 | Out-Null
     }
 
-    Write-Host 'WinUtil: Applying registry tweaks...'
+    Write-Host 'WinUtil: 正在应用注册表优化项...'
     Set-WinUtilRegistryValue 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager' 'ShippedWithReserves' 'REG_DWORD' '0'
     Set-WinUtilRegistryValue 'HKLM\SYSTEM\CurrentControlSet\Control\BitLocker' 'PreventDeviceEncryption' 'REG_DWORD' '1'
     Set-WinUtilRegistryValue 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Chat' 'ChatIcon' 'REG_DWORD' '3'
@@ -626,7 +626,7 @@ $appxList
     Set-WinUtilRegistryValue 'HKCU\Software\Microsoft\InputPersonalization\TrainedDataStore' 'HarvestContacts' 'REG_DWORD' '0'
     Set-WinUtilRegistryValue 'HKCU\Software\Microsoft\Personalization\Settings' 'AcceptedPrivacyPolicy' 'REG_DWORD' '0'
 
-    Write-Host 'WinUtil: Removing scheduled task definitions...'
+    Write-Host 'WinUtil: 正在移除计划任务定义...'
     `$taskPaths = @(
         'C:\Windows\System32\Tasks\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser',
         'C:\Windows\System32\Tasks\Microsoft\Windows\Customer Experience Improvement Program',
@@ -643,7 +643,7 @@ $appxList
     foreach (`$taskPath in `$taskPaths) { Remove-Item -LiteralPath `$taskPath -Recurse -Force -ErrorAction SilentlyContinue }
 
     Start-Process -FilePath 'C:\Windows\System32\OneDriveSetup.exe' -ArgumentList '/uninstall' -Wait -ErrorAction SilentlyContinue
-    Write-Host 'WinUtil: Post-install customization complete.'
+    Write-Host 'WinUtil: 安装后自定义已完成。'
 } finally {
     Stop-Transcript -ErrorAction SilentlyContinue
 }
@@ -660,7 +660,7 @@ $appxList
         $extensions = $xmlDoc.SelectSingleNode('//sg:Extensions', $nsMgr)
         $firstLogonFile = $xmlDoc.SelectSingleNode('//sg:File[@path="C:\Windows\Setup\Scripts\FirstLogon.ps1"]', $nsMgr)
         if (-not $setupComponent -or -not $extensions -or -not $firstLogonFile) {
-            throw 'autounattend.xml is missing a required Windows Setup, Extensions, or FirstLogon.ps1 node.'
+            throw 'autounattend.xml 缺少必需的 Windows Setup、Extensions 或 FirstLogon.ps1 节点。'
         }
 
         $imageInstall = $setupComponent.SelectSingleNode('u:ImageInstall', $nsMgr)
@@ -700,7 +700,7 @@ $appxList
 
         $firstLogonFile.InnerText = "& 'C:\Windows\Setup\Scripts\WinUtil-PostInstall.ps1';`r`n`r`n$($firstLogonFile.InnerText.Trim())"
 
-        $null = & $Logger 'Added WinUtil post-install AppX, registry, and scheduled-task customizations to autounattend.xml.'
+        $null = & $Logger '已向 autounattend.xml 添加 WinUtil 安装后的 AppX、注册表和计划任务自定义设置。'
         return $xmlDoc.OuterXml
     }
 
@@ -745,21 +745,21 @@ $appxList
             $useConfigurationSet.InnerText = 'true'
             [System.IO.File]::WriteAllText((Join-Path $ContentRoot 'autounattend.xml'), $xmlDoc.OuterXml, [System.Text.UTF8Encoding]::new($false))
         }
-        & $Logger "Staged $stagedCount WinUtil setup script fallback files at '$setupScriptsRoot'."
+        & $Logger "已在 '$setupScriptsRoot' 暂存 $stagedCount 个 WinUtil 安装脚本回退文件。"
     }
 
     if (-not (Test-Path $ISOContentsDir)) {
-        throw "ISO contents directory does not exist: $ISOContentsDir"
+        throw "ISO 内容目录不存在：$ISOContentsDir"
     }
 
     if ([string]::IsNullOrWhiteSpace($AutoUnattendXml)) {
-        throw "autounattend.xml content is required to prepare setup media."
+        throw "准备安装介质时需要 autounattend.xml 内容。"
     }
 
     $preparedAutoUnattendXml = Add-WinUtilISOSetupCustomizations -XmlContent $AutoUnattendXml -InstallImageIndex $InstallImageIndex -Logger $Log
     $unattendPath = Join-Path $ISOContentsDir "autounattend.xml"
     [System.IO.File]::WriteAllText($unattendPath, $preparedAutoUnattendXml, [System.Text.UTF8Encoding]::new($false))
-    & $Log "Written autounattend.xml with WinUtil setup customizations to ISO root ($unattendPath)."
+    & $Log "已将包含 WinUtil 安装自定义设置的 autounattend.xml 写入 ISO 根目录（$unattendPath）。"
     Add-WinUtilISOSetupScriptFallback -ContentRoot $ISOContentsDir -XmlContent $preparedAutoUnattendXml -Logger $Log
 
     Write-WinUtilISOEditionConfig -ContentRoot $ISOContentsDir -EditionId $InstallEditionId -Logger $Log

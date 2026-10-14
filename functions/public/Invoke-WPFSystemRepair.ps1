@@ -15,25 +15,25 @@ function Invoke-WPFSystemRepair {
     # outcomes, while 1 from sfc is a failure, and 3010 is a repaired image from DISM only.
     $steps = @(
         @{
-            Label = "Checking the disk for errors"
+            Label = "检查磁盘错误"
             Arguments = "/c chkdsk /scan /perf"
             # 3 is left out: the disk could not be checked, or has errors an online scan cannot
             # fix, and the steps after this one are not worth running on a disk in that state.
             SuccessCodes = @{
-                1 = "errors were found and fixed"
-                2 = "cleanup was performed, or was skipped because /f was not given"
+                1 = "发现并修复了错误"
+                2 = "已执行清理，或由于未指定 /f 而跳过清理"
             }
         },
         @{
-            Label = "Scanning protected system files"
+            Label = "扫描受保护的系统文件"
             Arguments = "/c sfc /scannow"
             SuccessCodes = @{}
         },
         @{
-            Label = "Repairing the Windows image"
+            Label = "修复 Windows 映像"
             Arguments = "/c dism /online /cleanup-image /restorehealth"
             SuccessCodes = @{
-                3010 = "a restart is needed for the repair to take effect"
+                3010 = "需要重启才能使修复生效"
             }
         }
     )
@@ -51,9 +51,9 @@ function Invoke-WPFSystemRepair {
             if ($step.SuccessCodes.ContainsKey($exitCode)) {
                 # Start-WinUtilJob records WarningRecord output in both the session log and the
                 # job result, so accepted nonzero outcomes cannot finish with a green checkmark.
-                Write-Warning "$($step.Label) finished: $($step.SuccessCodes[$exitCode])."
+                Write-Warning "$($step.Label) 完成：$($step.SuccessCodes[$exitCode])。"
             } else {
-                throw "$($step.Label) failed with exit code $exitCode."
+                throw "$($step.Label) 失败，退出代码为 $exitCode。"
             }
         }
 

@@ -5,10 +5,10 @@ function Invoke-WPFUpdatesdefault {
         Resets Windows Update settings to default
 
     #>
-    Write-WinUtilLog -Component "Updates" -Message "Resetting Windows Update settings to default."
+    Write-WinUtilLog -Component "Updates" -Message "正在将 Windows 更新设置重置为默认值。"
 
-    Write-Host "Removing Windows Update settings managed by WinUtil..." -ForegroundColor Green
-    Write-WinUtilLog -Component "Updates" -Message "Removing Windows Update registry values managed by WinUtil."
+    Write-Host "正在移除由 WinUtil 管理的 Windows 更新设置..." -ForegroundColor Green
+    Write-WinUtilLog -Component "Updates" -Message "正在移除由 WinUtil 管理的 Windows 更新注册表值。"
 
     $registryValues = @(
         @{
@@ -46,29 +46,29 @@ function Invoke-WPFUpdatesdefault {
     $explorerPolicyPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer"
     $settingsPageVisibility = (Get-ItemProperty -Path $explorerPolicyPath -Name "SettingsPageVisibility" -ErrorAction SilentlyContinue).SettingsPageVisibility
     if ($settingsPageVisibility -eq "hide:windowsupdate") {
-        Write-Host "Removing WinUtil's legacy Windows Update page restriction..."
-        Write-WinUtilLog -Component "Updates" -Message "Removing the legacy Windows Update settings page restriction."
+        Write-Host "正在移除 WinUtil 旧版的 Windows 更新页面限制..."
+        Write-WinUtilLog -Component "Updates" -Message "正在移除旧版的 Windows 更新设置页面限制。"
         Remove-ItemProperty -Path $explorerPolicyPath -Name "SettingsPageVisibility" -ErrorAction SilentlyContinue
     }
 
-    Write-Host "Reenabling Windows Update Services..." -ForegroundColor Green
-    Write-WinUtilLog -Component "Updates" -Message "Restoring Windows Update service startup types."
+    Write-Host "正在重新启用 Windows 更新服务..." -ForegroundColor Green
+    Write-WinUtilLog -Component "Updates" -Message "正在还原 Windows 更新服务的启动类型。"
 
-    Write-Host "Restored BITS to Manual."
-    Write-WinUtilLog -Component "Updates" -Message "Restoring BITS service to Manual."
+    Write-Host "已将 BITS 还原为手动。"
+    Write-WinUtilLog -Component "Updates" -Message "正在将 BITS 服务还原为手动。"
     Set-Service -Name BITS -StartupType Manual
 
-    Write-Host "Restored wuauserv to Manual."
-    Write-WinUtilLog -Component "Updates" -Message "Restoring wuauserv service to Manual."
+    Write-Host "已将 wuauserv 还原为手动。"
+    Write-WinUtilLog -Component "Updates" -Message "正在将 wuauserv 服务还原为手动。"
     Set-Service -Name wuauserv -StartupType Manual
 
-    Write-Host "Restored UsoSvc to Automatic."
-    Write-WinUtilLog -Component "Updates" -Message "Starting UsoSvc service and restoring startup type to Automatic."
+    Write-Host "已将 UsoSvc 还原为自动。"
+    Write-WinUtilLog -Component "Updates" -Message "正在启动 UsoSvc 服务，并将启动类型还原为自动。"
     Set-Service -Name UsoSvc -StartupType Automatic
     Start-Service -Name UsoSvc
 
-    Write-Host "Enabling update related scheduled tasks..." -ForegroundColor Green
-    Write-WinUtilLog -Component "Updates" -Message "Enabling update related scheduled tasks."
+    Write-Host "正在启用与更新相关的计划任务..." -ForegroundColor Green
+    Write-WinUtilLog -Component "Updates" -Message "正在启用与更新相关的计划任务。"
 
     $Tasks =
         '\Microsoft\Windows\InstallService\*',
@@ -83,6 +83,6 @@ function Invoke-WPFUpdatesdefault {
     }
 
 
-    Write-Host "Note: You must restart your system in order for all changes to take effect." -ForegroundColor Yellow
-    Write-WinUtilLog -Component "Updates" -Message "Windows Update default workflow completed. Restart required."
+    Write-Host "注意：必须重启系统，所有更改才能生效。" -ForegroundColor Yellow
+    Write-WinUtilLog -Component "Updates" -Message "Windows 更新默认流程已完成，需要重启。"
 }

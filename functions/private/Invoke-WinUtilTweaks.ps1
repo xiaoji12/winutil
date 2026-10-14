@@ -58,8 +58,8 @@ function Invoke-WinUtilTweaks {
                 } catch {
                     if ($_.FullyQualifiedErrorId -like "NoServiceFoundForGivenName,*") {
                         $changeservice = $false
-                        Write-Warning "Service $serviceName was not found."
-                        Write-WinUtilLog -Level "WARN" -Component "Service" -Message "Service $serviceName was not found."
+                        Write-Warning "未找到服务 $serviceName。"
+                        Write-WinUtilLog -Level "WARN" -Component "Service" -Message "未找到服务 $serviceName。"
                     } else {
                         throw
                     }
@@ -93,8 +93,8 @@ function Invoke-WinUtilTweaks {
     }
     $errorCount = [int]$global:WinUtilJobErrorCount - $errorsBefore
     if ($errorCount -gt 0) {
-        Write-WinUtilLog -Level "WARN" -Component "Tweaks" -Message "$action tweak finished with $errorCount error(s): $CheckBox"
+        Write-WinUtilLog -Level "WARN" -Component "Tweaks" -Message "$action tweak 完成，出现 $errorCount 个错误：$CheckBox"
     } else {
-        Write-WinUtilLog -Component "Tweaks" -Message "$action tweak completed: $CheckBox"
+        Write-WinUtilLog -Component "Tweaks" -Message "$action tweak 已完成：$CheckBox"
     }
 }

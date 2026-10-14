@@ -48,7 +48,7 @@ function Register-WinUtilActiveShell {
             try {
                 $sync.ActiveShells.Remove($finished)
             } catch {
-                Write-WinUtilLog -Level "WARN" -Component "UI" -Message "Could not remove a completed worker from the active set: $_"
+                Write-WinUtilLog -Level "WARN" -Component "UI" -Message "无法从活动集合中移除已完成的辅助作业：$_"
             }
         }
     }
@@ -104,14 +104,14 @@ function Stop-WinUtilActiveWork {
         return $true
     }
 
-    Write-WinUtilLog -Component "UI" -Message "Stopping $($shells.Count) running item(s) before closing."
+    Write-WinUtilLog -Component "UI" -Message "关闭前正在停止 $($shells.Count) 个正在运行的作业。"
 
     foreach ($shell in $shells) {
         if (Test-WinUtilShellRunning $shell) {
             try {
                 $null = $shell.BeginStop($null, $null)
             } catch {
-                Write-WinUtilLog -Level "WARN" -Component "UI" -Message "Could not request that a worker stop: $_"
+                Write-WinUtilLog -Level "WARN" -Component "UI" -Message "无法请求辅助作业停止：$_"
             }
         }
     }
@@ -125,14 +125,14 @@ function Stop-WinUtilActiveWork {
         $stillRunning = @(Get-WinUtilActiveShell | Where-Object { Test-WinUtilShellRunning $_ }).Count
 
         if ($stillRunning -eq 0) {
-            Write-WinUtilLog -Component "UI" -Message "Everything stopped after $($clock.ElapsedMilliseconds) ms."
+            Write-WinUtilLog -Component "UI" -Message "所有作业已在 $($clock.ElapsedMilliseconds) 毫秒后停止。"
             return $true
         }
 
         Start-Sleep -Milliseconds 100
     }
 
-    Write-WinUtilLog -Level "WARN" -Component "UI" -Message "Gave up waiting for work to stop after $TimeoutSeconds seconds, closing anyway."
+    Write-WinUtilLog -Level "WARN" -Component "UI" -Message "等待 $TimeoutSeconds 秒后仍未停止，仍然关闭。"
     return $false
 }
 

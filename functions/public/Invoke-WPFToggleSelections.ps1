@@ -14,13 +14,13 @@ function Invoke-WPFToggleSelections {
     $toggles = @($sync.selectedToggles)
 
     if ($toggles.Count -eq 0) {
-        Show-WinUtilMessage -Message "No toggles are selected." -Title "WinUtil" -Button "OK" -Icon "Warning" | Out-Null
+        Show-WinUtilMessage -Message "未选择任何开关项。" -Title "WinUtil" -Button "OK" -Icon "Warning" | Out-Null
         return
     }
 
-    Write-WinUtilLog -Component "Toggles" -Message "Toggles requested: $($toggles.Count) selected."
+    Write-WinUtilLog -Component "Toggles" -Message "已请求应用开关项：共选中 $($toggles.Count) 个。"
 
-    Start-WinUtilJob -Name "Toggles" -Description "Applying toggles" -Parameters @{
+    Start-WinUtilJob -Name "Toggles" -Description "正在应用开关项" -Parameters @{
         Toggles = $toggles
     } -ScriptBlock {
         param($Toggles)
@@ -29,7 +29,7 @@ function Invoke-WPFToggleSelections {
         $completed = 0
 
         foreach ($toggle in $Toggles) {
-            Step-WinUtilJob -Status "Applying $toggle ($($completed + 1)/$total)" -Percent ([int](($completed / $total) * 100))
+            Step-WinUtilJob -Status "正在应用 $toggle ($($completed + 1)/$total)" -Percent ([int](($completed / $total) * 100))
             Measure-WinUtilStep -Scope "Toggles" -Name $toggle -ScriptBlock {
                 Invoke-WinUtilTweaks $toggle
             }

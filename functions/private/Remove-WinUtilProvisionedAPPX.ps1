@@ -19,8 +19,8 @@ function Remove-WinUtilProvisionedAPPX {
         return
     }
 
-    Write-Host "`nRemoving provisioned packages..."
-    Write-WinUtilLog -Component "AppX" -Message "Removing AppX provisioned packages: $($PackageList -join ', ')"
+    Write-Host "`n正在移除预置应用包..."
+    Write-WinUtilLog -Component "AppX" -Message "正在移除预置的 AppX 应用：$($PackageList -join ', ')"
 
     # DISM cmdlets like Get-AppxProvisionedPackage often fail with "Class not registered" or hang in PowerShell 7.
     # We shell out to Windows PowerShell 5.1 (powershell.exe) to reliably remove the provisioned packages.

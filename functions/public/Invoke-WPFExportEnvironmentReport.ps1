@@ -7,12 +7,12 @@ function Invoke-WPFExportEnvironmentReport {
 
     try {
         $includeLogs = (Show-WinUtilMessage `
-            -Message "Also include the last 7 days of WinUtil logs? The companion file contains raw logs and may include local paths, commands, and error details. Review it before sharing." `
-            -Title "Environment Report" -Button "YesNo" -Icon "Question") -eq "Yes"
+            -Message "是否同时附带最近 7 天的 WinUtil 日志？该附带文件包含原始日志，可能含有本地路径、命令和错误详情，分享前请先检查。" `
+            -Title "环境报告" -Button "YesNo" -Icon "Question") -eq "Yes"
 
         Add-Type -AssemblyName System.Windows.Forms
         $dialog = [System.Windows.Forms.SaveFileDialog]::new()
-        $dialog.Title = "Export Environment Report"
+        $dialog.Title = "导出环境报告"
         $dialog.Filter = "JSON files (*.json)|*.json"
         $dialog.FileName = "WinUtilEnvironmentReport_$(Get-Date -Format 'yyyyMMdd').json"
         $dialog.InitialDirectory = [Environment]::GetFolderPath("Desktop")
@@ -29,14 +29,14 @@ function Invoke-WPFExportEnvironmentReport {
         if (Test-Path -LiteralPath $logsPath) {
             if (-not $includeLogs) {
                 Show-WinUtilMessage `
-                    -Message "A logs file already exists at:`n$logsPath`n`nChoose another report filename or include and replace the existing logs." `
-                    -Title "Environment Report" -Button "OK" -Icon "Warning" | Out-Null
+                    -Message "已存在日志文件：`n$logsPath`n`n请改用其他报告文件名，或选择附带并替换现有日志。" `
+                    -Title "环境报告" -Button "OK" -Icon "Warning" | Out-Null
                 return
             }
 
             $replaceLogs = (Show-WinUtilMessage `
-                -Message "A logs file already exists at:`n$logsPath`n`nReplace it?" `
-                -Title "Environment Report" -Button "YesNo" -Icon "Warning") -eq "Yes"
+                -Message "已存在日志文件：`n$logsPath`n`n是否替换它？" `
+                -Title "环境报告" -Button "YesNo" -Icon "Warning") -eq "Yes"
             if (-not $replaceLogs) {
                 return
             }
@@ -45,32 +45,32 @@ function Invoke-WPFExportEnvironmentReport {
         # Registry reads across every tweak/toggle and the log bundle's file read add up to a
         # couple of seconds, so the job layer keeps the Settings handler responsive and owns the
         # progress, taskbar state, logging, and error reporting.
-        Start-WinUtilJob -Name "EnvironmentReport" -Description "Exporting environment report" -Parameters @{
+        Start-WinUtilJob -Name "EnvironmentReport" -Description "正在导出环境报告" -Parameters @{
             JsonPath = $jsonPath
             LogsPath = $logsPath
             IncludeLogs = $includeLogs
         } -ScriptBlock {
             param($JsonPath, $LogsPath, $IncludeLogs)
 
-            Step-WinUtilJob -Status "Collecting environment report" -Percent 10
+            Step-WinUtilJob -Status "正在收集环境报告" -Percent 10
             $report = Get-WinUtilEnvironmentReport
             $json = $report | ConvertTo-Json -Depth 6
 
             if ($IncludeLogs) {
-                Step-WinUtilJob -Status "Collecting recent WinUtil logs" -Percent 60
+                Step-WinUtilJob -Status "正在收集最近的 WinUtil 日志" -Percent 60
                 $logs = Get-WinUtilRecentLogs
             }
 
-            Step-WinUtilJob -Status "Writing environment export" -Percent 80
+            Step-WinUtilJob -Status "正在写入环境报告导出文件" -Percent 80
             Write-WinUtilEnvironmentReportExport -JsonPath $JsonPath -Json $json `
                 -LogsPath $LogsPath -Logs $logs -IncludeLogs:$IncludeLogs
 
-            Write-WinUtilLog -Component "EnvironmentReport" -Message "Environment report exported to $JsonPath."
-            Step-WinUtilJob -Status "Environment export completed" -Percent 100
+            Write-WinUtilLog -Component "EnvironmentReport" -Message "环境报告已导出到 $JsonPath。"
+            Step-WinUtilJob -Status "环境报告导出已完成" -Percent 100
         }
     } catch {
-        Write-WinUtilLog -Component "EnvironmentReport" -Level "ERROR" -Message "Environment report export failed: $($_.Exception.Message)"
-        Show-WinUtilMessage -Message "The environment report could not be exported. $($_.Exception.Message)" `
-            -Title "Environment Report" -Button "OK" -Icon "None" | Out-Null
+        Write-WinUtilLog -Component "EnvironmentReport" -Level "ERROR" -Message "环境报告导出失败：$($_.Exception.Message)"
+        Show-WinUtilMessage -Message "无法导出环境报告。$($_.Exception.Message)" `
+            -Title "环境报告" -Button "OK" -Icon "None" | Out-Null
     }
 }

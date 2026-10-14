@@ -68,7 +68,7 @@ function Start-WinUtilBackgroundQueue {
             try {
                 & $Step $Queue.Dequeue()
             } catch {
-                Write-WinUtilErrorRecord -ErrorRecord $_ -Component "UI" -Context "Background queue '$Name'"
+                Write-WinUtilErrorRecord -ErrorRecord $_ -Component "UI" -Context "后台队列 '$Name'"
             }
         }
         if ($OnComplete) { & $OnComplete }
@@ -142,7 +142,7 @@ function Invoke-WinUtilBackgroundQueueStep {
         try {
             & $state.Step $state.Queue.Dequeue()
         } catch {
-            Write-WinUtilErrorRecord -ErrorRecord $_ -Component "UI" -Context "Background queue '$Name'"
+            Write-WinUtilErrorRecord -ErrorRecord $_ -Component "UI" -Context "后台队列 '$Name'"
         }
     }
 

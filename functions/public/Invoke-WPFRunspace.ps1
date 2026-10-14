@@ -37,7 +37,7 @@ function Invoke-WPFRunspace {
         # The lifecycle lock keeps the final shutdown check, invocation start, and registration
         # atomic with pool closure. Otherwise shutdown can miss a newly started invocation.
         if ($sync.ShuttingDown) {
-            Write-WinUtilLog -Level "WARN" -Component "UI" -Message "Refused to start background work, WinUtil is closing."
+            Write-WinUtilLog -Level "WARN" -Component "UI" -Message "已拒绝启动后台任务，WinUtil 正在关闭。"
             return $null
         }
 
@@ -54,7 +54,7 @@ function Invoke-WPFRunspace {
             # A single pair written as @(("Name", $value)) collapses to a two element array, and
             # indexing it then yields the first two characters of the name
             if ($parameter -is [string] -or $parameter.Count -ne 2) {
-                throw "ParameterList takes name and value pairs. Received '$parameter'. A single pair needs a leading comma: -ParameterList (,('Name', `$value))"
+                throw "ParameterList 需要由名称和值组成的对。收到的是 '$parameter'。单个对需要前置逗号：-ParameterList (,('Name', `$value))"
             }
             [void]$powershell.AddParameter($parameter[0], $parameter[1])
         }
@@ -86,7 +86,7 @@ function Invoke-WPFRunspace {
         } catch {
             # The worker remains tracked and owns its job token. Treat it as scheduled so another
             # system-changing job cannot start beside it; later work/shutdown can reclaim the shell.
-            Write-WinUtilLog -Level "WARN" -Component "UI" -Message "Could not register background cleanup: $($_.Exception.Message)"
+            Write-WinUtilLog -Level "WARN" -Component "UI" -Message "无法注册后台清理：$($_.Exception.Message)"
         }
 
         return $handle

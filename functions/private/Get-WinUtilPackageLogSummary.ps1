@@ -14,15 +14,15 @@ function Get-WinUtilPackageLogSummary {
             Select-Object -First 1
 
         if ([string]::IsNullOrWhiteSpace([string]$packageName)) {
-            $packageName = "Unknown package"
+            $packageName = "未知软件包"
         }
 
         if ($Preference -eq "Choco" -and -not [string]::IsNullOrWhiteSpace([string]$package.choco) -and $package.choco -ne "na") {
-            "$packageName (choco: $($package.choco))"
+            "$packageName（choco：$($package.choco)）"
         } elseif (-not [string]::IsNullOrWhiteSpace([string]$package.winget) -and $package.winget -ne "na") {
-            "$packageName (winget: $($package.winget))"
+            "$packageName（winget：$($package.winget)）"
         } else {
-            "$packageName (no package id)"
+            "$packageName（无软件包 ID）"
         }
     })
 }

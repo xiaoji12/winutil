@@ -39,10 +39,10 @@ function Write-WinUtilErrorRecord {
         if ([string]::IsNullOrWhiteSpace($invocation.ScriptName)) {
             $where = "line $($invocation.ScriptLineNumber)"
         }
-        Write-WinUtilLog -Level "ERROR" -Detail -Component $Component -Message "  at $where in $($invocation.MyCommand): $($invocation.Line.Trim())"
+        Write-WinUtilLog -Level "ERROR" -Detail -Component $Component -Message "  位置 $where，位于 $($invocation.MyCommand)：$($invocation.Line.Trim())"
     }
 
-    Write-WinUtilLog -Level "ERROR" -Detail -Component $Component -Message "  type $($ErrorRecord.Exception.GetType().FullName), category $($ErrorRecord.CategoryInfo.Category)"
+    Write-WinUtilLog -Level "ERROR" -Detail -Component $Component -Message "  类型 $($ErrorRecord.Exception.GetType().FullName)，类别 $($ErrorRecord.CategoryInfo.Category)"
 
     if ($ErrorRecord.ScriptStackTrace) {
         foreach ($frame in ($ErrorRecord.ScriptStackTrace -split "`r?`n")) {

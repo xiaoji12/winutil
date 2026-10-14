@@ -24,7 +24,7 @@ function Show-WinUtilMessage {
         # Anything with a choice is answered with the one that does not go ahead, so a prompt
         # nobody saw can never stand in for consent
         $unattended = if ("$Button" -eq "OK") { "OK" } else { "No" }
-        Write-WinUtilLog -Level "WARN" -Component "Dialog" -Message "No window to ask on, answering '$unattended' for: $Title"
+        Write-WinUtilLog -Level "WARN" -Component "Dialog" -Message "没有可用于询问的窗口，对 $Title 应答为 '$unattended'"
         return $unattended
     }
 

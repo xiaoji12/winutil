@@ -8,8 +8,8 @@ function Install-WinUtilChoco {
         return
     }
 
-    Write-WinUtilLog -Component "Package" -Message "Chocolatey is not installed, installing it now."
-    Step-WinUtilJob -Status "Installing Chocolatey" -State "Indeterminate"
+    Write-WinUtilLog -Component "Package" -Message "未安装 Chocolatey，正在安装。"
+    Step-WinUtilJob -Status "正在安装 Chocolatey" -State "Indeterminate"
 
     # Windows PowerShell 5.1 can negotiate a protocol the site refuses, which the official
     # bootstrap sets explicitly for the same reason
@@ -32,8 +32,8 @@ function Install-WinUtilChoco {
     }
 
     if (-not (Get-Command -Name choco -ErrorAction SilentlyContinue)) {
-        throw "Chocolatey was installed but choco is still not on PATH."
+        throw "Chocolatey 已安装，但 choco 仍不在 PATH 中。"
     }
 
-    Write-WinUtilLog -Component "Package" -Message "Chocolatey installed."
+    Write-WinUtilLog -Component "Package" -Message "Chocolatey 安装完成。"
 }

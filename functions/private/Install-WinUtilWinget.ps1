@@ -18,9 +18,9 @@ function Install-WinUtilWinget {
     }
 
     if ($Force) {
-        Write-Host "Repairing the WinGet installation..." -ForegroundColor Yellow
+        Write-Host "正在修复 WinGet 安装..." -ForegroundColor Yellow
     } else {
-        Write-Host "WinGet is not installed. Installing now..." -ForegroundColor Red
+        Write-Host "未安装 WinGet，正在安装..." -ForegroundColor Red
     }
 
     Install-PackageProvider -Name NuGet -Force

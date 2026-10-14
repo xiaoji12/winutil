@@ -21,12 +21,12 @@ function Get-WinUtilDNSBenchmark {
         [int]$TimeoutMs = 1500
     )
 
-    Write-WinUtilLog -Component "DNS" -Message "Starting DNS latency benchmark scan (TCP port 53)..."
+    Write-WinUtilLog -Component "DNS" -Message "正在开始 DNS 延迟基准测试扫描（TCP 端口 53）..."
 
     $dnsConfigs = $sync.configs.dns
     if ($null -eq $dnsConfigs) {
-        Write-Warning "DNS configurations not found in `$sync.configs.dns."
-        Write-WinUtilLog -Level "ERROR" -Component "DNS" -Message "DNS configurations not found in `$sync.configs.dns."
+        Write-Warning "在 `$sync.configs.dns 中找不到 DNS 配置。"
+        Write-WinUtilLog -Level "ERROR" -Component "DNS" -Message "在 `$sync.configs.dns 中找不到 DNS 配置。"
         return @()
     }
 
@@ -75,9 +75,9 @@ function Get-WinUtilDNSBenchmark {
     $sortedResults = @($results | Sort-Object LatencyMs)
     if ($sortedResults.Count -gt 0 -and $sortedResults[0].LatencyMs -lt 9999) {
         $fastest = $sortedResults[0]
-        Write-WinUtilLog -Component "DNS" -Message "DNS Benchmark completed. Fastest neutral provider: $($fastest.Provider) ($($fastest.LatencyMs) ms)"
+        Write-WinUtilLog -Component "DNS" -Message "DNS 基准测试完成。最快的中立提供商：$($fastest.Provider)（$($fastest.LatencyMs) 毫秒）"
     } else {
-        Write-WinUtilLog -Component "DNS" -Message "DNS Benchmark completed. Could not determine latency for providers."
+        Write-WinUtilLog -Component "DNS" -Message "DNS 基准测试完成。无法确定各提供商的延迟。"
     }
 
     return $sortedResults

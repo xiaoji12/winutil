@@ -8,7 +8,7 @@ function Invoke-WPFPopup {
         [ValidateScript({
             $invalid = $_.GetEnumerator() | Where-Object { $_.Value -notin @("Show", "Hide", "Toggle") }
             if ($invalid) {
-                throw "Found invalid Popup-Action pair(s): " + ($invalid | ForEach-Object { "$($_.Key) = $($_.Value)" } -join "; ")
+                throw "发现无效的弹窗-动作对：" + ($invalid | ForEach-Object { "$($_.Key) = $($_.Value)" } -join "; ")
             }
             $true
         })]
@@ -16,11 +16,11 @@ function Invoke-WPFPopup {
     )
 
     if (-not $PopupActionTable.Count -and (-not $Action -or -not $Popups.Count)) {
-        throw "Provide either 'PopupActionTable' or both 'Action' and 'Popups'."
+        throw "请提供 'PopupActionTable'，或同时提供 'Action' 和 'Popups'。"
     }
 
     if ($PopupActionTable.Count -and ($Action -or $Popups.Count)) {
-        throw "Use 'PopupActionTable' on its own, or 'Action' with 'Popups'."
+        throw "请单独使用 'PopupActionTable'，或将 'Action' 与 'Popups' 配合使用。"
     }
 
     # Collect popups and actions
@@ -49,6 +49,6 @@ function Invoke-WPFPopup {
     }
 
     if ($PopupsNotFound.Count -gt 0) {
-        throw "Could not find the following popups: $($PopupsNotFound -join ', ')"
+        throw "找不到以下弹窗：$($PopupsNotFound -join ', ')"
     }
 }

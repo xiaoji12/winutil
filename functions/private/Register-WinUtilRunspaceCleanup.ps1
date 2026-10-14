@@ -126,6 +126,6 @@ public static class WinUtilRunspaceCleanupV3
     $cleanupState.Runspace = $Runspace
     $registered = [WinUtilRunspaceCleanupV3]::Register($cleanupState)
     if (-not $registered) {
-        Write-WinUtilLog -Level "WARN" -Component "UI" -Message "Could not register asynchronous cleanup for background work; it will be reclaimed when later work or shutdown inspects it."
+        Write-WinUtilLog -Level "WARN" -Component "UI" -Message "无法为后台作业注册异步清理；后续作业或关闭流程检查时会将其回收。"
     }
 }

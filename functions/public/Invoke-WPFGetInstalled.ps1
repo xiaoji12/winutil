@@ -13,13 +13,13 @@ function Invoke-WPFGetInstalled {
         return
     }
 
-    Start-WinUtilJob -Name "Detect installed" -Description "Checking what is already installed" -Parameters @{
+    Start-WinUtilJob -Name "Detect installed" -Description "正在检查已安装的内容" -Parameters @{
         Checkbox = $checkbox
         ManagerPreference = $sync.preferences.packagemanager
     } -ScriptBlock {
         param($Checkbox, $ManagerPreference)
 
-        Step-WinUtilJob -Status "Checking what is already installed" -State "Indeterminate"
+        Step-WinUtilJob -Status "正在检查已安装的内容" -State "Indeterminate"
 
         $found = @()
         if ($Checkbox -eq "winget") {
@@ -29,7 +29,7 @@ function Invoke-WPFGetInstalled {
             $found = @(Invoke-WinUtilCurrentSystem -CheckBox $Checkbox)
         }
 
-        Write-WinUtilLog -Component "Install" -Message "Detected $($found.Count) existing item(s) for $Checkbox."
+        Write-WinUtilLog -Component "Install" -Message "已检测到 $($found.Count) 个与 $Checkbox 相关的现有项目。"
 
         # Ticking boxes touches the controls, so it happens on the interface thread
         Invoke-WPFUIThread -Parameters @{ Checkbox = $Checkbox; Found = $found } -ScriptBlock {

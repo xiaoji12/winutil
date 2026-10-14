@@ -38,7 +38,7 @@ function Close-WinUtilRunspacePool {
             $stopped = Stop-WinUtilActiveWork -TimeoutSeconds $StopTimeoutSeconds
         } catch {
             $stopped = $false
-            Write-WinUtilLog -Level "WARN" -Component "UI" -Message "Could not stop running work cleanly: $($_.Exception.Message)"
+            Write-WinUtilLog -Level "WARN" -Component "UI" -Message "无法干净地停止正在运行的作业：$($_.Exception.Message)"
         }
 
         $pool = $sync.runspace
@@ -62,13 +62,13 @@ function Close-WinUtilRunspacePool {
             }
         } catch {
             # A pool that will not close cleanly must not stop the window from closing
-            Write-WinUtilLog -Level "WARN" -Component "UI" -Message "Worker pool did not close cleanly: $($_.Exception.Message)"
+            Write-WinUtilLog -Level "WARN" -Component "UI" -Message "线程池未正常关闭：$($_.Exception.Message)"
         } finally {
             if (-not $cleanupDeferred) {
                 try {
                     $pool.Dispose()
                 } catch {
-                    Write-WinUtilLog -Level "WARN" -Component "UI" -Message "Worker pool did not dispose cleanly: $($_.Exception.Message)"
+                    Write-WinUtilLog -Level "WARN" -Component "UI" -Message "线程池未正常释放：$($_.Exception.Message)"
                 }
             }
             $sync.Remove("runspace")

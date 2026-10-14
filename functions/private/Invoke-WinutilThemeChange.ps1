@@ -85,7 +85,7 @@ function Invoke-WinutilThemeChange {
             }
             catch {
                 # Log a warning if there's an issue setting the property
-                Write-Warning "Failed to set property $($Name): $_"
+                Write-Warning "设置属性 $($Name) 失败：$_"
             }
         }
 

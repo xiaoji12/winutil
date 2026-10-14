@@ -19,7 +19,7 @@ function Invoke-WinUtilFontScaling {
 
     # Validate if scale factor is within the range
     if ($ScaleFactor -lt 0.75 -or $ScaleFactor -gt 2.0) {
-        Write-Warning "Scale factor must be between 0.75 and 2.0. Using 1.0 instead."
+        Write-Warning "缩放比例必须在 0.75 到 2.0 之间，已改用 1.0。"
         $ScaleFactor = 1.0
     }
 
@@ -72,7 +72,7 @@ function Invoke-WinUtilFontScaling {
             }
         }
         catch {
-            Write-Warning "Failed to scale resource $resourceName : $_"
+            Write-Warning "缩放资源 $resourceName 失败：$_"
         }
     }
 

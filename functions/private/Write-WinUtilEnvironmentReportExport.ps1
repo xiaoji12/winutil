@@ -87,8 +87,8 @@ function Write-WinUtilEnvironmentReportExport {
                 }
             } catch {
                 $retainJsonBackup = $hadJson
-                $recoveryNote = if ($hadJson) { " Recovery copy retained at $jsonBackupPath." } else { "" }
-                $rollbackErrors.Add("JSON restore failed: $($_.Exception.Message).$recoveryNote")
+                $recoveryNote = if ($hadJson) { " 恢复副本保留在 $jsonBackupPath。" } else { "" }
+                $rollbackErrors.Add("JSON 恢复失败：$($_.Exception.Message).$recoveryNote")
             }
 
             if ($IncludeLogs) {
@@ -100,13 +100,13 @@ function Write-WinUtilEnvironmentReportExport {
                     }
                 } catch {
                     $retainLogsBackup = $hadLogs
-                    $recoveryNote = if ($hadLogs) { " Recovery copy retained at $logsBackupPath." } else { "" }
-                    $rollbackErrors.Add("logs restore failed: $($_.Exception.Message).$recoveryNote")
+                    $recoveryNote = if ($hadLogs) { " 恢复副本保留在 $logsBackupPath。" } else { "" }
+                    $rollbackErrors.Add("日志恢复失败：$($_.Exception.Message).$recoveryNote")
                 }
             }
 
             if ($rollbackErrors.Count -gt 0) {
-                $message = "Environment export publish failed: $($publishError.Exception.Message) Rollback also failed: $($rollbackErrors -join ' ')"
+                $message = "环境报告导出失败：$($publishError.Exception.Message) 回滚也失败：$($rollbackErrors -join ' ')"
                 throw [System.IO.IOException]::new($message, $publishError.Exception)
             }
 
@@ -124,7 +124,7 @@ function Write-WinUtilEnvironmentReportExport {
                 try {
                     Remove-WinUtilEnvironmentReportExportFile -Path $cleanupTarget.Path
                 } catch {
-                    Write-Warning "Could not remove temporary environment-export file $($cleanupTarget.Path): $($_.Exception.Message)"
+                    Write-Warning "无法删除环境报告导出的临时文件 $($cleanupTarget.Path)：$($_.Exception.Message)"
                 }
             }
         }

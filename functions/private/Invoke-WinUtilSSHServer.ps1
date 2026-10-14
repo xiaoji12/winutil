@@ -6,11 +6,11 @@ function Invoke-WinUtilSSHServer {
 
     # Install the OpenSSH Server feature if not already installed
     if ((Get-WindowsCapability -Name OpenSSH.Server -Online).State -ne "Installed") {
-        Write-Host "Enabling OpenSSH Server... This will take a long time."
+        Write-Host "正在启用 OpenSSH Server...这需要较长时间。"
         Add-WindowsCapability -Name OpenSSH.Server -Online
     }
 
-    Write-Host "Starting the services"
+    Write-Host "正在启动服务"
 
     Set-Service -Name sshd -StartupType Automatic
     Start-Service -Name sshd
@@ -19,14 +19,14 @@ function Invoke-WinUtilSSHServer {
     Start-Service -Name ssh-agent
 
     #Adding Firewall rule for port 22
-    Write-Host "Setting up firewall rules"
+    Write-Host "正在设置防火墙规则"
     $firewallRule = Get-NetFirewallRule -Name 'sshd' -ErrorAction SilentlyContinue
     if ($null -eq $firewallRule) {
         New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
-        Write-Host "Firewall rule for OpenSSH Server created and enabled."
+        Write-Host "已为 OpenSSH Server 创建并启用防火墙规则。"
     } elseif ([int]$firewallRule.Enabled -eq 2) {
         Set-NetFirewallRule -Name 'sshd' -Enabled True
-        Write-Host "Firewall rule for OpenSSH Server enabled."
+        Write-Host "已为 OpenSSH Server 启用防火墙规则。"
     }
 
     # An SSH logon for a member of the administrators group gets a full token
@@ -51,9 +51,9 @@ function Invoke-WinUtilSSHServer {
     $configWasOverridden = $restoredContent -ne $configContent
 
     if (-not (Test-Path -Path $authorizedKeysPath)) {
-        Write-Host "Creating administrators_authorized_keys file..."
+        Write-Host "正在创建 administrators_authorized_keys 文件..."
         New-Item -Path $authorizedKeysPath -ItemType File -Force | Out-Null
-        Write-Host "administrators_authorized_keys file created at $authorizedKeysPath."
+        Write-Host "已在 $authorizedKeysPath 创建 administrators_authorized_keys 文件。"
     }
 
     if ($configWasOverridden -and (Test-Path -Path $profileKeysPath)) {
@@ -64,7 +64,7 @@ function Invoke-WinUtilSSHServer {
 
         if ($keysToMove.Count -gt 0) {
             Add-Content -Path $authorizedKeysPath -Value $keysToMove
-            Write-Host "Moved $($keysToMove.Count) key(s) from $profileKeysPath to $authorizedKeysPath."
+            Write-Host "已将 $($keysToMove.Count) 个密钥从 $profileKeysPath 移动到 $authorizedKeysPath。"
         }
     }
 
@@ -84,11 +84,11 @@ function Invoke-WinUtilSSHServer {
 
     if ($configWasOverridden) {
         Set-Content -Path $sshdConfigPath -Value $restoredContent -Force
-        Write-Host "Restored the administrator key file setting in sshd_config."
+        Write-Host "已在 sshd_config 中恢复管理员密钥文件设置。"
         Restart-Service -Name sshd -Force
     }
 
-    Write-Host "OpenSSH server was successfully enabled."
-    Write-Host "The config file can be located at $sshdConfigPath"
-    Write-Host "Add your public keys to this file -> $authorizedKeysPath"
+    Write-Host "OpenSSH 服务器已成功启用。"
+    Write-Host "配置文件位于 $sshdConfigPath"
+    Write-Host "请将你的公钥添加到此文件 -> $authorizedKeysPath"
 }

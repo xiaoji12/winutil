@@ -19,10 +19,10 @@ function Invoke-WinUtilRobocopy {
     $code = $LASTEXITCODE
 
     if ($code -ge 8) {
-        throw "robocopy could not copy every file from $Source to $Destination (exit code $code)."
+        throw "robocopy 无法将所有文件从 $Source 复制到 $Destination（退出代码 $code）。"
     }
 
-    Write-WinUtilISOLog "robocopy finished with exit code $code."
+    Write-WinUtilISOLog "robocopy 已完成，退出代码 $code。"
 }
 
 function Write-WinUtilISOLog {
@@ -54,7 +54,7 @@ function Write-WinUtilISOLog {
         $box = $sync["WPFWin11ISOStatusLog"]
         if ($null -eq $box) { return }
 
-        if ($box.Text -eq "Ready. Please select a Windows 11 ISO to begin.") {
+        if ($box.Text -eq "就绪。请先选择一个 Windows 11 ISO 以开始。") {
             $box.Text = $LogLine
         } else {
             $box.Text += "`n$LogLine"
@@ -135,8 +135,8 @@ function Invoke-WinUtilISOBrowse {
     Add-Type -AssemblyName System.Windows.Forms
 
     $dlg = [System.Windows.Forms.OpenFileDialog]::new()
-    $dlg.Title            = "Select Windows 11 ISO"
-    $dlg.Filter           = "ISO files (*.iso)|*.iso|All files (*.*)|*.*"
+    $dlg.Title            = "选择 Windows 11 ISO"
+    $dlg.Filter           = "ISO 文件 (*.iso)|*.iso|所有文件 (*.*)|*.*"
     $dlg.InitialDirectory = [System.Environment]::GetFolderPath("Desktop")
 
     if ($dlg.ShowDialog() -ne [System.Windows.Forms.DialogResult]::OK) { return }
@@ -145,24 +145,24 @@ function Invoke-WinUtilISOBrowse {
     $fileSizeGB = [math]::Round((Get-Item $isoPath).Length / 1GB, 2)
 
     $sync["WPFWin11ISOPath"].Text           = $isoPath
-    $sync["WPFWin11ISOFileInfo"].Text       = "File size: $fileSizeGB GB"
+    $sync["WPFWin11ISOFileInfo"].Text       = "文件大小：$fileSizeGB GB"
     $sync["WPFWin11ISOFileInfo"].Visibility = "Visible"
     $sync["WPFWin11ISOVerifyResultPanel"].Visibility  = "Collapsed"
 
     Set-WinUtilISOStep -Step "Select"
 
-    Write-WinUtilISOLog "ISO selected: $isoPath  ($fileSizeGB GB)"
+    Write-WinUtilISOLog "已选择 ISO：$isoPath  ($fileSizeGB GB)"
 }
 
 function Invoke-WinUtilISOMountAndVerify {
     $isoPath = $sync["WPFWin11ISOPath"].Text
 
-    if ([string]::IsNullOrWhiteSpace($isoPath) -or $isoPath -eq "No ISO selected...") {
-        Show-WinUtilMessage -Message "Please select an ISO file first." -Title "No ISO Selected" -Button "OK" -Icon "Warning" | Out-Null
+    if ([string]::IsNullOrWhiteSpace($isoPath) -or $isoPath -eq "尚未选择 ISO…") {
+        Show-WinUtilMessage -Message "请先选择一个 ISO 文件。" -Title "未选择 ISO" -Button "OK" -Icon "Warning" | Out-Null
         return
     }
 
-    Start-WinUtilJob -Name "ISO mount" -Description "Mounting ISO" -Parameters @{
+    Start-WinUtilJob -Name "ISO mount" -Description "正在挂载 ISO" -Parameters @{
         IsoPath = $isoPath
     } -ScriptBlock {
         param($isoPath)
@@ -173,7 +173,7 @@ function Invoke-WinUtilISOMountAndVerify {
             $sync["WPFWin11ISOModifyButton"].IsEnabled = $false
             $sync["WPFWin11ISOVerifyResultPanel"].Visibility = "Collapsed"
         }
-        Set-WinUtilISOStep -Step "Working" -Label "Mounting and verifying the ISO"
+        Set-WinUtilISOStep -Step "Working" -Label "正在挂载并校验 ISO"
 
         $verified = $false
         $mountedByThisRun = $false
@@ -183,11 +183,11 @@ function Invoke-WinUtilISOMountAndVerify {
             if ($previous -and $previous -ne $isoPath -and (Get-DiskImage -ImagePath $previous -ErrorAction SilentlyContinue).Attached) {
                 try {
                     Dismount-DiskImage -ImagePath $previous -ErrorAction Stop
-                    Write-WinUtilISOLog "Dismounted the previously verified ISO: $previous"
+                    Write-WinUtilISOLog "已卸载先前已校验的 ISO：$previous"
                 } catch {
-                    Write-WinUtilISOLog -Level "ERROR" -Message "Could not dismount the previously verified ISO ${previous}: $_"
-                    Show-WinUtilMessage -Message "The previously verified ISO is still mounted and could not be dismounted:`n`n$previous`n`nDismount it yourself, then select an ISO again." -Title "Previous ISO Still Mounted" -Button "OK" -Icon "Error" | Out-Null
-                    $stillMounted = [System.InvalidOperationException]::new("Could not dismount the previously verified ISO $previous.")
+                    Write-WinUtilISOLog -Level "ERROR" -Message "无法卸载先前已校验的 ISO ${previous}：$_"
+                    Show-WinUtilMessage -Message "先前已校验的 ISO 仍处于挂载状态，且无法卸载：`n`n$previous`n`n请手动卸载后重新选择 ISO。" -Title "先前的 ISO 仍处于挂载状态" -Button "OK" -Icon "Error" | Out-Null
+                    $stillMounted = [System.InvalidOperationException]::new("无法卸载先前已校验的 ISO $previous。")
                     $stillMounted.Data["WinUtilErrorReported"] = $true
                     throw $stillMounted
                 }
@@ -198,8 +198,8 @@ function Invoke-WinUtilISOMountAndVerify {
             $sync["Win11ISOWimPath"] = $null
             $sync["Win11ISOImagePath"] = $null
 
-            Write-WinUtilISOLog "Mounting ISO: $isoPath"
-            Step-WinUtilJob -Status "Mounting ISO..." -Percent 10
+            Write-WinUtilISOLog "正在挂载 ISO：$isoPath"
+            Step-WinUtilJob -Status "正在挂载 ISO..." -Percent 10
 
             Mount-DiskImage -ImagePath $isoPath -ErrorAction Stop
             $mountedByThisRun = $true
@@ -215,35 +215,35 @@ function Invoke-WinUtilISOMountAndVerify {
             }
 
             if (-not $letter) {
-                throw "The ISO mounted but no drive letter appeared within 60 seconds: $isoPath"
+                throw "ISO 已挂载，但 60 秒内未出现驱动器号：$isoPath"
             }
 
             $driveLetter = "${letter}:"
-            Write-WinUtilISOLog "Mounted at drive $driveLetter"
+            Write-WinUtilISOLog "已挂载到驱动器 $driveLetter"
 
-            Step-WinUtilJob -Status "Verifying ISO contents..." -Percent 30
+            Step-WinUtilJob -Status "正在校验 ISO 内容..." -Percent 30
 
             $wimPath = Join-Path $driveLetter "sources\install.wim"
             $esdPath = Join-Path $driveLetter "sources\install.esd"
 
             if (-not (Test-Path $wimPath) -and -not (Test-Path $esdPath)) {
-                Write-WinUtilISOLog -Level "ERROR" -Message "install.wim/install.esd not found - not a valid Windows ISO."
-                Show-WinUtilMessage -Message "This does not appear to be a valid Windows ISO.`n`ninstall.wim / install.esd was not found." -Title "Invalid ISO" -Button "OK" -Icon "Error" | Out-Null
+                Write-WinUtilISOLog -Level "ERROR" -Message "未找到 install.wim/install.esd，不是有效的 Windows ISO。"
+                Show-WinUtilMessage -Message "这似乎不是有效的 Windows ISO。`n`n未找到 install.wim / install.esd。" -Title "ISO 无效" -Button "OK" -Icon "Error" | Out-Null
                 # Returning here would let the job layer report the run as finished
-                $exception = [System.InvalidOperationException]::new("install.wim / install.esd was not found in $isoPath.")
+                $exception = [System.InvalidOperationException]::new("在 $isoPath 中未找到 install.wim / install.esd。")
                 $exception.Data["WinUtilErrorReported"] = $true
                 throw $exception
             }
 
             $activeWim = if (Test-Path $wimPath) { $wimPath } else { $esdPath }
 
-            Step-WinUtilJob -Status "Reading image metadata..." -Percent 55
+            Step-WinUtilJob -Status "正在读取映像元数据..." -Percent 55
             $imageInfo = Get-WindowsImage -ImagePath $activeWim | Select-Object ImageIndex, ImageName
 
             if (-not ($imageInfo | Where-Object { $_.ImageName -match "Windows 11" })) {
-                Write-WinUtilISOLog -Level "ERROR" -Message "No 'Windows 11' edition found in the image."
-                Show-WinUtilMessage -Message "No Windows 11 edition was found in this ISO.`n`nOnly official Windows 11 ISOs are supported." -Title "Not a Windows 11 ISO" -Button "OK" -Icon "Error" | Out-Null
-                $exception = [System.InvalidOperationException]::new("No Windows 11 edition was found in $isoPath.")
+                Write-WinUtilISOLog -Level "ERROR" -Message "映像中未找到 'Windows 11' 版本。"
+                Show-WinUtilMessage -Message "此 ISO 中未找到 Windows 11 版本。`n`n仅支持官方 Windows 11 ISO。" -Title "不是 Windows 11 ISO" -Button "OK" -Icon "Error" | Out-Null
+                $exception = [System.InvalidOperationException]::new("在 $isoPath 中未找到 Windows 11 版本。")
                 $exception.Data["WinUtilErrorReported"] = $true
                 throw $exception
             }
@@ -280,17 +280,17 @@ function Invoke-WinUtilISOMountAndVerify {
             }
 
             $verified = $true
-            Write-WinUtilISOLog "ISO verified OK.  Editions found: $($imageInfo.Count)"
+            Write-WinUtilISOLog "ISO 校验通过。找到的版本数：$($imageInfo.Count)"
         } finally {
             # A stopped PowerShell pipeline skips catch blocks but still runs finally. Keep the
             # source ISO cleanup here so closing WinUtil during verification cannot leave it
             # mounted.
             if (-not $verified -and $mountedByThisRun) {
                 try {
-                    Write-WinUtilISOLog "Verification failed; dismounting source ISO."
+                    Write-WinUtilISOLog "校验失败；正在卸载源 ISO。"
                     Dismount-DiskImage -ImagePath $isoPath -ErrorAction Stop
                 } catch {
-                    Write-WinUtilISOLog -Level "WARN" -Message "Could not dismount ISO after verification failed: $_"
+                    Write-WinUtilISOLog -Level "WARN" -Message "校验失败后无法卸载 ISO：$_"
                 }
             }
 
@@ -315,7 +315,7 @@ function Invoke-WinUtilISOModify {
     $wimPath     = $sync["Win11ISOWimPath"]
 
     if (-not $isoPath) {
-        Show-WinUtilMessage -Message "No verified ISO found. Please select and verify an ISO first." -Title "Not Ready" -Button "OK" -Icon "Warning" | Out-Null
+        Show-WinUtilMessage -Message "未找到已校验的 ISO，请先选择并校验 ISO。" -Title "尚未就绪" -Button "OK" -Icon "Warning" | Out-Null
         return
     }
 
@@ -341,7 +341,7 @@ function Invoke-WinUtilISOModify {
         if (Test-Path $toolsXml) { Get-Content $toolsXml -Raw } else { "" }
     }
 
-    Start-WinUtilJob -Name "ISO modify" -Description "Modifying ISO" -Parameters @{
+    Start-WinUtilJob -Name "ISO modify" -Description "正在修改 ISO" -Parameters @{
         IsoPath             = $isoPath
         DriveLetter         = $driveLetter
         WimPath             = $wimPath
@@ -356,30 +356,30 @@ function Invoke-WinUtilISOModify {
         Invoke-WPFUIThread -ScriptBlock {
             $sync["WPFWin11ISOModifyButton"].IsEnabled = $false
         }
-        $workingLabel = if ($InjectDrivers) { "Modifying install.wim" } else { "Preparing setup media" }
+        $workingLabel = if ($InjectDrivers) { "正在修改 install.wim" } else { "正在准备安装介质" }
         Set-WinUtilISOStep -Step "Working" -Label $workingLabel
 
         $modified = $false
         try {
-            Write-WinUtilISOLog "Selected edition: $SelectedEditionName (Index $SelectedWimIndex)"
-            Write-WinUtilISOLog "Creating working directory: $workDir"
+            Write-WinUtilISOLog "已选版本：$SelectedEditionName（索引 $SelectedWimIndex）"
+            Write-WinUtilISOLog "正在创建工作目录：$workDir"
 
             $isoContents = Join-Path $workDir "iso_contents"
             New-Item -ItemType Directory -Path $isoContents -Force | Out-Null
-            Step-WinUtilJob -Status "Copying ISO contents..." -Percent 10
+            Step-WinUtilJob -Status "正在复制 ISO 内容..." -Percent 10
 
-            Write-WinUtilISOLog "Copying ISO contents from $DriveLetter to $isoContents..."
+            Write-WinUtilISOLog "正在将 ISO 内容从 $DriveLetter 复制到 $isoContents..."
             Invoke-WinUtilRobocopy -Source $DriveLetter -Destination $isoContents -Arguments @("/E","/NFL","/NDL","/NJH","/NJS")
-            Write-WinUtilISOLog "ISO contents copied."
-            Step-WinUtilJob -Status "Preparing setup media..." -Percent 25
+            Write-WinUtilISOLog "ISO 内容已复制。"
+            Step-WinUtilJob -Status "正在准备安装介质..." -Percent 25
 
             $sourceImageFileName = Split-Path $WimPath -Leaf
             $localWim = Join-Path $isoContents "sources\$sourceImageFileName"
             if (-not (Test-Path $localWim)) {
-                throw "Copied ISO image file not found: sources\$sourceImageFileName"
+                throw "未找到已复制的 ISO 映像文件：sources\$sourceImageFileName"
             }
 
-            Write-WinUtilISOLog "Writing autounattend.xml and edition selection..."
+            Write-WinUtilISOLog "正在写入 autounattend.xml 和版本选择..."
             $driversInjected = [ref]$false
             Invoke-WinUtilISOScript -ISOContentsDir $isoContents `
                 -AutoUnattendXml $AutounattendContent `
@@ -401,33 +401,33 @@ function Invoke-WinUtilISOModify {
                 -DriversInjected $driversInjected
 
             if ($driversInjected.Value) {
-                Step-WinUtilJob -Status "Finalizing install image..." -Percent 70
-                Write-WinUtilISOLog "Added current-system drivers to $sourceImageFileName index $SelectedWimIndex."
+                Step-WinUtilJob -Status "正在完成安装映像..." -Percent 70
+                Write-WinUtilISOLog "已将当前系统的驱动程序添加到 $sourceImageFileName 索引 $SelectedWimIndex。"
             } elseif ($InjectDrivers) {
-                Step-WinUtilJob -Status "Preserving install image..." -Percent 70
-                Write-WinUtilISOLog "No current-system drivers were injected into $sourceImageFileName index $SelectedWimIndex; install.wim was left unchanged. Review the warning log entries for details."
+                Step-WinUtilJob -Status "正在保留安装映像..." -Percent 70
+                Write-WinUtilISOLog "未向 $sourceImageFileName 索引 $SelectedWimIndex 注入任何当前系统的驱动程序；install.wim 保持原样。请查看警告日志条目了解详情。"
             } else {
-                Step-WinUtilJob -Status "Preserving install image..." -Percent 70
-                Write-WinUtilISOLog "Preserved the original $sourceImageFileName without mounting, exporting, or modifying it."
+                Step-WinUtilJob -Status "正在保留安装映像..." -Percent 70
+                Write-WinUtilISOLog "已保留原始 $sourceImageFileName，未进行挂载、导出或修改。"
             }
 
-            Step-WinUtilJob -Status "Dismounting source ISO..." -Percent 80
-            Write-WinUtilISOLog "Dismounting original ISO..."
+            Step-WinUtilJob -Status "正在卸载源 ISO..." -Percent 80
+            Write-WinUtilISOLog "正在卸载原始 ISO..."
             Dismount-DiskImage -ImagePath $isoPath
 
             $sync["Win11ISOWorkDir"]     = $workDir
             $sync["Win11ISOContentsDir"] = $isoContents
 
-            Step-WinUtilJob -Status "Modification complete" -Percent 100
-            Write-WinUtilISOLog "install.wim modification complete. Choose an output option in the last step."
+            Step-WinUtilJob -Status "修改完成" -Percent 100
+            Write-WinUtilISOLog "install.wim 修改完成。请在最后一步选择输出方式。"
 
             Set-WinUtilISOStep -Step "Output"
             $modified = $true
         } catch {
-            Write-WinUtilISOLog -Level "ERROR" -Message "Modification failed: $_"
+            Write-WinUtilISOLog -Level "ERROR" -Message "修改失败：$_"
             $_.Exception.Data["WinUtilErrorReported"] = $true
 
-            Show-WinUtilMessage -Message "An error occurred during install.wim modification:`n`n$_" -Title "Modification Error" -Button "OK" -Icon "Error" | Out-Null
+            Show-WinUtilMessage -Message "修改 install.wim 时发生错误：`n`n$_" -Title "修改出错" -Button "OK" -Icon "Error" | Out-Null
 
             throw
         } finally {
@@ -437,17 +437,17 @@ function Invoke-WinUtilISOModify {
                 try {
                     $mountedISO = Get-DiskImage -ImagePath $isoPath
                     if ($mountedISO -and $mountedISO.Attached) {
-                        Write-WinUtilISOLog "Cleaning up: dismounting source ISO..."
+                        Write-WinUtilISOLog "正在清理：卸载源 ISO..."
                         Dismount-DiskImage -ImagePath $isoPath
                     }
-                } catch { Write-WinUtilISOLog -Level "WARN" -Message "Could not dismount ISO during cleanup: $_" }
+                } catch { Write-WinUtilISOLog -Level "WARN" -Message "清理期间无法卸载 ISO：$_" }
 
                 try {
                     if (Test-Path $workDir) {
-                        Write-WinUtilISOLog "Cleaning up: removing temp directory $workDir..."
+                        Write-WinUtilISOLog "正在清理：删除临时目录 $workDir..."
                         Remove-Item -Path $workDir -Recurse -Force
                     }
-                } catch { Write-WinUtilISOLog -Level "WARN" -Message "Could not remove temp directory during cleanup: $_" }
+                } catch { Write-WinUtilISOLog -Level "WARN" -Message "清理期间无法删除临时目录：$_" }
 
                 $sync["Win11ISOImageInfo"] = $null
                 $sync["Win11ISODriveLetter"] = $null
@@ -500,28 +500,28 @@ function Invoke-WinUtilISOCheckExistingWork {
     Set-WinUtilISOStep -Step "Output"
 
     $modified = $existingWorkDir.LastWriteTime.ToString("yyyy-MM-dd HH:mm")
-    Write-WinUtilISOLog "Existing working directory found: $($existingWorkDir.FullName)"
-    Write-WinUtilISOLog "Last modified: $modified - Skipping the earlier steps and resuming at the output step."
-    Write-WinUtilISOLog "Click 'Start Over' if you want to start over with a new ISO."
+    Write-WinUtilISOLog "已找到现有工作目录：$($existingWorkDir.FullName)"
+    Write-WinUtilISOLog "最后修改时间：$modified，已跳过前面的步骤，从输出步骤继续。"
+    Write-WinUtilISOLog "如果要使用新的 ISO 重新开始，请点击 'Start Over'。"
 
-    Show-WinUtilMessage -Message "A previous WinUtil ISO working directory was found:`n`n$($existingWorkDir.FullName)`n`n(Last modified: $modified)`n`nThe output step has been restored so you can save the already-modified image.`n`nClick 'Start Over' there if you want to start over." -Title "Existing Work Found" -Button "OK" -Icon "Info" | Out-Null
+    Show-WinUtilMessage -Message "发现上一次 WinUtil ISO 的工作目录：`n`n$($existingWorkDir.FullName)`n`n（最后修改时间：$modified）`n`n已恢复输出步骤，你可以保存已修改的映像。`n`n如果想重新开始，请点击那里的 'Start Over'。" -Title "发现未完成的工作" -Button "OK" -Icon "Info" | Out-Null
 }
 
 function Invoke-WinUtilISOCleanAndReset {
     $workDir = $sync["Win11ISOWorkDir"]
 
     if ($workDir -and (Test-Path $workDir)) {
-        $confirm = Show-WinUtilMessage -Message "This will delete the temporary working directory:`n`n$workDir`n`nAnd reset the interface back to the start.`n`nContinue?" -Title "Start Over" -Button "YesNo" -Icon "Warning"
+        $confirm = Show-WinUtilMessage -Message "此操作将删除临时工作目录：`n`n$workDir`n`n并将界面重置到开始状态。`n`n是否继续？" -Title "重新开始" -Button "YesNo" -Icon "Warning"
         if ($confirm -ne "Yes") { return }
     }
 
-    Start-WinUtilJob -Name "ISO cleanup" -Description "Cleaning up" -Parameters @{
+    Start-WinUtilJob -Name "ISO cleanup" -Description "正在清理" -Parameters @{
         WorkDir = $workDir
     } -ScriptBlock {
         param($workDir)
 
         Invoke-WPFUIThread -ScriptBlock { $sync["WPFWin11ISOCleanResetButton"].IsEnabled = $false }
-        Set-WinUtilISOStep -Step "Working" -Label "Starting over" -Reverse
+        Set-WinUtilISOStep -Step "Working" -Label "正在重新开始" -Reverse
 
         try {
             if ($workDir) {
@@ -530,26 +530,26 @@ function Invoke-WinUtilISOCleanAndReset {
                     $mountedImages = Get-WindowsImage -Mounted | Where-Object { $_.Path -like "$workDir*" }
                     if ($mountedImages) {
                         foreach ($img in $mountedImages) {
-                            Write-WinUtilISOLog "Dismounting WIM at: $($img.Path) (discarding changes)..."
-                            Step-WinUtilJob -Status "Dismounting WIM image..." -Percent 3
+                            Write-WinUtilISOLog "正在卸载 WIM：$($img.Path)（放弃更改）..."
+                            Step-WinUtilJob -Status "正在卸载 WIM 映像..." -Percent 3
                             Dismount-WindowsImage -Path $img.Path -Discard
-                            Write-WinUtilISOLog "WIM dismounted successfully."
+                            Write-WinUtilISOLog "WIM 已成功卸载。"
                         }
                     } elseif (Test-Path $mountDir) {
-                        Write-WinUtilISOLog "No mounted WIM reported by Get-WindowsImage. Running DISM /Cleanup-Wim as a precaution..."
-                        Step-WinUtilJob -Status "Running DISM cleanup..." -Percent 3
+                        Write-WinUtilISOLog "Get-WindowsImage 未报告已挂载的 WIM。作为预防措施正在运行 DISM /Cleanup-Wim..."
+                        Step-WinUtilJob -Status "正在运行 DISM 清理..." -Percent 3
                         & dism /English /Cleanup-Wim | ForEach-Object { Write-WinUtilISOLog $_ }
                     }
                 } catch {
-                    Write-WinUtilISOLog -Level "WARN" -Message "Could not dismount WIM cleanly. Attempting DISM /Cleanup-Wim fallback: $_"
+                    Write-WinUtilISOLog -Level "WARN" -Message "无法干净地卸载 WIM，正在尝试 DISM /Cleanup-Wim 回退方案：$_"
                     try { & dism /English /Cleanup-Wim | ForEach-Object { Write-WinUtilISOLog $_ } }
-                    catch { Write-WinUtilISOLog -Level "WARN" -Message "DISM /Cleanup-Wim also failed: $_" }
+                    catch { Write-WinUtilISOLog -Level "WARN" -Message "DISM /Cleanup-Wim 同样失败：$_" }
                 }
             }
 
             if ($workDir -and (Test-Path $workDir)) {
-                Write-WinUtilISOLog "Scanning files to delete in: $workDir"
-                Step-WinUtilJob -Status "Scanning files..." -Percent 5
+                Write-WinUtilISOLog "正在扫描要删除的文件：$workDir"
+                Step-WinUtilJob -Status "正在扫描文件..." -Percent 5
 
                 $allFiles = @(Get-ChildItem -Path $workDir -File -Recurse -Force)
                 $allDirs  = @(Get-ChildItem -Path $workDir -Directory -Recurse -Force |
@@ -557,34 +557,34 @@ function Invoke-WinUtilISOCleanAndReset {
                 $total   = $allFiles.Count
                 $deleted = 0
 
-                Write-WinUtilISOLog "Found $total files to delete."
+                Write-WinUtilISOLog "找到 $total 个待删除文件。"
 
                 foreach ($f in $allFiles) {
-                    try { Remove-Item -Path $f.FullName -Force } catch { Write-WinUtilISOLog -Level "WARN" -Message "Could not delete $($f.FullName): $_" }
+                    try { Remove-Item -Path $f.FullName -Force } catch { Write-WinUtilISOLog -Level "WARN" -Message "无法删除 $($f.FullName)：$_" }
                     $deleted++
                     if ($deleted % 100 -eq 0 -or $deleted -eq $total) {
                         $pct = [math]::Round(($deleted / [Math]::Max($total, 1)) * 85) + 5
-                        Step-WinUtilJob -Status "Deleting files in $($f.Directory.Name)... ($deleted / $total)" -Percent $pct
+                        Step-WinUtilJob -Status "正在删除 $($f.Directory.Name) 中的文件...（$deleted / $total）" -Percent $pct
                     }
                 }
 
                 foreach ($d in $allDirs) {
-                    try { Remove-Item -Path $d.FullName -Force } catch { Write-WinUtilISOLog -Level "WARN" -Message "Could not delete $($d.FullName): $_" }
+                    try { Remove-Item -Path $d.FullName -Force } catch { Write-WinUtilISOLog -Level "WARN" -Message "无法删除 $($d.FullName)：$_" }
                 }
 
-                try { Remove-Item -Path $workDir -Recurse -Force } catch { Write-WinUtilISOLog -Level "WARN" -Message "Could not delete temp directory ${WorkDir}: $_" }
+                try { Remove-Item -Path $workDir -Recurse -Force } catch { Write-WinUtilISOLog -Level "WARN" -Message "无法删除临时目录 ${WorkDir}：$_" }
 
                 if (Test-Path $workDir) {
-                    Write-WinUtilISOLog -Level "WARN" -Message "Some items could not be deleted in $workDir"
+                    Write-WinUtilISOLog -Level "WARN" -Message "$workDir 中的部分项目无法删除"
                 } else {
-                    Write-WinUtilISOLog "Temp directory deleted successfully."
+                    Write-WinUtilISOLog "临时目录已成功删除。"
                 }
             } else {
-                Write-WinUtilISOLog "No temp directory found - resetting UI."
+                Write-WinUtilISOLog "未找到临时目录，正在重置界面。"
             }
 
-            Step-WinUtilJob -Status "Resetting UI..." -Percent 95
-            Write-WinUtilISOLog "Resetting interface..."
+            Step-WinUtilJob -Status "正在重置界面..." -Percent 95
+            Write-WinUtilISOLog "正在重置界面..."
 
             $sync["Win11ISOWorkDir"]     = $null
             $sync["Win11ISOContentsDir"] = $null
@@ -595,13 +595,13 @@ function Invoke-WinUtilISOCleanAndReset {
             $sync["Win11ISOUSBDisks"]    = $null
 
             Invoke-WPFUIThread -ScriptBlock {
-                $sync["WPFWin11ISOPath"].Text                    = "No ISO selected..."
+                $sync["WPFWin11ISOPath"].Text                    = "尚未选择 ISO…"
                 $sync["WPFWin11ISOFileInfo"].Visibility          = "Hidden"
                 $sync["WPFWin11ISOVerifyResultPanel"].Visibility = "Collapsed"
                 $sync["WPFWin11ISOOptionUSB"].Visibility         = "Collapsed"
                 $sync["WPFWin11ISODonePanel"].Visibility         = "Collapsed"
                 $sync["WPFWin11ISOModifyButton"].IsEnabled       = $true
-                $sync["WPFWin11ISOStatusLog"].Text               = "Ready. Please select a Windows 11 ISO to begin."
+                $sync["WPFWin11ISOStatusLog"].Text               = "就绪。请先选择一个 Windows 11 ISO 以开始。"
                 Set-WinUtilISOStep -Step "Select"
             }
             Step-WinUtilJob -Hide
@@ -621,39 +621,39 @@ function Invoke-WinUtilISOExport {
     $contentsDir = $sync["Win11ISOContentsDir"]
 
     if (-not $contentsDir -or -not (Test-Path $contentsDir)) {
-        Show-WinUtilMessage -Message "No modified ISO content found.  Please run the modification step first." -Title "Not Ready" -Button "OK" -Icon "Warning" | Out-Null
+        Show-WinUtilMessage -Message "未找到已修改的 ISO 内容，请先执行修改步骤。" -Title "尚未就绪" -Button "OK" -Icon "Warning" | Out-Null
         return
     }
 
     Add-Type -AssemblyName System.Windows.Forms
 
     $dlg = [System.Windows.Forms.SaveFileDialog]::new()
-    $dlg.Title            = "Save Modified Windows 11 ISO"
-    $dlg.Filter           = "ISO files (*.iso)|*.iso"
+    $dlg.Title            = "保存已修改的 Windows 11 ISO"
+    $dlg.Filter           = "ISO 文件 (*.iso)|*.iso"
     $dlg.FileName         = "Win11_Modified_$(Get-Date -Format 'yyyyMMdd').iso"
     $dlg.InitialDirectory = [System.Environment]::GetFolderPath("Desktop")
 
     if ($dlg.ShowDialog() -ne [System.Windows.Forms.DialogResult]::OK) { return }
 
-    Start-WinUtilJob -Name "ISO export" -Description "Building ISO" -Parameters @{
+    Start-WinUtilJob -Name "ISO export" -Description "正在生成 ISO" -Parameters @{
         ContentsDir = $contentsDir
         OutputISO   = $dlg.FileName
     } -ScriptBlock {
         param($contentsDir, $outputISO)
 
         Invoke-WPFUIThread -ScriptBlock { $sync["WPFWin11ISOChooseISOButton"].IsEnabled = $false }
-        Set-WinUtilISOStep -Step "Working" -Label "Building the ISO file"
+        Set-WinUtilISOStep -Step "Working" -Label "正在生成 ISO 文件"
 
         try {
             $oscdimg = Get-WinUtilOscdimgPath
             if (-not $oscdimg) {
                 Set-WinUtilISOStep -Step "Output"
-                Show-WinUtilMessage -Message "oscdimg.exe could not be found or installed automatically.`n`nPlease install it manually:`n  winget install -e --id Microsoft.OSCDIMG`n`nOr install the Windows ADK from:`nhttps://learn.microsoft.com/windows-hardware/get-started/adk-install" -Title "oscdimg Not Found" -Button "OK" -Icon "Warning" | Out-Null
-                throw "oscdimg.exe could not be found or installed automatically."
+                Show-WinUtilMessage -Message "无法找到或自动安装 oscdimg.exe。`n`n请手动安装：`n  winget install -e --id Microsoft.OSCDIMG`n`n或从以下位置安装 Windows ADK：`nhttps://learn.microsoft.com/windows-hardware/get-started/adk-install" -Title "oscdimg Not Found" -Button "OK" -Icon "Warning" | Out-Null
+                throw "无法找到或自动安装 oscdimg.exe。"
             }
 
-            Write-WinUtilISOLog "Exporting to ISO: $outputISO"
-            Step-WinUtilJob -Status "Building ISO..." -Percent 10
+            Write-WinUtilISOLog "正在导出为 ISO：$outputISO"
+            Step-WinUtilJob -Status "正在生成 ISO..." -Percent 10
 
             $bootData    = "2#p0,e,b`"$contentsDir\boot\etfsboot.com`"#pEF,e,b`"$contentsDir\efi\microsoft\boot\efisys.bin`""
             $oscdimgArgs = @("-m", "-o", "-u2", "-udfver102", "-bootdata:$bootData", "-l`"CTOS_MODIFIED`"", "`"$contentsDir`"", "`"$outputISO`"")
@@ -701,24 +701,24 @@ function Invoke-WinUtilISOExport {
             }
 
             if ($proc.ExitCode -ne 0) {
-                throw "oscdimg exited with code $($proc.ExitCode). Check the status log for details."
+                throw "oscdimg 退出，代码为 $($proc.ExitCode)。请查看状态日志了解详情。"
             }
 
-            Step-WinUtilJob -Status "ISO exported" -Percent 100
-            Write-WinUtilISOLog "ISO exported successfully: $outputISO"
+            Step-WinUtilJob -Status "ISO 已导出" -Percent 100
+            Write-WinUtilISOLog "ISO 导出成功：$outputISO"
             Invoke-WPFUIThread -Parameters @{ OutputISO = $outputISO } -ScriptBlock {
                 param($OutputISO)
 
-                $sync["WPFWin11ISODoneLabel"].Text        = "ISO saved to $OutputISO"
+                $sync["WPFWin11ISODoneLabel"].Text        = "ISO 已保存到 $OutputISO"
                 $sync["WPFWin11ISODonePanel"].Visibility  = "Visible"
             }
             Set-WinUtilISOStep -Step "Output"
-            Show-WinUtilMessage -Message "ISO exported successfully!`n`n$outputISO" -Title "Export Complete" -Button "OK" -Icon "Info" | Out-Null
+            Show-WinUtilMessage -Message "ISO 导出成功！`n`n$outputISO" -Title "导出完成" -Button "OK" -Icon "Info" | Out-Null
         } catch {
-            Write-WinUtilISOLog -Level "ERROR" -Message "ISO export failed: $_"
+            Write-WinUtilISOLog -Level "ERROR" -Message "ISO 导出失败：$_"
             $_.Exception.Data["WinUtilErrorReported"] = $true
             Set-WinUtilISOStep -Step "Output"
-            Show-WinUtilMessage -Message "ISO export failed:`n`n$_" -Title "Error" -Button "OK" -Icon "Error" | Out-Null
+            Show-WinUtilMessage -Message "ISO 导出失败：`n`n$_" -Title "错误" -Button "OK" -Icon "Error" | Out-Null
             throw
         } finally {
             Invoke-WPFUIThread -ScriptBlock {
@@ -785,17 +785,17 @@ function Get-WinUtilOscdimgPath {
 
         $winget = Get-Command winget
         $result = & $winget install -e --id Microsoft.OSCDIMG --accept-package-agreements --accept-source-agreements
-        Write-WinUtilISOLog "winget output: $result"
+        Write-WinUtilISOLog "winget 输出：$result"
 
         # The same search as before the install: winget honours a configured scope and package
         # root, so the file does not necessarily land under the per-user package directory
         $oscdimg = Find-WinUtilOscdimg
     } catch {
-        Write-WinUtilISOLog -Level "WARN" -Message "winget not available or install failed: $_"
+        Write-WinUtilISOLog -Level "WARN" -Message "winget 不可用或安装失败：$_"
     }
 
     if ($oscdimg) {
-        Write-WinUtilISOLog "oscdimg.exe installed successfully."
+        Write-WinUtilISOLog "oscdimg.exe 安装成功。"
     } else {
         # The export caller turns this into the terminating, counted error. Keep this helper
         # context visible without recording the same missing executable as a second error.

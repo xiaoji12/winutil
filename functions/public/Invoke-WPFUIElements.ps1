@@ -37,13 +37,13 @@ function Invoke-WPFUIElements {
     $ToggleButtonStyle = $window.FindResource("ToggleButtonStyle")
 
     if (!$borderstyle -or !$HoverTextBlockStyle -or !$ColorfulToggleSwitchStyle) {
-        throw "Failed to retrieve Styles using 'FindResource' from main window element."
+        throw "无法使用 'FindResource' 从主窗口元素获取样式。"
     }
 
     $targetGrid = $window.FindName($targetGridName)
 
     if (!$targetGrid) {
-        throw "Failed to retrieve Target Grid by name, provided name: $targetGrid"
+        throw "无法按名称获取目标 Grid，提供的名称：$targetGrid"
     }
 
     # Clear existing ColumnDefinitions and Children
@@ -344,7 +344,7 @@ function Invoke-WPFUIElements {
                                 $unknownStateItem = New-Object Windows.Controls.ComboBoxItem
                                 $unknownStateItem.Content = "Custom / Unknown - select a state"
                                 $unknownStateItem.IsEnabled = $false
-                                $unknownStateItem.ToolTip = "$($_.Exception.Message) Select one of the supported states to replace these values."
+                                $unknownStateItem.ToolTip = "$($_.Exception.Message) 请选择一个受支持的状态来替换这些值。"
                                 $comboBox.Items.Add($unknownStateItem) | Out-Null
                                 $comboBox.SelectedItem = $unknownStateItem
                                 $comboBox.ToolTip = $unknownStateItem.ToolTip
@@ -378,7 +378,7 @@ function Invoke-WPFUIElements {
                                     } catch {
                                         $applyError = $_.Exception.Message
                                         if ([string]::IsNullOrWhiteSpace($applyError)) {
-                                            $applyError = "Unable to apply registry state '$($selectedItem.Content)'."
+                                            $applyError = "无法应用注册表状态 '$($selectedItem.Content)'。"
                                         }
                                         $previousState = if ($this.Tag.State) { $this.Tag.State } else { "Custom / Unknown - select a state" }
                                         $this.SelectedItem = @($this.Items) | Where-Object Content -EQ $previousState | Select-Object -First 1

@@ -19,7 +19,7 @@ function Invoke-WPFToggleAllCategories {
 
     try {
         if ($null -eq $sync.ItemsControl) {
-            Write-Warning "ItemsControl not initialized"
+            Write-Warning "ItemsControl 尚未初始化"
             return
         }
 
@@ -47,6 +47,6 @@ function Invoke-WPFToggleAllCategories {
         }
     }
     catch {
-        Write-Error "Error toggling categories: $_"
+        Write-Error "切换类别时出错：$_"
     }
 }

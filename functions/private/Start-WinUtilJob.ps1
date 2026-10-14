@@ -47,7 +47,7 @@ function Start-WinUtilJob {
     )
 
     if ($sync.ShuttingDown -or $sync.FinishInConsole) {
-        Write-WinUtilLog -Level "WARN" -Component $Name -Message "Refused to start $Name, WinUtil is closing."
+        Write-WinUtilLog -Level "WARN" -Component $Name -Message "拒绝启动 $Name，WinUtil 正在关闭。"
         return $null
     }
 
@@ -78,7 +78,7 @@ function Start-WinUtilJob {
     }
 
     if ($blockedBy) {
-        Show-WinUtilMessage -Message "$blockedBy is still running. Wait for it to finish before starting another action." -Title "WinUtil" -Button "OK" -Icon "Warning" | Out-Null
+        Show-WinUtilMessage -Message "$blockedBy 仍在运行，请等它结束后再开始其他操作。" -Title "WinUtil" -Button "OK" -Icon "Warning" | Out-Null
         return $null
     }
 
@@ -86,7 +86,7 @@ function Start-WinUtilJob {
     try {
         $timingStartIndex = if ($sync.StepTimings) { $sync.StepTimings.Count } else { 0 }
 
-        Write-WinUtilLog -Component $Name -Message "$Name job started."
+        Write-WinUtilLog -Component $Name -Message "$Name 作业已启动。"
         Write-WinUtilJobBanner -Message $label
         Step-WinUtilJob -Status "$label..." -Percent 0 -State "Normal" -Overlay "logo"
 
@@ -127,7 +127,7 @@ function Start-WinUtilJob {
                     $global:WinUtilJobWarningCount++
                     Write-WinUtilLog -Level "WARN" -Component $JobName -Message $_.Message
                 } elseif ($_ -is [System.Management.Automation.ErrorRecord]) {
-                    Write-WinUtilErrorRecord -ErrorRecord $_ -Component $JobName -Context "Non-terminating error"
+                    Write-WinUtilErrorRecord -ErrorRecord $_ -Component $JobName -Context "非终止性错误"
                 }
             }
 
@@ -139,26 +139,26 @@ function Start-WinUtilJob {
             $newErrors = $global:WinUtilJobErrorCount
             $newWarnings = $global:WinUtilJobWarningCount
             if ($newErrors -gt 0) {
-                Write-WinUtilLog -Level "WARN" -Component $JobName -Message "$JobName job finished in $($jobClock.ElapsedMilliseconds) ms with $newErrors error(s)."
-                Write-WinUtilJobBanner -Message "$JobLabel finished with $newErrors error(s), see the log" -Level "ERROR"
-                Step-WinUtilJob -Status "$JobName finished with $newErrors error(s)" -Percent 100 -State "Paused" -Overlay "warning"
+                Write-WinUtilLog -Level "WARN" -Component $JobName -Message "$JobName 作业在 $($jobClock.ElapsedMilliseconds) 毫秒后完成，出现 $newErrors 个错误。"
+                Write-WinUtilJobBanner -Message "$JobLabel 已完成，出现 $newErrors 个错误，详见日志" -Level "ERROR"
+                Step-WinUtilJob -Status "$JobName 完成，出现 $newErrors 个错误" -Percent 100 -State "Paused" -Overlay "warning"
             } elseif ($newWarnings -gt 0) {
-                Write-WinUtilLog -Level "WARN" -Component $JobName -Message "$JobName job finished in $($jobClock.ElapsedMilliseconds) ms with $newWarnings warning(s)."
-                Write-WinUtilJobBanner -Message "$JobLabel finished with $newWarnings warning(s), see the log"
-                Step-WinUtilJob -Status "$JobName finished with $newWarnings warning(s)" -Percent 100 -State "Paused" -Overlay "warning"
+                Write-WinUtilLog -Level "WARN" -Component $JobName -Message "$JobName 作业在 $($jobClock.ElapsedMilliseconds) 毫秒后完成，出现 $newWarnings 个警告。"
+                Write-WinUtilJobBanner -Message "$JobLabel 已完成，出现 $newWarnings 个警告，详见日志"
+                Step-WinUtilJob -Status "$JobName 完成，出现 $newWarnings 个警告" -Percent 100 -State "Paused" -Overlay "warning"
             } else {
-                Write-WinUtilLog -Component $JobName -Message "$JobName job finished in $($jobClock.ElapsedMilliseconds) ms."
-                Write-WinUtilJobBanner -Message "$JobLabel finished"
-                Step-WinUtilJob -Status "$JobName finished" -Percent 100 -State "None" -Overlay "checkmark"
+                Write-WinUtilLog -Component $JobName -Message "$JobName 作业在 $($jobClock.ElapsedMilliseconds) 毫秒后完成。"
+                Write-WinUtilJobBanner -Message "$JobLabel 已完成"
+                Step-WinUtilJob -Status "$JobName 已完成" -Percent 100 -State "None" -Overlay "checkmark"
             }
         } catch {
             $jobClock.Stop()
             # A leaf that logs before rethrowing marks that exact exception. Preserve the outer
             # context and stack without counting it twice; unrelated earlier errors do not qualify.
             $errorAlreadyReported = $_.Exception.Data["WinUtilErrorReported"] -eq $true
-            Write-WinUtilErrorRecord -ErrorRecord $_ -Component $JobName -Context "$JobName failed after $($jobClock.ElapsedMilliseconds) ms" -DetailOnly:$errorAlreadyReported
-            Write-WinUtilJobBanner -Message "$JobLabel failed: $($_.Exception.Message)" -Level "ERROR"
-            Step-WinUtilJob -Status "$JobName failed" -Percent 100 -State "Error" -Overlay "warning"
+            Write-WinUtilErrorRecord -ErrorRecord $_ -Component $JobName -Context "$JobName 在 $($jobClock.ElapsedMilliseconds) 毫秒后失败" -DetailOnly:$errorAlreadyReported
+            Write-WinUtilJobBanner -Message "$JobLabel 失败：$($_.Exception.Message)" -Level "ERROR"
+            Step-WinUtilJob -Status "$JobName 失败" -Percent 100 -State "Error" -Overlay "warning"
         } finally {
             $jobResult = [pscustomobject]@{
                 Token = $JobToken
@@ -195,26 +195,26 @@ function Start-WinUtilJob {
                         }
                     }
                 } catch {
-                    Write-WinUtilLog -Level "WARN" -Component $JobName -Message "Could not restore the app list after $JobName finished: $($_.Exception.Message)"
+                    Write-WinUtilLog -Level "WARN" -Component $JobName -Message "$JobName 完成后无法恢复应用列表：$($_.Exception.Message)"
                 } finally {
                     # Dispatcher shutdown can race the alive check and abort the restore call.
                     # The worker is still finished, so its slot must always be released.
                     $null = Clear-WinUtilActiveJob -Token $JobToken
                 }
             } else {
-                Write-WinUtilLog -Level "WARN" -Component $JobName -Message "$JobName unwound after another job had started; leaving its state alone."
+                Write-WinUtilLog -Level "WARN" -Component $JobName -Message "$JobName 在另一个作业启动后才结束清理，保持其状态不变。"
             }
         }
         }
     } catch {
         $scheduleError = $_
         try {
-            Write-WinUtilErrorRecord -ErrorRecord $scheduleError -Component $Name -Context "Could not schedule $Name"
+            Write-WinUtilErrorRecord -ErrorRecord $scheduleError -Component $Name -Context "无法调度 $Name 作业"
             $sync.LastJobResult = [pscustomobject]@{ Token = $jobToken; Errors = 1; Warnings = 0 }
-            Write-WinUtilJobBanner -Message "$label could not start" -Level "ERROR"
-            Step-WinUtilJob -Status "$Name could not start" -Percent 100 -State "Error" -Overlay "warning"
+            Write-WinUtilJobBanner -Message "$label 无法启动" -Level "ERROR"
+            Step-WinUtilJob -Status "$Name 无法启动" -Percent 100 -State "Error" -Overlay "warning"
         } catch {
-            Write-WinUtilLog -Level "WARN" -Component $Name -Message "Could not report that $Name failed to start: $($_.Exception.Message)"
+            Write-WinUtilLog -Level "WARN" -Component $Name -Message "无法报告 $Name 启动失败：$($_.Exception.Message)"
         } finally {
             try {
                 if ($DisableAppList -and (Test-WinUtilUIAlive)) {
@@ -223,7 +223,7 @@ function Start-WinUtilJob {
                     }
                 }
             } catch {
-                Write-WinUtilLog -Level "WARN" -Component $Name -Message "Could not restore the app list after $Name failed to start: $($_.Exception.Message)"
+                Write-WinUtilLog -Level "WARN" -Component $Name -Message "$Name 启动失败后无法恢复应用列表：$($_.Exception.Message)"
             } finally {
                 $null = Clear-WinUtilActiveJob -Token $jobToken
             }
