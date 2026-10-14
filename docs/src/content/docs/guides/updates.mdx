@@ -1,40 +1,40 @@
 ---
-title: Updates
-description: Choose how aggressively Windows Update is managed on your system with WinUtil's three update modes.
+title: 更新
+description: 通过 WinUtil 的三种更新模式，选择 Windows 更新的管理力度。
 sidebar:
   order: 5
 ---
 
-WinUtil provides three update modes so you can choose how aggressively Windows Update is managed on your system:
+WinUtil 提供三种更新模式，让你可以选择在本机上以多大的力度管理 Windows 更新：
 
 ![Image of Updates Tab](../../../assets/screenshots/updates-tab-new.png)
 
-Changing modes adjusts system-wide Windows Update behavior. After switching modes, give Windows a moment to apply the policy and plan for a restart if the new state does not appear immediately.
+切换模式会调整系统范围的 Windows 更新行为。切换之后，请给 Windows 一点时间来应用策略；如果新状态没有立即生效，请做好重启的准备。
 
-- **Recommended**: Prioritizes stability while still receiving security updates
-- **Windows Default**: Restores standard Windows Update behavior
-- **Disable Updates**: Blocks Windows Update and should only be used with extreme caution
+- **推荐**：优先保证稳定性，同时仍然接收安全更新
+- **Windows 默认**：恢复标准的 Windows 更新行为
+- **禁用更新**：阻止 Windows 更新，使用时务必极其谨慎
 
-### Windows Default
+### Windows 默认
 
-- **What it does**: Removes Windows Update policies managed by WinUtil, restores update service startup settings, and re-enables update scheduled tasks.
-- **Best for**: Systems where you want Windows to manage updates normally.
-- **Notes**: Only values managed by WinUtil are removed; other Windows Update policies are left in place. If update errors continue, use the reset option in the **Config** tab to repair Microsoft Update components.
+- **作用**：移除由 WinUtil 管理的 Windows 更新策略，恢复更新服务的启动设置，并重新启用更新计划任务。
+- **适用场景**：希望由 Windows 正常管理更新的系统。
+- **说明**：只会移除由 WinUtil 管理的值，其他 Windows 更新策略保持不变。如果更新错误仍然存在，请使用**配置**标签页中的重置选项来修复 Microsoft Update 组件。
 
-### Recommended
+### 推荐
 
-- **What it does**: Applies a more conservative update strategy designed for most users.
-- **Feature updates**: Delayed by **365 days** to reduce the chance of disruption from major Windows changes.
-- **Quality updates**: Delayed by **4 days** to allow time for early issues to surface while still keeping the system protected.
-- **Drivers**: Excluded from Windows quality updates.
-- **Installation**: Updates download automatically and notify you when they are ready to install. This setting does not control restarts after installation.
-- **Availability**: Update deferral policies apply to Windows Pro, Enterprise, and Education editions.
-- **Why use it**: This mode offers the best balance between security and stability, which is why it is the recommended option for most PCs.
+- **作用**：应用一套更保守的更新策略，专为大多数用户设计。
+- **功能更新**：延迟 **365 天**，以降低 Windows 重大改动带来中断的风险。
+- **质量更新**：延迟 **4 天**，为早期问题暴露留出时间，同时仍能保持系统受到保护。
+- **驱动程序**：从 Windows 质量更新中排除。
+- **安装方式**：更新会自动下载，并在准备就绪可以安装时通知你。此设置不控制安装完成后的重启。
+- **适用范围**：更新延迟策略适用于 Windows Pro、Enterprise 和 Education 版本。
+- **为什么使用它**：这种模式在安全性和稳定性之间取得了最佳平衡，因此是大多数电脑的推荐选项。
 
-### Disable Updates (NOT RECOMMENDED!)
+### 禁用更新（强烈不推荐！）
 
-- **What it does**: Disables automatic update policy, stops and disables update services, disables update scheduled tasks, and clears downloaded update files.
-- **Best for**: Highly controlled or special-purpose systems where updates must remain off temporarily.
-- **Warning**: This leaves the system without security patches and significantly increases security risk.
-- **Notes**: Windows servicing can restore update components in some circumstances. Use **Restore Defaults** when you are ready to receive updates again.
-- **Recommendation**: Avoid this mode unless you fully understand the tradeoffs and have a specific reason to use it.
+- **作用**：禁用自动更新策略，停止并禁用更新服务，禁用更新计划任务，并清除已下载的更新文件。
+- **适用场景**：需要临时保持更新关闭的高度受控或特殊用途系统。
+- **警告**：这会让系统失去安全补丁，显著增加安全风险。
+- **说明**：在某些情况下，Windows 服务堆栈可能会恢复更新组件。准备好重新接收更新时，请使用**恢复默认设置**。
+- **建议**：除非你完全理解其中的取舍并且有明确的使用理由，否则请避免使用此模式。

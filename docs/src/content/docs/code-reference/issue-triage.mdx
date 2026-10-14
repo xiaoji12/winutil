@@ -1,26 +1,26 @@
 ---
-title: Issue Triage Commands
-description: Commands trusted maintainers can use to label and close GitHub issues.
+title: 问题分类命令
+description: 受信任的维护者可用来标记和关闭 GitHub 问题的命令。
 ---
 
-Trusted repository members whose numeric GitHub user IDs are listed in the issue triage workflow can run the commands below. These commands work only on issues. Comments on pull requests are ignored, and the workflow token has no pull-request write permission.
+其数字 GitHub 用户 ID 被列入问题分类工作流的受信任仓库成员，可以运行以下命令。这些命令只对问题生效，拉取请求下的评论会被忽略，并且该工作流令牌没有拉取请求的写入权限。
 
-## Commands
+## 命令
 
-- `/triage` adds the `needs-triage` label.
-- `/triageoff` removes the `needs-triage` label when it is present.
-- `/np` closes the issue as not planned.
-- `/np wontfix` adds the `wontfix` label without replacing existing labels, then closes the issue as not planned.
-- `/np notrelated` adds the `not-related` label without replacing existing labels, then closes the issue as not planned.
-- `/np <reason>` closes the issue as not planned without adding a label for unrecognized reasons.
-- `/duplicate <issue number>` closes the issue as a duplicate of another issue. The positive issue number may optionally start with `#`; pull request numbers are rejected.
+- `/triage` 添加 `needs-triage` 标签。
+- `/triageoff` 在 `needs-triage` 标签存在时将其移除。
+- `/np` 以“不计划处理”为由关闭问题。
+- `/np wontfix` 添加 `wontfix` 标签而不替换已有标签，然后以“不计划处理”为由关闭问题。
+- `/np notrelated` 添加 `not-related` 标签而不替换已有标签，然后以“不计划处理”为由关闭问题。
+- `/np <reason>` 对于无法识别的原因，以“不计划处理”为由关闭问题，且不添加标签。
+- `/duplicate <issue number>` 将问题作为另一个问题的重复项关闭。正数问题编号可以选择以 `#` 开头；拉取请求编号会被拒绝。
 
-## Command handling
+## 命令处理
 
-Put exactly one command in the comment. Leading and trailing whitespace is allowed, but text before or after the command is not. Command matching is case-insensitive, and malformed issue numbers are rejected.
+一条评论中只放一个命令。允许命令前后有空白字符，但命令之前或之后不能有其他文本。命令匹配不区分大小写，格式错误的问题编号会被拒绝。
 
-After a command is handled, the workflow deletes the command comment and leaves an audit comment describing the result. A missing duplicate target or a request to duplicate an issue into itself is reported without closing the issue. Unexpected GitHub API failures stop the workflow and leave the command comment available for retry.
+命令处理完成后，工作流会删除该命令评论，并留下一条说明结果的审计评论。如果重复目标不存在，或者要求把某个问题标记为自身的重复项，则会报告该情况而不关闭问题。遇到意外的 GitHub API 故障时，工作流会中止，并保留命令评论以便重试。
 
-## Access
+## 权限
 
-Access is granted by adding the trusted member's immutable numeric GitHub user ID to `.github/workflows/triage-tools.yaml` through a pull request. Abuse can result in removal from the allowlist or other repository moderation action.
+权限通过在拉取请求中把受信任成员的不可变数字 GitHub 用户 ID 添加到 `.github/workflows/triage-tools.yaml` 来授予。滥用该权限可能导致被移出白名单，或受到其他仓库管理措施。

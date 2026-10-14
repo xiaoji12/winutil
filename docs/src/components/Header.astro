@@ -30,21 +30,21 @@ const { hasSidebar } = Astro.locals.starlightRoute;
 		{
 			!hasSidebar && (
 				<div class="site-nav-toggle sl-flex md:sl-hidden print:hidden">
-					<button type="button" aria-expanded="false" aria-controls="site-nav-panel" aria-label="Site navigation">
+					<button type="button" aria-expanded="false" aria-controls="site-nav-panel" aria-label="站点导航">
 						<Icon name="bars" class="open-menu" />
 						<Icon name="close" class="close-menu" />
 					</button>
 					<div id="site-nav-panel" class="site-nav-panel">
 						<div class="site-nav-panel-group">
-							<p class="site-nav-panel-heading">Documentation</p>
-							<a href="/guides/">User Guides</a>
-							<a href="/contributing/">Contribution Guides</a>
-							<a href="/code-reference/architecture/">Code Reference</a>
+							<p class="site-nav-panel-heading">文档</p>
+							<a href="/guides/">使用指南</a>
+							<a href="/contributing/">贡献指南</a>
+							<a href="/code-reference/architecture/">代码参考</a>
 						</div>
 						<div class="site-nav-panel-group">
-							<p class="site-nav-panel-heading">Help</p>
-							<a href="/faq/">FAQ</a>
-							<a href="/knownissues/">Known Issues</a>
+							<p class="site-nav-panel-heading">帮助</p>
+							<a href="/faq/">常见问题</a>
+							<a href="/knownissues/">已知问题</a>
 							<a href={siteLinks.forums.href} target="_blank" rel="noreferrer">{siteLinks.forums.label}</a>
 						</div>
 						<a class="site-nav-panel-link" href={siteLinks.store.href} target="_blank" rel="noreferrer">{siteLinks.store.label}</a>
@@ -55,26 +55,26 @@ const { hasSidebar } = Astro.locals.starlightRoute;
 	</div>
 	{/* Right-side group: nav links, social icons, theme/language pickers. */}
 	<div class="sl-hidden md:sl-flex print:hidden right-group">
-		<nav class="site-nav" aria-label="Top">
-			{/* "Documentation" dropdown. */}
+		<nav class="site-nav" aria-label="顶部导航">
+			{/* “文档”下拉菜单。 */}
 			<div class="site-nav-dropdown">
 				<details name="site-nav-dropdown">
-					<summary class="site-nav-link">Documentation</summary>
+					<summary class="site-nav-link">文档</summary>
 				</details>
 				<div class="site-nav-menu">
-					<a href="/guides/">User Guides</a>
-					<a href="/contributing/">Contribution Guides</a>
-					<a href="/code-reference/architecture/">Code Reference</a>
+					<a href="/guides/">使用指南</a>
+					<a href="/contributing/">贡献指南</a>
+					<a href="/code-reference/architecture/">代码参考</a>
 				</div>
 			</div>
-			{/* "Help" dropdown. */}
+			{/* “帮助”下拉菜单。 */}
 			<div class="site-nav-dropdown">
 				<details name="site-nav-dropdown">
-					<summary class="site-nav-link">Help</summary>
+					<summary class="site-nav-link">帮助</summary>
 				</details>
 				<div class="site-nav-menu">
-					<a href="/faq/">FAQ</a>
-					<a href="/knownissues/">Known Issues</a>
+					<a href="/faq/">常见问题</a>
+					<a href="/knownissues/">已知问题</a>
 					<a href={siteLinks.forums.href} target="_blank" rel="noreferrer">{siteLinks.forums.label}</a>
 				</div>
 			</div>

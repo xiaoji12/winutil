@@ -1,91 +1,91 @@
 ---
-title: Tweaks
-description: Apply recommended Windows changes, review optional presets, and adjust supporting settings such as DNS and power plans.
+title: 优化项
+description: 应用推荐的 Windows 更改、查看可选预设，并调整 DNS 和电源计划等辅助设置。
 sidebar:
   order: 3
 ---
 
 import YouTubeEmbed from '../../../components/YouTubeEmbed.astro';
 
-Use the Tweaks tab to apply recommended Windows changes, review optional presets, and adjust a few supporting settings such as DNS and power plans. Start with a preset unless you already know which individual tweaks you want.
+使用「优化项」标签页应用推荐的 Windows 更改、查看可选预设，并调整 DNS 和电源计划等少数辅助设置。除非你已经清楚自己需要哪些具体的优化项，否则建议从预设开始。
 
 ![Image of Tweaks Tab](../../../assets/screenshots/tweaks-tab-new.png)
 
-### Recommended Selections
-Use the quick-selection buttons at the top of the Tweaks tab to speed up setup:
+### 推荐的选择方式
+使用「优化项」标签页顶部的快捷选择按钮，可以加快配置速度：
 
-* **Standard**: Selects the recommended baseline set of tweaks for most users.
-* **Minimal**: Selects a smaller, lower-impact set of common tweaks.
-* **Advanced**: Selects a focused set of safer advanced tweaks. This preset intentionally skips restore point creation and cleanup tasks to avoid a long runtime.
-* **Clear**: Clears all currently selected tweaks.
-* **Select Installed Tweaks**: Best-effort detection for tweaks already applied to your system.
+* **Standard**：为大多数用户选择推荐的基准优化项组合。
+* **Minimal**：选择规模更小、影响更低的常用优化项组合。
+* **Advanced**：精选一组更安全的高级优化项。该预设会特意跳过创建还原点和清理任务，以避免运行时间过长。
+* **Clear**：清除当前已选的全部优化项。
+* **Select Installed Tweaks**：尽力检测系统上已经应用过的优化项。
 
-### Run Tweaks
-* **Open the Tweaks tab**: Navigate to the **Tweaks** tab in the application.
-* **Select Tweaks**: Choose the tweaks you want to apply. You can use the presets available at the top for convenience.
-* **Run Tweaks**: After selecting the desired tweaks, click **Run Tweaks** at the bottom of the screen.
+### 运行优化项
+* **打开优化项标签页**：在应用中进入**优化项**标签页。
+* **选择优化项**：挑选你想应用的优化项。为方便起见，可以使用顶部提供的预设。
+* **运行优化项**：选好需要的优化项后，点击屏幕底部的**运行优化项**。
 
 :::note
-To see what each preset includes, view [preset.json](https://github.com/ChrisTitusTech/winutil/blob/main/config/preset.json).
+想了解每个预设包含哪些内容，请查看 [preset.json](https://github.com/ChrisTitusTech/winutil/blob/main/config/preset.json)。
 :::
 
-When a listed service does not exist, WinUtil logs a warning and skips it. The remaining services and tweaks still run.
+当列出的某个服务不存在时，WinUtil 会记录一条警告并跳过它，其余的服务和优化项仍会继续执行。
 
 :::caution
-Some tweaks take effect immediately, while others may require Explorer to restart, a sign-out, or a full reboot.
+有些优化项会立即生效，另一些则可能需要重启资源管理器、注销或完整重启。
 :::
 
-### Undo Tweaks
-* **Open the Tweaks tab**: Go to the **Tweaks** tab located next to **Install**.
-* **Select Tweaks to Remove**: Choose the tweaks you want to disable or remove.
-* **Undo Tweaks**: Click **Undo Selected Tweaks** at the bottom of the screen to apply the changes.
+### 撤销优化项
+* **打开优化项标签页**：进入**安装**旁边的**优化项**标签页。
+* **选择要移除的优化项**：挑选你想禁用或移除的优化项。
+* **撤销优化项**：点击屏幕底部的**撤销所选优化项**以应用更改。
 
-### AppX Packages
+### AppX 应用
 
-Open **AppX Removal** from the Tweaks tab to manage the listed Windows apps. Select one or more packages, then choose **Install Selected** or **Remove Selected**.
+从「优化项」标签页打开 **AppX Removal** 来管理其中列出的 Windows 应用。选中一个或多个包，然后选择 **Install Selected** 或 **Remove Selected**。
 
-When installing a selected package, WinUtil first registers an existing local `AppxManifest.xml`. If no usable local manifest remains, WinUtil installs the package from the Microsoft Store through WinGet when a Store product ID is available.
+安装所选的包时，WinUtil 会先注册本地已有的 `AppxManifest.xml`。如果本地没有可用的清单文件，且存在 Microsoft Store 产品 ID，WinUtil 就会通过 WinGet 从 Microsoft Store 安装该包。
 
-During AppX installation or removal, the window-level progress bar shows the current package, completed package count, and overall progress. The Windows taskbar also reflects progress and the final success or failure state.
+在 AppX 安装或移除过程中，窗口顶部的进度条会显示当前的包、已完成的包数量和整体进度。Windows 任务栏也会显示进度以及最终的成功或失败状态。
 
-### Essential Tweaks
-Essential Tweaks are the safest starting point for most systems. They focus on lower-risk changes that improve usability, reduce noise, and avoid the more invasive changes found in advanced options.
+### 常规优化项
+常规优化项是大多数系统最安全的起点。它们侧重于风险较低的改动，可以改善易用性、减少干扰，并避开高级选项中那些侵入性更强的改动。
 
-### Advanced Tweaks (CAUTION)
-Advanced Tweaks are for users who understand the side effects of deeper Windows changes. Create a restore point first, review each item, and avoid treating the full advanced list as a one-click baseline.
+### 高级优化项（请谨慎）
+高级优化项面向了解深层 Windows 改动会带来哪些副作用的用户。请先创建还原点，逐项查看，不要把完整的高级列表当成一键基准配置。
 
 ### O&O ShutUp10++
-[O&O ShutUp10++](https://www.oo-software.com/en/shutup10) can be launched from WinUtil with one click. It is a free privacy tool for Windows that helps users manage telemetry, update behavior, and app permission settings.
+[O&O ShutUp10++](https://www.oo-software.com/en/shutup10) 可以在 WinUtil 中一键启动。它是一款免费的 Windows 隐私工具，帮助用户管理遥测、更新行为和应用权限设置。
 
-Watch a walkthrough:
+观看演示视频：
 
-<YouTubeEmbed id="3HvNr8eMcv0" title="O&O ShutUp10++ walkthrough" />
+<YouTubeEmbed id="3HvNr8eMcv0" title="O&O ShutUp10++ 演示" />
 
 ### DNS
 
-Use the DNS section to switch both IPv4 and IPv6 DNS providers without editing adapter settings manually. Choose the option that best matches your priority: speed, filtering, or privacy.
+使用 DNS 部分可以同时切换 IPv4 和 IPv6 的 DNS 服务商，无需手动修改适配器设置。请选择最符合你需求的选项：速度、过滤或隐私。
 
-* **Default**: Uses the default DNS settings configured by your ISP or network.
-* **DHCP**: Automatically acquires DNS settings from the DHCP server.
-* **Fastest**: Compares TCP port 53 connection times to Google and Cloudflare, then applies the quicker provider. Filtering providers are excluded. If both probes fail, existing DNS settings are preserved. The scan takes up to about three seconds; connection time is only a rough latency estimate, not a DNS lookup or DNS-over-HTTPS performance test.
-* [**Google**](https://developers.google.com/speed/public-dns?hl=en): A reliable and fast DNS service provided by Google.
-* [**Cloudflare**](https://developers.cloudflare.com/1.1.1.1/): Known for speed and privacy, Cloudflare DNS is a popular choice for enhancing internet performance.
-* [**Cloudflare_Malware**](https://developers.cloudflare.com/1.1.1.1/setup/#:~:text=Use%20the%20following%20DNS%20resolvers%20to%20block%20malicious%20content%3A): Provides additional protection by blocking malware sites.
-* [**Cloudflare_Malware_Adult**](https://developers.cloudflare.com/1.1.1.1/setup/#:~:text=Use%20the%20following%20DNS%20resolvers%20to%20block%20malware%20and%20adult%20content%3A): Blocks both malware and adult content, offering more comprehensive filtering.
-* [**Open_DNS**](https://www.opendns.com/setupguide/#familyshield): Offers customizable filtering and enhanced security features.
-* [**Quad9**](https://quad9.net/): Focuses on security by blocking known malicious domains.
-* [**AdGuard_Ads_Trackers**](https://adguard-dns.io/en/welcome.html): AdGuard DNS blocks ads, trackers, and other unwanted DNS requests. Visit the website and sign in for a dashboard, statistics, and additional server-side customization.
-* [**AdGuard_Ads_Trackers_Malware_Adult**](https://adguard-dns.io/en/welcome.html): AdGuard DNS blocks ads, trackers, malware, and adult content, and enables Safe Search and Safe Mode where possible.
+* **Default**：使用由你的 ISP 或网络配置的默认 DNS 设置。
+* **DHCP**：从 DHCP 服务器自动获取 DNS 设置。
+* **Fastest**：对比与 Google 和 Cloudflare 的 TCP 53 端口连接耗时，然后应用更快的那个。带过滤功能的服务商不参与比较。如果两次探测都失败，则保留现有的 DNS 设置。扫描最多耗时约三秒；连接耗时只是粗略的延迟估计，并非 DNS 查询或 DNS-over-HTTPS 性能测试。
+* [**Google**](https://developers.google.com/speed/public-dns?hl=en)：由 Google 提供的可靠且快速的 DNS 服务。
+* [**Cloudflare**](https://developers.cloudflare.com/1.1.1.1/)：以速度和隐私著称，Cloudflare DNS 是提升上网性能的常见选择。
+* [**Cloudflare_Malware**](https://developers.cloudflare.com/1.1.1.1/setup/#:~:text=Use%20the%20following%20DNS%20resolvers%20to%20block%20malicious%20content%3A)：通过拦截恶意网站提供额外保护。
+* [**Cloudflare_Malware_Adult**](https://developers.cloudflare.com/1.1.1.1/setup/#:~:text=Use%20the%20following%20DNS%20resolvers%20to%20block%20malware%20and%20adult%20content%3A)：同时拦截恶意内容和成人内容，过滤更全面。
+* [**Open_DNS**](https://www.opendns.com/setupguide/#familyshield)：提供可自定义的过滤和增强的安全功能。
+* [**Quad9**](https://quad9.net/)：通过拦截已知的恶意域名来保障安全。
+* [**AdGuard_Ads_Trackers**](https://adguard-dns.io/en/welcome.html)：AdGuard DNS 可拦截广告、跟踪器以及其他不需要的 DNS 请求。访问其网站并登录即可使用仪表盘、统计数据和更多服务端自定义选项。
+* [**AdGuard_Ads_Trackers_Malware_Adult**](https://adguard-dns.io/en/welcome.html)：AdGuard DNS 可拦截广告、跟踪器、恶意内容和成人内容，并尽可能启用安全搜索和安全模式。
 
-### Customize Preferences
+### 自定义偏好设置
 
-Use Customize Preferences for smaller visual and behavior changes that do not fit the main tweak presets.
+使用「自定义偏好设置」来处理那些不属于主要优化项预设的小幅外观和行为改动。
 
-### Performance Plans
+### 性能计划
 
-Use Performance Plans to enable or remove the Ultimate Performance power profile.
+使用「性能计划」来启用或移除卓越性能电源配置文件。
 
-#### Add and activate the Ultimate Performance Profile:
-* Enables and activates the Ultimate Performance Profile to enhance system performance by minimizing latency and increasing efficiency.
-#### Remove Ultimate Performance Profile:
-* Deactivates the Ultimate Performance Profile, changing the system to the Balanced Profile.
+#### 添加并启用卓越性能配置文件：
+* 启用并激活卓越性能配置文件，通过降低延迟、提升效率来增强系统性能。
+#### 移除卓越性能配置文件：
+* 停用卓越性能配置文件，将系统切换为平衡配置文件。

@@ -1,47 +1,47 @@
 ---
-title: Known Issues
-description: Known problems with WinUtil and how to work around them.
+title: 已知问题
+description: WinUtil 的已知问题及其解决办法。
 ---
 
-### Download not working
+### 无法下载
 
-If you run WinUtil and get an error like:
+如果你运行 WinUtil 时出现类似下面的错误：
 
 `< : The term '<' is not recognized as the name of a cmdlet, function, script file, or operable program.`
 
-try using a **VPN** and if that doesn't work then report the issue to https://github.com/ChrisTitusTech/winutil/issues
+请尝试使用 **VPN**；如果仍然不行，请到 https://github.com/ChrisTitusTech/winutil/issues 反馈该问题。
 
-### Script Won't Run
+### 脚本无法运行
 
-If you run WinUtil and get the error:
+如果你运行 WinUtil 时出现以下错误：
 
 `"WinUtil is unable to run on your system. PowerShell execution is restricted by security policies"`
 
-This means that your PowerShell session is in **Constrained Language Mode**, which prevents WinUtil from running.
+这说明你的 PowerShell 会话处于**受约束语言模式**，它会阻止 WinUtil 运行。
 
-### Ultimate Performance Plan Not Working
+### 卓越性能电源计划无效
 
-The Ultimate Performance power plan may not work on some laptops that do not fully support this power plan.
+在部分不完全支持该电源计划的笔记本上，卓越性能电源计划可能无法生效。
 
-In these cases, the power plan may fail to apply. This is expected behavior on unsupported hardware.
+在这些情况下，该电源计划可能会应用失败。在不受支持的硬件上，这是预期行为。
 
-### Revert start menu tweak not working
+### 「还原开始菜单」优化项失效
 
-Revert start menu tweak stops working starting with **Windows 11 update KB5089573** (released in May 2026).
+从 **Windows 11 更新 KB5089573**（2026 年 5 月发布）开始，「还原开始菜单」优化项不再有效。
 
-In this update, Microsoft completely removed the old Start Menu code from Windows, so we aren't able to bring it back.
+在该更新中，Microsoft 已彻底从 Windows 中移除旧版开始菜单的代码，因此我们无法再将其恢复。
 
-### Issues with PowerShell 7 or Class not registered Error
-Installing PowerShell 7 from the Microsoft Store (MSIX package) is known to cause issues with DISM cmdlets such as `Get-WindowsOptionalFeature` and `Enable-WindowsOptionalFeature`, resulting in a `Class not registered` COM error.
+### PowerShell 7 相关问题或「类未注册」错误
+已知从 Microsoft Store 安装 PowerShell 7（MSIX 包）会导致 `Get-WindowsOptionalFeature`、`Enable-WindowsOptionalFeature` 等 DISM cmdlet 出现问题，并产生 `Class not registered` 的 COM 错误。
 
-This might also make it so running the "pre-installed app removal" will take an indefinite amount of time
+这也可能导致「移除预装应用」耗时无限延长。
 
-Instead, install PowerShell 7 using one of the following methods:
+请改用以下方式之一安装 PowerShell 7：
 
-**winget (recommended):**
+**winget（推荐）：**
 ```powershell
 winget install --id Microsoft.PowerShell --source winget --installer-type wix
 ```
-**Direct MSI from GitHub Releases:** Download the `.msi` installer from the [PowerShell GitHub Releases](https://github.com/PowerShell/PowerShell/releases) page.
+**从 GitHub Releases 直接下载 MSI：** 从 [PowerShell GitHub Releases](https://github.com/PowerShell/PowerShell/releases) 页面下载 `.msi` 安装程序。
 
-For more details see https://github.com/PowerShell/PowerShell/issues/13866
+详情请参阅 https://github.com/PowerShell/PowerShell/issues/13866

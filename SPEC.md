@@ -1,116 +1,116 @@
 # SPEC.md
 
-Project contract for WinUtil — what the project is, how it's built, and how it runs. Written for anyone, human or AI, who needs to understand the project itself.
+WinUtil 的项目契约 —— 项目是什么、如何构建、如何运行。面向任何需要理解本项目本身的人，无论是人类还是 AI。
 
-`AGENTS.md` in the repository root points here for these facts, and separately covers how an agent should behave while working in this repo. This file does not change based on who's reading it.
+仓库根目录的 `AGENTS.md` 会指向本文件获取这些事实，并另行说明 agent 在本仓库中工作时应如何行事。本文件不会因阅读者的不同而改变。
 
-## Project Context
+## 项目背景
 
-WinUtil is a Windows PowerShell utility with a WPF interface. The repository is maintained as modular source, but the distributed artifact is one compiled PowerShell script.
+WinUtil 是一个带 WPF 界面的 Windows PowerShell 工具。仓库以模块化源码的形式维护，但分发的产物是一个编译后的 PowerShell 脚本。
 
-### Stack
+### 技术栈
 
-- Language: Windows PowerShell / PowerShell.
-- UI: WPF via `xaml/inputXML.xaml`.
-- Configuration: JSON files under `config/`.
-- Tests: Pester tests under `pester/`.
-- Lint: PowerShell Script Analyzer with settings in `lint/PSScriptAnalyser.ps1`.
-- Docs: Astro + Starlight site under `docs/`, built independently of `Compile.ps1` (its own `package.json`/`node_modules`).
-- Release artifact: generated root `winutil.ps1`.
+- 语言：Windows PowerShell / PowerShell。
+- UI：通过 `xaml/inputXML.xaml` 实现的 WPF。
+- 配置：`config/` 下的 JSON 文件。
+- 测试：`pester/` 下的 Pester 测试。
+- 代码检查：PowerShell Script Analyzer，设置位于 `lint/PSScriptAnalyser.ps1`。
+- 文档：`docs/` 下的 Astro + Starlight 站点，独立于 `Compile.ps1` 构建（有自己的 `package.json`/`node_modules`）。
+- 发布产物：生成的根目录 `winutil.ps1`。
 
-### Repository Layout
+### 仓库结构
 
-- `Compile.ps1`: build script that creates `winutil.ps1`.
-- `scripts/start.ps1`: startup/bootstrap segment used at the beginning of the compiled script.
-- `scripts/main.ps1`: main entrypoint appended at the end of the compiled script.
-- `functions/public/`: public/UI-facing PowerShell functions.
-- `functions/private/`: internal helper PowerShell functions.
-- `config/`: JSON configuration consumed at compile time and embedded into `$sync.configs`.
-- `xaml/inputXML.xaml`: WPF UI markup embedded into the compiled script.
-- `tools/autounattend.xml`: unattended setup XML embedded for Windows ISO workflows.
-- `pester/`: Pester tests for config and function checks.
-- `lint/PSScriptAnalyser.ps1`: PowerShell Script Analyzer settings.
-- `tools/title-screen/`: uv project that captures WinUtil's Light and Dark themes and generates the title-screen composite.
-- `docs/`: Astro + Starlight documentation site, with its own `package.json` and build independent of `Compile.ps1`.
-- `winutil.ps1`: ignored generated build artifact.
+- `Compile.ps1`：生成 `winutil.ps1` 的构建脚本。
+- `scripts/start.ps1`：编译后脚本开头使用的启动/引导片段。
+- `scripts/main.ps1`：追加在编译后脚本末尾的主入口。
+- `functions/public/`：面向 UI 的公开 PowerShell 函数。
+- `functions/private/`：内部辅助 PowerShell 函数。
+- `config/`：在编译时读取并嵌入到 `$sync.configs` 的 JSON 配置。
+- `xaml/inputXML.xaml`：嵌入到编译后脚本中的 WPF UI 标记。
+- `tools/autounattend.xml`：为 Windows ISO 工作流嵌入的无人值守安装 XML。
+- `pester/`：针对配置与函数检查的 Pester 测试。
+- `lint/PSScriptAnalyser.ps1`：PowerShell Script Analyzer 设置。
+- `tools/title-screen/`：一个 uv 项目，用于截取 WinUtil 的 Light 与 Dark 主题，并生成标题画面合成图。
+- `docs/`：Astro + Starlight 文档站点，有自己的 `package.json`，构建独立于 `Compile.ps1`。
+- `winutil.ps1`：被忽略的生成产物。
 
-## Goals
+## 目标
 
-- Provide a single-script Windows utility that can be launched from PowerShell.
-- Keep development modular enough for contributors to work on functions, config, UI, docs, and tooling independently.
-- Make install, tweak, feature, repair, update, and ISO workflows discoverable from the WPF UI.
-- Keep common lists and options declarative in JSON config where possible.
-- Preserve a repeatable compile process so local builds and GitHub Actions builds produce the distributable script from the same inputs.
+- 提供一个可从 PowerShell 启动的单脚本 Windows 工具。
+- 保持开发具备足够的模块化程度，使贡献者可以分别独立地处理函数、配置、UI、文档与工具链。
+- 让安装、优化项、功能、修复、更新以及 ISO 工作流都能在 WPF UI 中找到。
+- 尽可能把常用列表与选项以声明式方式保存在 JSON 配置中。
+- 保持可重复的编译流程，使本地构建与 GitHub Actions 构建都能从相同的输入生成可分发的脚本。
 
-## Non-Goals
+## 非目标
 
-- `winutil.ps1` is not hand-maintained.
-- The project is not structured as a PowerShell module at runtime.
-- The GUI is not a separate packaged desktop application in this repository's normal release path.
-- Generated files should not be reviewed as source changes.
+- `winutil.ps1` 不是手工维护的。
+- 项目在运行时并非按 PowerShell 模块的形式组织。
+- 在本仓库的常规发布路径中，GUI 不是一个独立打包的桌面应用程序。
+- 生成的文件不应作为源码改动来评审。
 
-## Build Model
+## 构建模型
 
-`Compile.ps1` combines the repository sources into `winutil.ps1` in this order:
+`Compile.ps1` 按以下顺序将仓库源文件合并为 `winutil.ps1`：
 
-1. Read `scripts/start.ps1` and replace `#{replaceme}` with the current `yy.MM.dd` build date.
-2. Append every file under `functions/` recursively.
-3. Convert each `config/*.json` file into embedded `$sync.configs` objects.
-4. Special-case `config/applications.json` so keys receive the `WPFInstall` prefix in compiled config.
-5. Embed `xaml/inputXML.xaml` into `$inputXML`.
-6. Embed `tools/autounattend.xml` into `$WinUtilAutounattendXml`.
-7. Append `scripts/main.ps1`.
-8. Write the result to root `winutil.ps1`.
+1. 读取 `scripts/start.ps1`，并将 `#{replaceme}` 替换为当前 `yy.MM.dd` 构建日期。
+2. 递归追加 `functions/` 下的每个文件。
+3. 将每个 `config/*.json` 文件转换为嵌入的 `$sync.configs` 对象。
+4. 对 `config/applications.json` 做特殊处理，使其键在编译后的配置中带上 `WPFInstall` 前缀。
+5. 将 `xaml/inputXML.xaml` 嵌入到 `$inputXML`。
+6. 将 `tools/autounattend.xml` 嵌入到 `$WinUtilAutounattendXml`。
+7. 追加 `scripts/main.ps1`。
+8. 将结果写入根目录的 `winutil.ps1`。
 
-Because the final script is concatenated, code cannot rely on runtime module imports or source-relative dot-sourcing unless the compiled script will also contain the required code/data.
+由于最终脚本是拼接而成的，代码不能依赖运行时模块导入或相对于源码的点操作符加载（dot-sourcing），除非编译后的脚本同样包含所需的代码/数据。
 
-## Runtime Model
+## 运行时模型
 
-- WinUtil runs in PowerShell on Windows and uses WPF for the UI.
-- Shared mutable state is stored in `$sync`, including configs, UI element references, runspace state, selections, and progress.
-- Long-running operations use runspaces or existing async patterns so the UI remains responsive.
-- UI updates from background work are dispatched back to the WPF UI thread.
-- Declarative features such as apps, tweaks, presets, DNS providers, and navigation stay in `config/*.json` unless code is required.
+- WinUtil 在 Windows 上的 PowerShell 中运行，并使用 WPF 作为 UI。
+- 共享的可变状态存放在 `$sync` 中，包括配置、UI 元素引用、运行空间状态、选择项与进度。
+- 耗时操作使用运行空间（Runspace）或现有的异步模式，以保持 UI 的响应性。
+- 来自后台工作的 UI 更新会被调度回 WPF UI 线程。
+- 应用、优化项、预设、DNS 提供商、导航等声明式功能保留在 `config/*.json` 中，除非确实需要代码。
 
-## UI And Event Contract
+## UI 与事件契约
 
-- UI layout lives in `xaml/inputXML.xaml`.
-- Named WPF controls are discovered and stored in `$sync`.
-- Button/action wiring follows a naming convention: an element named like `WPFThingButton` maps to a function named like `Invoke-WPFThingButton`.
+- UI 布局位于 `xaml/inputXML.xaml`。
+- 具名的 WPF 控件会被发现并存入 `$sync`。
+- 按钮/动作的接线遵循命名约定：名为 `WPFThingButton` 的元素映射到名为 `Invoke-WPFThingButton` 的函数。
 
-## Configuration Contract
+## 配置契约
 
-- Config files must remain valid JSON and compile cleanly through `ConvertFrom-Json`.
-- `config/dns.json` opts unfiltered providers into Fastest selection with `BenchmarkEligible: true`; missing or false values exclude a provider from the TCP latency benchmark.
-- `config/applications.json` defines installable applications; each entry includes the fields expected by tests and UI code, such as package manager IDs, category, display content, description, and link.
-- `config/tweaks.json` defines Windows tweaks; registry and service changes include original values or original states when applicable so undo workflows can restore user systems.
-- Preset and navigation files reference valid config keys. Renaming a config key requires updating all presets, UI references, docs, and code paths together.
+- 配置文件必须保持为合法 JSON，并能通过 `ConvertFrom-Json` 无错解析。
+- `config/dns.json` 通过 `BenchmarkEligible: true` 让未被过滤的提供商参与 Fastest 选择；缺失或为 false 的取值会使该提供商被排除在 TCP 延迟基准测试之外。
+- `config/applications.json` 定义可安装的应用程序；每个条目都包含测试与 UI 代码所期望的字段，例如包管理器 ID、category、展示内容、description 和 link。
+- `config/tweaks.json` 定义 Windows 优化项；注册表与服务类更改在适用时会包含原始值或原始状态，以便撤销工作流能够还原用户系统。
+- 预设与导航文件引用合法的配置键。重命名某个配置键时，需要同时更新所有预设、UI 引用、文档与代码路径。
 
-## Safety Requirements
+## 安全要求
 
-- Registry, service, package manager, Windows Update, AppX removal, and ISO operations affect the host system and are treated as high-risk.
-- Tweak changes include undo metadata when the schema supports it, so changes stay reversible.
-- ISO workflows never modify the user's original ISO file; they work on copied/mounted content.
+- 注册表、服务、包管理器、Windows Update、AppX 卸载与 ISO 操作都会影响宿主系统，被视为高风险操作。
+- 在结构支持的情况下，优化项更改会包含撤销元数据，从而保持更改可逆。
+- ISO 工作流绝不修改用户的原始 ISO 文件；它们只作用于复制/挂载后的内容。
 
-## Docs Site (Astro)
+## 文档站（Astro）
 
-- `docs/` is an Astro + Starlight site, independent of `Compile.ps1`'s build (its own `package.json`/`node_modules`, deployed via the `docs.yaml` GitHub Actions workflow to GitHub Pages).
-- Pages live under `docs/src/content/docs/` (`.mdx`), organized into `guides/`, `code-reference/`, plus top-level pages like `faq.mdx`, `knownissues.mdx`, `contributing.mdx`, `index.mdx`.
-- `docs/src/content/docs/code-reference/tweaks/` and `.../features/` are auto-generated by `tools/devdocs-generator.ps1` from `config/tweaks.json`/`config/feature.json` and the relevant PowerShell function files. Other pages under `code-reference/` (e.g. `architecture.mdx`) are hand-written and untouched by the generator.
-- Sidebar entries in `docs/astro.config.mjs` must match actual page slugs under `docs/src/content/docs/`.
-- `docs/public/` is tracked source for static assets (favicons, etc.), not generated output. Generated/ignored paths are listed in `docs/.gitignore` (`dist/`, `.astro/`, `node_modules/`, local env files).
-- `docs/src/assets/branding/title-screen.png` is a tracked generated image used by the repository README and docs homepage. Its raw Light and Dark captures are temporary.
-- `docs/Dockerfile` and `docs/docker-compose.yml` (service `winutil-astro`) containerize the site's npm tooling; see AGENTS.md's Dependency Installs, Builds, And Dev Servers for why and how agents must use them instead of running npm on the host.
+- `docs/` 是一个 Astro + Starlight 站点，独立于 `Compile.ps1` 的构建（有自己的 `package.json`/`node_modules`，通过 `docs.yaml` GitHub Actions 工作流部署到 GitHub Pages）。
+- 页面位于 `docs/src/content/docs/`（`.mdx`），分为 `guides/`、`code-reference/`，以及 `faq.mdx`、`knownissues.mdx`、`contributing.mdx`、`index.mdx` 等顶层页面。
+- `docs/src/content/docs/code-reference/tweaks/` 与 `.../features/` 由 `tools/devdocs-generator.ps1` 从 `config/tweaks.json`/`config/feature.json` 以及相关的 PowerShell 函数文件自动生成。`code-reference/` 下的其他页面（例如 `architecture.mdx`）是手写的，生成器不会改动它们。
+- `docs/astro.config.mjs` 中的侧边栏条目必须与 `docs/src/content/docs/` 下实际的页面 slug 一致。
+- `docs/public/` 是静态资源（favicon 等）的受跟踪源码，而非生成产物。被生成/忽略的路径列在 `docs/.gitignore` 中（`dist/`、`.astro/`、`node_modules/`、本地 env 文件）。
+- `docs/src/assets/branding/title-screen.png` 是一张受跟踪的生成图片，供仓库 README 与文档首页使用。其原始的 Light 与 Dark 截图是临时文件。
+- `docs/Dockerfile` 与 `docs/docker-compose.yml`（服务 `winutil-astro`）将该站点的 npm 工具链容器化；关于为何以及如何使用它们、而不是在宿主机上直接运行 npm，请参阅 AGENTS.md 的 Dependency Installs, Builds, And Dev Servers 一节。
 
-## Testing And CI
+## 测试与 CI
 
-- `.\Compile.ps1` verifies the compiler can generate `winutil.ps1`.
-- `.\Compile.ps1 -Run` compiles and launches the generated utility for manual GUI verification.
-- Pester 5.8.0 runs the suite under `pester/*.Tests.ps1`. GitHub Actions (`unittests.yaml`) installs Pester 5.8.0 fresh and runs with `-CI`, which produces `testResults.xml` and exits non-zero on failure.
-- GitHub Actions also runs PowerShell Script Analyzer with `lint/PSScriptAnalyser.ps1` on every push.
-- The generated `winutil.ps1` may appear locally after compile. It remains ignored build output (see root `.gitignore`) and must not be committed.
-- The manually triggered title-screen workflow compiles WinUtil from `main` and opens an image-only pull request when the generated composite changes. These pull requests require manual review. Failed runs retain diagnostics for 14 days.
+- `.\Compile.ps1` 用于验证编译器能够生成 `winutil.ps1`。
+- `.\Compile.ps1 -Run` 会编译并启动生成的工具，以便人工验证 GUI。
+- Pester 5.8.0 运行 `pester/*.Tests.ps1` 下的测试套件。GitHub Actions（`unittests.yaml`）会全新安装 Pester 5.8.0 并以 `-CI` 运行，产出 `testResults.xml`，失败时以非零码退出。
+- GitHub Actions 还会在每次 push 时使用 `lint/PSScriptAnalyser.ps1` 运行 PowerShell Script Analyzer。
+- 生成的 `winutil.ps1` 可能在编译后出现在本地。它仍然是被忽略的构建产物（见根目录 `.gitignore`），不得提交。
+- 手动触发的标题画面工作流会从 `main` 编译 WinUtil，并在生成的合成图发生变化时开启一个仅含图片的 pull request。这些 pull request 需要人工评审。失败的运行会保留诊断信息 14 天。
 
-## Release Artifact
+## 发布产物
 
-GitHub Actions is responsible for producing the release `winutil.ps1` from repository sources. A release is considered valid only if the generated script came from the compile process, not from direct manual edits to `winutil.ps1`.
+GitHub Actions 负责从仓库源码生成发布的 `winutil.ps1`。只有当生成的脚本来自编译流程、而非对 `winutil.ps1` 的直接手工编辑时，该发布才被视为有效。

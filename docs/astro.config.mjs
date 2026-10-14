@@ -9,7 +9,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'WinUtil',
-			description: "Chris Titus Tech's Windows Utility — install apps, apply tweaks, run fixes, and manage Windows from one place.",
+			description: "Chris Titus Tech 出品的 Windows 实用工具——安装应用、应用优化项、执行修复，在一处完成对 Windows 的管理。",
 			logo: {
 				src: './src/assets/branding/navlogo.png',
 				replacesTitle: true,
@@ -40,33 +40,33 @@ export default defineConfig({
 			// Sidebar groups, top to bottom: User Guide, Code Reference, Help.
 			sidebar: [
 				{
-					label: 'User Guide',
+					label: '使用指南',
 					items: [
-						{ label: 'Overview', slug: 'guides' },
-						{ label: 'Getting Started', slug: 'guides/getting-started' },
-						{ label: 'Applications', slug: 'guides/application' },
-						{ label: 'Tweaks', slug: 'guides/tweaks' },
-						{ label: 'Features', slug: 'guides/features' },
-						{ label: 'Updates', slug: 'guides/updates' },
-						{ label: 'Automation', slug: 'guides/automation' },
-						{ label: 'Win11 Creator', slug: 'guides/win11creator' },
+						{ label: '概述', slug: 'guides' },
+						{ label: '快速开始', slug: 'guides/getting-started' },
+						{ label: '应用', slug: 'guides/application' },
+						{ label: '优化项', slug: 'guides/tweaks' },
+						{ label: '功能', slug: 'guides/features' },
+						{ label: '更新', slug: 'guides/updates' },
+						{ label: '自动化', slug: 'guides/automation' },
+						{ label: 'Win11 镜像制作', slug: 'guides/win11creator' },
 					],
 				},
 				{
-					label: 'Code Reference',
+					label: '代码参考',
 					items: [
-						{ label: 'Architecture & Design', slug: 'code-reference/architecture' },
-						{ label: 'Issue Triage Commands', slug: 'code-reference/issue-triage' },
-						{ label: 'Tweaks Reference', items: [{ autogenerate: { directory: 'code-reference/tweaks' } }] },
-						{ label: 'Features Reference', items: [{ autogenerate: { directory: 'code-reference/features' } }] },
+						{ label: '架构与设计', slug: 'code-reference/architecture' },
+						{ label: '问题分类命令', slug: 'code-reference/issue-triage' },
+						{ label: '优化项参考', items: [{ autogenerate: { directory: 'code-reference/tweaks' } }] },
+						{ label: '功能参考', items: [{ autogenerate: { directory: 'code-reference/features' } }] },
 					],
 				},
 				{
-					label: 'Help',
+					label: '帮助',
 					items: [
-						{ label: 'FAQ', slug: 'faq' },
-						{ label: 'Known Issues', slug: 'knownissues' },
-						{ label: 'Contributing', slug: 'contributing' },
+						{ label: '常见问题', slug: 'faq' },
+						{ label: '已知问题', slug: 'knownissues' },
+						{ label: '参与贡献', slug: 'contributing' },
 						{ label: siteLinks.forums.label, link: siteLinks.forums.href, attrs: { target: '_blank', rel: 'noreferrer' } },
 					],
 				},

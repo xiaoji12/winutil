@@ -1,57 +1,57 @@
 ---
-title: Contributing
-description: How to test, report issues, and contribute code to WinUtil.
+title: 参与贡献
+description: 如何测试 WinUtil、报告问题并贡献代码。
 ---
 
-## Testing
+## 测试
 
-* Test the latest changes to WinUtil by running the pre-release and reporting issues you are encountering to help us continually improve WinUtil!
+* 运行预发布版本来测试 WinUtil 的最新改动，并把你遇到的问题反馈给我们，帮助 WinUtil 持续改进！
 
-#### Run the latest pre-release
+#### 运行最新的预发布版本
 
 ```ps1
 irm https://christitus.com/windev | iex
 ```
 
 :::caution
-**Keep in mind** That this is a pre-release and should be treated as such. It exists for developers to test the utility and report or fix bugs before they get added to the stable release. Don't use it in production!
+**请注意**，这是预发布版本，应按预发布版本对待。它的存在是为了让开发者在功能进入稳定版之前测试该工具，并报告或修复其中的问题。请勿在生产环境使用！
 :::
 
-## Issues
+## 问题反馈
 
-* If you encounter any challenges or problems with the script, I kindly request that you submit them via the "Issues" tab on the GitHub repository. By filling out the provided template, you can provide specific details about the issue, allowing me (and others in the community) to promptly address any bugs or consider feature requests.
+* 如果你在使用脚本时遇到任何困难或问题，请通过 GitHub 仓库的「Issues」标签页提交。填写提供的模板，给出问题的具体细节，这样我（以及社区中的其他人）就能及时处理错误或考虑功能建议。
 
-## Contribute Code
+## 贡献代码
 
-* Pull requests are now handled directly on the **MAIN branch**. This was done since we can now select specific releases to launch via releases in GitHub.
+* 拉取请求现在直接提交到 **MAIN 分支**。这样做是因为我们现在可以通过 GitHub 的发布功能选择要发布的具体版本。
 
-* If you're doing code changes, then you can submit a PR to the `main` branch.
+* 如果你要修改代码，可以向 `main` 分支提交 PR。
 
 :::caution
-Do not use a code formatter, make massive amounts of line changes, or make multiple feature changes. EACH FEATURE CHANGE SHOULD BE ITS OWN PULL REQUEST!
+不要使用代码格式化工具，不要改动大量代码行，也不要一次性提交多个功能改动。每一个功能改动都应该单独提交一个拉取请求！
 :::
 
 :::caution
-Do not open a pull request that adds support for other languages to WinUtil for now, until we decide how we want to move forward with language support.
+在我们确定好语言支持的推进方式之前，暂时不要提交为 WinUtil 增加其他语言支持的拉取请求。
 :::
 
-* When creating pull requests, it is essential to thoroughly document all changes made. This includes, but is not limited to, documenting any additions made to the `tweaks` section and corresponding `undo tweak`, so users are able to remove the newly added tweaks if necessary, and comprehensive documentation is required for all code changes. Document your changes and briefly explain why you made your changes in your Pull Request Description. Failure to adhere to this format may result in the denial of the pull request. Additionally, any code lacking sufficient documentation may also be denied.
+* 创建拉取请求时，必须完整记录所做的全部更改。这包括但不限于：记录 `tweaks` 部分新增的内容以及对应的 `undo tweak`，以便用户在需要时能够移除新增的优化项；所有代码改动都需要有完整的文档说明。请在拉取请求描述中记录你的改动，并简要说明改动原因。不遵守此格式可能导致拉取请求被拒绝。此外，任何文档说明不充分的代码也可能被拒绝。
 
-* By following these guidelines, we can maintain a high standard of quality and ensure that the codebase remains organized and well-documented.
+* 遵循这些准则，我们就能保持高质量标准，并确保代码库组织有序、文档完善。
 
 :::note
-When creating a function, please include "WPF" or "WinUtil" in the file name so it can be loaded into the runspace.
+创建函数时，请在文件名中包含「WPF」或「WinUtil」，以便它能被加载到运行空间中。
 :::
 
-## Walk through
+## 操作指引
 
-* This is a guide for beginners. If you are still having issues, look at the following official GitHub documentation:
-    * [Commit through WEB](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/about-commits)
-    * [Commit through GitHub Desktop](https://docs.github.com/en/desktop/making-changes-in-a-branch/committing-and-reviewing-changes-to-your-project-in-github-desktop#about-commits)
-    * [Create a Pull Request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
+* 这是一份面向新手的指南。如果你仍然遇到问题，请查看以下 GitHub 官方文档：
+    * [通过网页提交](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/about-commits)
+    * [通过 GitHub Desktop 提交](https://docs.github.com/en/desktop/making-changes-in-a-branch/committing-and-reviewing-changes-to-your-project-in-github-desktop#about-commits)
+    * [创建拉取请求](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
 
 
-### Overview
+### 总览
 
 ```mermaid
 %%{init: {"flowchart": {"curve": "cardinal"}} }%%
@@ -71,54 +71,54 @@ graph TD
 ```
 
 :::note
-This is a diagram to guide you through the process. It may vary depending on the type of change you're making.
+这是一张指引你完成整个流程的示意图。根据你所做改动类型的不同，实际流程可能会有所差异。
 :::
 
-### Fork the Repo
-* Fork the WinUtil Repository [here](https://github.com/ChrisTitusTech/winutil) to create a copy that will be available in your repository list.
+### 复刻仓库
+* 在[此处](https://github.com/ChrisTitusTech/winutil)复刻 WinUtil 仓库，创建一个副本，它会出现在你的仓库列表中。
 
 ![Fork Image](../../assets/contributing/Fork-Button-Dark.png)
 
-### Clone the Fork
+### 克隆复刻的仓库
 :::tip
-While you can make your changes directly through the Web, we recommend cloning the repo to your device using the application GitHub Desktop (available in WinUtil) to test your fork easily.
+虽然你可以直接通过网页进行改动，但我们建议使用 GitHub Desktop 应用程序（WinUtil 中可安装）把仓库克隆到你的设备上，以便轻松测试你的复刻版本。
 :::
 
-* Install GitHub Desktop if it is not already installed.
-* Log in using the same GitHub account you used to fork WinUtil.
-* Choose the fork under "Your Repositories" and press "clone `{repo name}`"
-* Create a new branch and name it something relatable to your changes.
+* 如果尚未安装 GitHub Desktop，请先安装。
+* 使用你复刻 WinUtil 时所用的同一个 GitHub 账号登录。
+* 在「Your Repositories」下选择该复刻仓库，然后点击「clone `{repo name}`」
+* 新建一个分支，并取一个与你的改动相关的名称。
 
-* Now you can modify WinUtil to your liking using your preferred text editor.
+* 现在你就可以用自己喜欢的文本编辑器随意修改 WinUtil 了。
 
 
-### Testing your changes
+### 测试你的改动
 
-* To test to see if your changes work as intended, run the following commands in a PowerShell terminal as admin:
+* 要测试改动是否达到预期效果，请在 PowerShell 终端中以管理员身份运行以下命令：
 
-* Change the directory where you are running the commands to the forked project.
+* 将运行命令的目录切换到复刻的项目。
 * `cd {path to the folder with the compile.ps1}`
-* Run the following command to compile and run WinUtil:
+* 运行以下命令来编译并运行 WinUtil：
 * `.\Compile.ps1 -run`
 
 ![Compile](../../assets/contributing/Compile.png)
 
-* After seeing that your changes work properly, feel free to commit the changes to the repository and make a PR. For help on that, follow the documentation below.
+* 确认改动正常工作后，就可以把改动提交到仓库并发起 PR 了。相关帮助请参照下面的文档。
 
-### Committing the changes
-* Before committing your changes, please discard changes made to the `winutil.ps1` file, like the following:
+### 提交改动
+* 提交改动之前，请丢弃对 `winutil.ps1` 文件所做的更改，如下所示：
 
 ![Push Commit Image](../../assets/contributing/Discard-GHD.png)
 
-* Now, commit your changes once you are happy with the result.
+* 现在，对结果满意后就提交你的改动。
 
 ![Commit Image](../../assets/contributing/Commit-GHD.png)
 
-* Push the changes to upload them to your fork on GitHub.
+* 推送改动，将其上传到你在 GitHub 上的复刻仓库。
 
 ![Push Commit Image](../../assets/contributing/Push-Commit.png)
 
-### Making a PR
-* To make a PR on your repo under a new branch linking to the main branch, a button will show and say Preview and Create pull request. Click that button and fill in all the information that is provided on the template. Once all the information is filled in correctly, check your PR to make sure there is no WinUtil.ps1 file attached to the PR. Once everything is good, make the PR and wait for Chris (the maintainer) to accept or deny your PR. Once it is accepted by Chris, you will be able to see your changes in the "/windev" build.
-* If you do not see your feature in the main "/win" build, that is fine. All new changes go into the /windev build to make sure everything is working OK before going fully public.
-* Congratulations! You just submitted your first PR. Thank you so much for contributing to WinUtil.
+### 发起 PR
+* 要在你的仓库中以新分支向 main 分支发起 PR，会出现一个按钮，上面写着 Preview and Create pull request。点击该按钮并填写模板中要求的所有信息。信息全部填写正确后，检查一下你的 PR，确认其中没有附带 WinUtil.ps1 文件。一切就绪后发起 PR，等待 Chris（项目维护者）接受或拒绝你的 PR。一旦被 Chris 接受，你就能在「/windev」构建版本中看到自己的改动。
+* 如果你在主构建版本「/win」中没看到自己的功能，这是正常的。所有新改动都会先进入 /windev 构建版本，确认一切正常后才会全面公开。
+* 恭喜！你刚刚提交了自己的第一个 PR。非常感谢你为 WinUtil 做出贡献。

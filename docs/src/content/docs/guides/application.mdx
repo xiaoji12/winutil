@@ -1,75 +1,75 @@
 ---
-title: Applications
-description: Use the Applications tab in WinUtil to install, upgrade, uninstall, and review supported apps.
+title: 应用程序
+description: 使用 WinUtil 的「应用程序」标签页安装、升级、卸载并查看受支持的应用。
 sidebar:
   order: 2
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Use the Applications tab to install, upgrade, uninstall, and review supported apps from one place. WinUtil relies on package manager support for these actions, so the available results depend on what WinGet can detect and manage on your system.
+使用「应用程序」标签页，可以在一个地方安装、升级、卸载并查看受支持的应用。WinUtil 依靠包管理器来完成这些操作，因此可用的结果取决于 WinGet 在你的系统上能检测到并管理哪些内容。
 
 <Tabs>
-<TabItem label="Install & Upgrade">
-* Choose the applications you want to install or upgrade.
-    * For programs not currently installed, this action will install them.
-    * For programs already installed, this action will update them to the latest version.
-* Click the `Install/Upgrade Selected` button to start the installation or upgrade process.
+<TabItem label="安装与升级">
+* 选择你想要安装或升级的应用程序。
+    * 对于当前尚未安装的程序，此操作会执行安装。
+    * 对于已经安装的程序，此操作会将其更新到最新版本。
+* 点击 `Install/Upgrade Selected` 按钮开始安装或升级流程。
 
 ![Install or upgrade selected applications](../../../assets/screenshots/install-pics/installation&upgrade.png)
 </TabItem>
-<TabItem label="Uninstall">
-* Select the programs you wish to uninstall.
-* Click the `Uninstall Selected` button to remove them.
+<TabItem label="卸载">
+* 选择你想要卸载的程序。
+* 点击 `Uninstall Selected` 按钮将其移除。
 
 ![Uninstall selected applications](../../../assets/screenshots/install-pics/uninstall-apps.png)
 </TabItem>
-<TabItem label="Upgrade All">
-* Simply press the `Upgrade All` button.
-* This upgrades every supported installed program without individual selection.
+<TabItem label="升级全部">
+* 只需按下 `Upgrade All` 按钮。
+* 它会升级所有受支持的已安装程序，无需逐个选择。
 
 ![Upgrade all applications](../../../assets/screenshots/install-pics/upgrade-all.png)
 </TabItem>
-<TabItem label="Clear Selection">
-* Click the `Clear Selection` button.
-* This clears all current selections.
+<TabItem label="清除选择">
+* 点击 `Clear Selection` 按钮。
+* 它会清除当前的所有选择。
 
 ![Clear app selections](../../../assets/screenshots/install-pics/clear-selected-apps.png)
 </TabItem>
-<TabItem label="Collapse & Expand Categories">
-* Click `Collapse All Categories` to close every category and shrink the list to just the category headers.
-* Click `Expand All Categories` to reopen every category and show all applications again.
+<TabItem label="折叠与展开分类">
+* 点击 `Collapse All Categories` 可关闭所有分类，把列表压缩成只剩分类标题。
+* 点击 `Expand All Categories` 可重新打开所有分类，再次显示全部应用程序。
 
 ![Collapse or expand all categories](../../../assets/screenshots/install-pics/Collapse&ExpandCat.png)
 </TabItem>
-<TabItem label="Category Filters">
-* Click a category chip at the top of the tab to show only that category. The chip stays highlighted while its filter is active.
-* Hold `Ctrl` and click to add more categories to the filter, or to remove one again.
-* Click `All`, or click the highlighted category again while it is the only one selected, to clear the filter.
-* Categories with matching results open while a filter is active. Ones that filtering opened for you go back to collapsed when you clear it, ones you opened yourself stay open.
+<TabItem label="分类筛选">
+* 点击标签页顶部的分类标签，即可只显示该分类。筛选生效时，该标签会保持高亮。
+* 按住 `Ctrl` 并点击，可以向筛选条件中添加更多分类，也可以再次移除。
+* 点击 `All`，或在某个高亮分类是唯一选中项时再次点击它，即可清除筛选。
+* 筛选生效时，包含匹配结果的分类会自动展开。由筛选为你展开的分类在清除筛选后会回到折叠状态，而你自己手动展开的分类会保持展开。
 </TabItem>
-<TabItem label="Selected Apps Counter">
-* The `Selected Apps` counter in the sidebar shows how many applications are currently selected.
-* Use it to keep track of your selection as you browse categories.
+<TabItem label="已选应用计数">
+* 侧边栏中的 `Selected Apps` 计数器会显示当前已选的应用程序数量。
+* 浏览各个分类时，可以用它来掌握自己的选择情况。
 
 ![Selected apps counter](../../../assets/screenshots/install-pics/Selected-Apps.png)
 </TabItem>
-<TabItem label="Show Installed Apps">
-* Click the `Show Installed Apps` button.
-* This scans for and selects installed applications supported by WinGet.
+<TabItem label="显示已安装应用">
+* 点击 `Show Installed Apps` 按钮。
+* 它会扫描并选中 WinGet 支持的已安装应用程序。
 
 ![Show installed apps](../../../assets/screenshots/install-pics/show-installed-apps.png)
 </TabItem>
 </Tabs>
 
 :::tip
-If you have trouble finding an application, press `Ctrl + F` and search for its name. The list filters as you type. The search and the category chips work together, so you can search inside the categories you picked.
+如果找不到某个应用程序，请按 `Ctrl + F` 并搜索它的名称。列表会随着你的输入实时筛选。搜索功能和分类标签可以配合使用，这样你就能在自己选定的分类范围内搜索。
 :::
 
 :::note
-`Show Installed Apps` only selects software that WinGet can identify. Apps installed outside supported package sources may not appear.
+`Show Installed Apps` 只会选中 WinGet 能够识别的软件。通过受支持的包来源之外的方式安装的应用可能不会出现。
 :::
 
 :::caution
-Before uninstalling or upgrading apps, close any running programs first. Some packages may still prompt for input or fail if their source is unavailable.
+卸载或升级应用之前，请先关闭所有正在运行的程序。某些包可能仍会提示输入，或者在来源不可用时失败。
 :::

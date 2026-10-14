@@ -1,163 +1,163 @@
 ---
-title: Win11 Creator
-description: Build a custom, debloated Windows 11 ISO from an official Microsoft image using WinUtil's Win11 Creator tool.
+title: Win11 镜像制作
+description: 使用 WinUtil 的 Win11 镜像制作工具，基于官方 Microsoft 镜像制作已精简的定制 Windows 11 ISO。
 sidebar:
   order: 7
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-## Using WinUtil's Win11 Creator
+## 使用 WinUtil 的 Win11 镜像制作功能
 
-WinUtil includes a built-in **Win11 Creator** tool that lets you take an official Windows 11 ISO and produce a customized, debloated version. The resulting image can remove telemetry, bypass hardware requirement checks, and enable local account setup out of the box. You can export the result as a new ISO file or write it directly to a USB drive.
+WinUtil 内置了 **Win11 镜像制作**工具，可以让你拿一份官方 Windows 11 ISO，制作出经过定制和精简的版本。生成的镜像可以移除遥测、跳过硬件要求检查，并开箱即用地启用本地账户设置。你可以把结果导出为新的 ISO 文件，或直接写入 U 盘。
 
 ![Win11 Creator tab in WinUtil](../../../assets/screenshots/win11creator-tab-new.png)
 
 :::caution
-You need an **official Windows 11 ISO** from [Microsoft's website](https://www.microsoft.com/en-us/software-download/windows11) before starting. Custom, modified, or non-official ISOs are not supported. The process uses ~10–15 GB of temporary disk space, so make sure you have room.
+开始前，你需要先从 [Microsoft 网站](https://www.microsoft.com/en-us/software-download/windows11)获取一份**官方 Windows 11 ISO**。定制、修改过或非官方的 ISO 不受支持。该过程会占用约 10–15 GB 的临时磁盘空间，请确保空间充足。
 :::
 
 :::note
-This workflow is intended for fresh Windows installs, not in-place upgrades of an existing installation.
+此流程适用于全新安装 Windows，不适用于对现有系统进行就地升级。
 :::
 
 ---
 
-The tab is a three-step wizard. The step you are on is shown in the header row, and you can click an earlier step to go back to it until the image has been modified. The status log on the right stays visible throughout.
+该标签页是一个三步向导。当前所处的步骤会显示在标题行中；在镜像被修改之前，你可以点击前面的步骤返回。右侧的状态日志全程保持可见。
 
-### Step 1 — Select Your Official Windows 11 ISO
+### 步骤 1 — 选择你的官方 Windows 11 ISO
 
-1. Open WinUtil and go to the **Win11 Creator** tab.
-2. Click **Browse** and select your **official Windows 11 ISO file** from Microsoft (must be 4 GB or larger). Custom or modified ISOs are not supported.
-3. The file path and size will appear on screen once selected.
-4. Click **Mount & Verify ISO**. WinUtil mounts the ISO, checks for a valid `install.wim` or `install.esd`, and reads the available editions (Home, Pro, Enterprise, etc.).
+1. 打开 WinUtil 并进入 **Win11 镜像制作**标签页。
+2. 点击**浏览**，选择来自 Microsoft 的**官方 Windows 11 ISO 文件**（必须为 4 GB 或更大）。定制或修改后的 ISO 不受支持。
+3. 选择完成后，文件路径和大小会显示在屏幕上。
+4. 点击**挂载并验证 ISO**。WinUtil 会挂载该 ISO，检查是否存在有效的 `install.wim` 或 `install.esd`，并读取可用的版本（Home、Pro、Enterprise 等）。
 
 :::note
-Mounting and verification takes around 10–30 seconds, depending on your drive speed.
+挂载和验证大约需要 10–30 秒，具体取决于你的硬盘速度。
 :::
 
 ---
 
-### Step 2 — Modify the Image
+### 步骤 2 — 修改镜像
 
-Once the ISO is verified, WinUtil moves to this step and shows the mounted drive and image file. Choose your **edition** from the dropdown — Pro is selected by default if available — and tick **Inject current system drivers** if you want them.
+ISO 验证通过后，WinUtil 会进入这一步，并显示已挂载的驱动器和镜像文件。从下拉框中选择你的**版本** —— 如果可用，默认会选中 Pro —— 如果需要，还可以勾选**注入当前系统驱动**。
 
-Then click **Run Windows ISO Modification and Creator** to start the customization process. WinUtil will:
+然后点击**运行 Windows ISO 修改与制作**开始定制流程。WinUtil 将执行以下操作：
 
-**App & Component Removal:**
-- **Remove 19 bloat apps** — Clipchamp, Teams, Dev Home, new Outlook, Bing apps, Solitaire, and more
-- **Uninstall OneDrive** during first logon
+**应用与组件移除：**
+- **移除 19 款预装冗余应用** — Clipchamp、Teams、Dev Home、新版 Outlook、Bing 应用、Solitaire 等
+- **在首次登录时卸载 OneDrive**
 
-**System Customization:**
-- **Bypass hardware checks** — removes TPM, Secure Boot, CPU, RAM, and storage requirement enforcement so the ISO installs on unsupported hardware
-- **Enable local account setup** — injects an `autounattend.xml` that skips the Microsoft account screen during OOBE
-- **Disable BitLocker and device encryption** — removes startup overhead
-- **Disable Chat icon** — removes chat taskbar button
-- **Pin the selected edition during setup** — writes setup metadata so OEM firmware keys for a different edition do not force the installer down the wrong product-key path
+**系统定制：**
+- **跳过硬件检查** — 取消 TPM、安全启动、CPU、内存和存储要求的强制校验，使该 ISO 能安装在不受支持的硬件上
+- **启用本地账户设置** — 注入 `autounattend.xml`，在 OOBE 阶段跳过 Microsoft 账户界面
+- **禁用 BitLocker 和设备加密** — 减少启动时的额外开销
+- **禁用聊天图标** — 移除任务栏上的聊天按钮
+- **在安装过程中锁定所选版本** — 写入安装元数据，使其他版本的 OEM 固件密钥不会把安装程序引向错误的产品密钥路径
 
-**Privacy & Telemetry Tweaks:**
-- **Disable telemetry** — advertising ID, tailored experiences, input personalization, speech online privacy
-- **Disable cloud content features** — app suggestions, Microsoft Store recommendations
-- **Remove telemetry scheduled tasks** — CEIP, Appraiser, WaaSMedic, and others
-- **Disable OneDrive folder backup** — prevents automatic backups to cloud
-- **Prevent DevHome and Outlook post-setup installation**
-- **Prevent Teams installation** — blocks auto-install after OOBE
-- **Prevent new Outlook Mail app installation**
-- **Disable Windows Update during OOBE** — re-enabled automatically on first login
-- **Disable Copilot and search box suggestions**
+**隐私与遥测优化项：**
+- **禁用遥测** — 广告 ID、定制体验、输入个性化、语音在线隐私
+- **禁用云内容功能** — 应用建议、Microsoft Store 推荐
+- **移除遥测计划任务** — CEIP、Appraiser、WaaSMedic 等
+- **禁用 OneDrive 文件夹备份** — 阻止自动备份到云端
+- **阻止安装后安装 DevHome 和 Outlook**
+- **阻止安装 Teams** — 阻止 OOBE 之后自动安装
+- **阻止安装新版 Outlook 邮件应用**
+- **在 OOBE 期间禁用 Windows 更新** — 首次登录时自动重新启用
+- **禁用 Copilot 和搜索框建议**
 
-**Optional: Driver Injection**
-- If enabled, WinUtil exports the drivers from your current system, injects boot-storage drivers into `boot.wim` (Windows Setup, index 2), and injects eligible packages into the selected `install.wim` image. Stale duplicate packages are excluded before injection. Each remaining package is added separately, so one incompatible package does not stop the others. If a package fails, WinUtil discards the partial mount and retries the remaining packages against the original image. Check the live log for warnings: if every package fails, WinUtil keeps the original `install.wim` and still produces the ISO.
+**可选：驱动注入**
+- 如果启用，WinUtil 会从你当前的系统中导出驱动程序，将启动存储驱动注入 `boot.wim`（Windows 安装程序，索引 2），并把符合条件的包注入所选的 `install.wim` 镜像。注入前会排除重复的旧包。每个剩余的包都会单独添加，因此一个不兼容的包不会影响到其他包。如果某个包失败，WinUtil 会丢弃部分挂载的状态，并针对原始镜像重试剩余的包。请查看实时日志中的警告：如果所有包都失败，WinUtil 会保留原始 `install.wim`，仍然生成 ISO。
 
 :::note
-Driver injection requires `sources\install.wim`. If the ISO uses `sources\install.esd`, leave this option off.
+驱动注入需要 `sources\install.wim`。如果 ISO 使用的是 `sources\install.esd`，请不要开启此选项。
 :::
 
-A live log shows progress as each step completes. Without driver injection, WinUtil writes the setup changes in a few seconds after the ISO copy. With driver injection, this stage usually takes **10–20 minutes**, depending on hardware. Keep WinUtil open until the log reports completion.
+实时日志会在每一步完成时显示进度。不启用驱动注入时，WinUtil 在复制完 ISO 后几秒内就能写入安装相关的更改。启用驱动注入后，这一阶段通常需要 **10–20 分钟**，具体取决于硬件。请保持 WinUtil 处于打开状态，直到日志报告完成。
 
 :::note
-The resulting ISO is close to the size of the source ISO. WinUtil does not remove the unused editions from `install.wim`; it selects your edition through `sources\ei.cfg` and `autounattend.xml` so Windows Setup installs the right one.
+生成的 ISO 大小与源 ISO 接近。WinUtil 不会从 `install.wim` 中移除未使用的版本；它通过 `sources\ei.cfg` 和 `autounattend.xml` 来选定你的版本，从而让 Windows 安装程序安装正确的那一个。
 :::
 
 ---
 
-### Step 3 — Export Your Result
+### 步骤 3 — 导出你的成果
 
-Once the modification is complete, choose how to save your image:
+修改完成后，选择镜像的保存方式：
 
 <Tabs>
-<TabItem label="Save as ISO">
-1. Click **Save as an ISO File**.
-2. Choose a save location (defaults to your Desktop as `Win11_Modified_yyyyMMdd.iso`).
-3. WinUtil builds a dual BIOS/UEFI bootable ISO using `oscdimg.exe`.
+<TabItem label="保存为 ISO">
+1. 点击**保存为 ISO 文件**。
+2. 选择保存位置（默认保存到桌面，文件名为 `Win11_Modified_yyyyMMdd.iso`）。
+3. WinUtil 会使用 `oscdimg.exe` 生成一个同时支持 BIOS/UEFI 启动的 ISO。
 
 :::note
-`oscdimg.exe` (part of the Windows ADK) is required. If it's not found, WinUtil will attempt to install it automatically via WinGet. If that fails, install it manually: `winget install -e --id Microsoft.OSCDIMG`
+`oscdimg.exe`（Windows ADK 的一部分）是必需的。如果找不到它，WinUtil 会尝试通过 WinGet 自动安装。如果安装失败，请手动安装：`winget install -e --id Microsoft.OSCDIMG`
 :::
 </TabItem>
-<TabItem label="Write to USB">
-1. Click **Write Directly to a USB Drive**.
-2. Select your USB drive from the dropdown (click **Refresh** if it doesn't appear).
-3. Click **Erase & Write to USB** and confirm the warning — **all data on the drive will be permanently erased**.
-4. WinUtil formats the drive as GPT with a single FAT32 partition (capped at 32 GB, splitting `install.wim` into `.swm` files if larger than 3.8 GB) and copies the modified Windows files.
+<TabItem label="写入 U 盘">
+1. 点击**直接写入 U 盘**。
+2. 从下拉框中选择你的 U 盘（如果没有出现，请点击**刷新**）。
+3. 点击**擦除并写入 U 盘**并确认警告 —— **该驱动器上的所有数据都将被永久清除**。
+4. WinUtil 会将该驱动器格式化为 GPT，并创建单个 FAT32 分区（上限 32 GB，如果 `install.wim` 大于 3.8 GB 则拆分为 `.swm` 文件），然后复制修改过的 Windows 文件。
 
 :::note
-WinUtil cannot split `install.esd`. If that file is 4 GB or larger, save an ISO instead of writing a FAT32 USB drive.
+WinUtil 无法拆分 `install.esd`。如果该文件达到或超过 4 GB，请改为保存 ISO，而不要写入 FAT32 格式的 U 盘。
 :::
 
 :::danger
-Double-check you have selected the correct drive before confirming. This operation cannot be undone.
+确认之前请务必检查自己选择的是否为正确的驱动器。此操作无法撤销。
 :::
 
-**Minimum USB size:** 8 GB recommended. Writing takes 10–20 minutes.
+**U 盘最小容量：** 建议 8 GB。写入需要 10–20 分钟。
 </TabItem>
 </Tabs>
 
 ---
 
-### Start Over (Optional)
+### 重新开始（可选）
 
-Click **Start Over** to delete the temporary working directory (~10–15 GB) and return the tool to its initial state, ready for a new ISO. You will be asked to confirm before anything is deleted.
-
----
-
-### What the Modified ISO Does Differently
-
-When you install Windows 11 from your modified ISO:
-
-- **No Microsoft account required** — create a local account directly during setup
-- **No hardware checks** — installs on machines without TPM 2.0, Secure Boot, or supported CPUs
-- **Dark mode enabled by default**
-- **Empty taskbar and Start Menu** — no pinned apps, Chat icon removed
-- **Windows Update disabled during OOBE** — automatically re-enabled on first login to prevent setup interruptions
-- **BitLocker disabled** — removes startup overhead on first boot
+点击**重新开始**可删除临时工作目录（约 10–15 GB），并让工具回到初始状态，以便处理新的 ISO。删除任何内容之前，系统会要求你确认。
 
 ---
 
-### Troubleshooting
+### 修改后的 ISO 有什么不同
 
-| Problem | Fix |
+用修改后的 ISO 安装 Windows 11 时：
+
+- **不需要 Microsoft 账户** — 可以在安装过程中直接创建本地账户
+- **没有硬件检查** — 可安装在没有 TPM 2.0、安全启动或受支持 CPU 的机器上
+- **默认启用深色模式**
+- **任务栏和开始菜单为空** — 没有固定的应用，聊天图标已移除
+- **OOBE 期间禁用 Windows 更新** — 首次登录时自动重新启用，以免打断安装过程
+- **禁用 BitLocker** — 减少首次启动时的额外开销
+
+---
+
+### 故障排查
+
+| 问题 | 解决办法 |
 |---------|-----|
-| "install.wim / install.esd was not found" | The ISO has no Windows installation image — download a fresh official ISO from Microsoft |
-| "oscdimg.exe not found" | Run `winget install -e --id Microsoft.OSCDIMG` then retry |
-| USB drive not showing up | Plug it in, wait a few seconds, then click **Refresh** |
-| Driver injection seems stuck | WIM servicing can pause at a mount or commit. Allow 10–20 minutes depending on hardware, and check the live log before closing WinUtil |
-| "Access Denied" error | Make sure WinUtil is running as Administrator |
-| Driver injection warning | Review the live log for the named package. Other compatible packages continue; if none succeed, the ISO is created with the original `install.wim` |
-| DISM error with an explanation in parentheses, e.g. "exit code 112 (Disk is full)" | WinUtil now explains common DISM failures in plain language. Free up disk space for a "Disk is full" error, or run WinUtil as Administrator for an "Access denied" error. If the code has no explanation, search the number on Microsoft's [DISM error code reference](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes) |
-| "Setup has failed to validate the product key" | Recreate the ISO with the latest WinUtil. The creator now removes stale `PID.txt`, writes `sources\ei.cfg`, and pins the selected image in `autounattend.xml` so setup does not use an embedded OEM key for a different edition |
+| "install.wim / install.esd was not found" | 该 ISO 中没有 Windows 安装镜像 — 请从 Microsoft 重新下载一份全新的官方 ISO |
+| "oscdimg.exe not found" | 运行 `winget install -e --id Microsoft.OSCDIMG` 后重试 |
+| U 盘没有显示 | 插好 U 盘，等待几秒钟，然后点击**刷新** |
+| 驱动注入似乎卡住了 | WIM 服务可能会在挂载或提交时暂停。请根据硬件情况预留 10–20 分钟，并在关闭 WinUtil 之前查看实时日志 |
+| 出现 "Access Denied" 错误 | 请确保 WinUtil 正以管理员身份运行 |
+| 驱动注入警告 | 请在实时日志中查看被点名的包。其他兼容的包会继续处理；如果全部失败，则会使用原始 `install.wim` 生成 ISO |
+| 出现带括号说明的 DISM 错误，例如 "exit code 112 (Disk is full)" | WinUtil 现在会用通俗的语言解释常见的 DISM 失败原因。遇到 "Disk is full" 错误时请释放磁盘空间，遇到 "Access denied" 错误时请以管理员身份运行 WinUtil。如果错误代码没有附带说明，请到 Microsoft 的 [DISM error code reference](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes) 上搜索该编号 |
+| "Setup has failed to validate the product key" | 请使用最新版 WinUtil 重新制作 ISO。该工具现在会删除过时的 `PID.txt`、写入 `sources\ei.cfg`，并在 `autounattend.xml` 中锁定所选镜像，这样安装程序就不会使用内嵌的其他版本 OEM 密钥 |
 
 ---
 
-## Additional Resources
+## 其他资源
 
-- Download official Windows 11 media from [Microsoft](https://www.microsoft.com/en-us/software-download/windows11).
-- If you prefer to write a finished ISO with another tool, common choices include [Rufus](https://rufus.ie/) or [Ventoy](https://www.ventoy.net/).
+- 从 [Microsoft](https://www.microsoft.com/en-us/software-download/windows11) 下载官方 Windows 11 安装介质。
+- 如果你更想用其他工具把做好的 ISO 写入 U 盘，常见的选择包括 [Rufus](https://rufus.ie/) 或 [Ventoy](https://www.ventoy.net/)。
 
 :::note
-Always download Windows ISOs from official Microsoft sources or trusted tools like Rufus/UUP Dump to avoid tampered images.
+请始终从 Microsoft 官方来源或 Rufus/UUP Dump 等可信工具下载 Windows ISO，以免使用到被篡改的镜像。
 :::
 
 :::note
-Newer Windows 11 ISOs may not boot correctly on older versions of Ventoy — make sure Ventoy is up to date before use. If issues persist after updating, this is a Ventoy compatibility limitation outside of WinUtil's control.
+较新的 Windows 11 ISO 在旧版 Ventoy 上可能无法正常启动 — 使用前请确保 Ventoy 已更新到最新版本。如果更新后问题依旧，这属于 Ventoy 的兼容性限制，不在 WinUtil 的可控范围内。
 :::

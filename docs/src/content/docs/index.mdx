@@ -1,29 +1,29 @@
 ---
-title: Documentation
-description: Chris Titus Tech's Windows Utility — install apps, apply tweaks, run fixes, and manage Windows from one place.
+title: 文档
+description: Chris Titus Tech 的 Windows 实用工具 —— 安装应用、应用优化项、执行修复并集中管理 Windows，一个地方全部搞定。
 template: splash
 editUrl: false
-heroEyebrow: Open Source Windows Setup Utility
-heroCaption: Free. Open source. No installer, no telemetry, no bloat.
+heroEyebrow: 开源 Windows 装机工具
+heroCaption: 免费、开源。无安装程序、无遥测、无冗余软件。
 heroBadges:
   - src: https://img.shields.io/github/v/release/ChrisTitusTech/winutil?color=%230567ff&label=Latest%20Release&style=for-the-badge
-    alt: Latest release
+    alt: 最新版本
     href: https://github.com/ChrisTitusTech/winutil/releases/latest
   - src: https://img.shields.io/github/downloads/ChrisTitusTech/winutil/winutil.ps1?label=Total%20Downloads&style=for-the-badge
-    alt: Total downloads
+    alt: 总下载量
   - src: https://dcbadge.limes.pink/api/server/https://discord.gg/RUbZUZyByQ
-    alt: Discord community server
+    alt: Discord 社区服务器
     href: https://discord.gg/RUbZUZyByQ
 hero:
-  title: Set up Windows the way you actually want it
-  tagline: Install apps, apply tweaks, run fixes, and manage Windows updates — all from one script, one window, no fuss.
+  title: 把 Windows 装成你真正想要的样子
+  tagline: 安装应用、应用优化项、执行修复、管理 Windows 更新 —— 一个脚本、一个窗口，全部搞定，毫不折腾。
   image:
     file: ../../assets/branding/title-screen.png
   actions:
-    - text: Get Started
+    - text: 开始使用
       link: /guides/
       icon: right-arrow
-    - text: View on GitHub
+    - text: 在 GitHub 上查看
       link: https://github.com/ChrisTitusTech/winutil
       icon: external
       variant: secondary
@@ -31,11 +31,11 @@ head:
   - tag: meta
     attrs:
       property: og:title
-      content: Documentation | WinUtil
+      content: 文档 | WinUtil
   - tag: meta
     attrs:
       name: twitter:title
-      content: Documentation | WinUtil
+      content: 文档 | WinUtil
   - tag: script
     attrs:
       type: application/ld+json
@@ -44,7 +44,7 @@ head:
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": "WinUtil",
-        "description": "Chris Titus Tech's Windows Utility — install apps, apply tweaks, run fixes, and manage Windows from one place.",
+        "description": "Chris Titus Tech 的 Windows 实用工具 —— 安装应用、应用优化项、执行修复并集中管理 Windows，一个地方全部搞定。",
         "url": "https://winutil.christitus.com/",
         "downloadUrl": "https://github.com/ChrisTitusTech/winutil",
         "operatingSystem": "Windows",
@@ -67,11 +67,11 @@ import CornerCard from '../../components/CornerCard.astro';
 {/* Trust bar: icon + label chips under the hero. */}
 <section class="wu-section wu-section--trust">
 	<div class="wu-trust-bar">
-		<span class="wu-trust-item"><Icon name="github" /> Open source</span>
-		<span class="wu-trust-item"><Icon name="download" /> No installer</span>
-		<span class="wu-trust-item"><Icon name="padlock" /> No telemetry added</span>
-		<span class="wu-trust-item"><Icon name="approve-check-circle" /> Everything reversible</span>
-		<span class="wu-trust-item"><Icon name="desktop" /> Windows 11 ready</span>
+		<span class="wu-trust-item"><Icon name="github" /> 开源</span>
+		<span class="wu-trust-item"><Icon name="download" /> 无需安装程序</span>
+		<span class="wu-trust-item"><Icon name="padlock" /> 不添加遥测</span>
+		<span class="wu-trust-item"><Icon name="approve-check-circle" /> 一切都可撤销</span>
+		<span class="wu-trust-item"><Icon name="desktop" /> 支持 Windows 11</span>
 	</div>
 </section>
 
@@ -79,15 +79,15 @@ import CornerCard from '../../components/CornerCard.astro';
 <section class="wu-section wu-section--tint">
 	<div class="wu-section-inner wu-text-narrow">
 		<div class="wu-section-head wu-align-left">
-			<h2>Windows setup is easy to start and tedious to finish</h2>
-			<p>A fresh install works fine out of the box. Getting it configured the way you actually want takes an afternoon of registry edits, forum posts, and forgotten steps.</p>
+			<h2>Windows 装机开头容易，收尾却很繁琐</h2>
+			<p>全新安装的系统开箱即可正常使用。但要把它配置成你真正想要的样子，往往要花上一整个下午去改注册表、翻论坛帖子，还得记住一堆容易遗漏的步骤。</p>
 		</div>
 		<ul class="wu-problem-list">
-			<li><span class="wu-bullet"><Icon name="warning" /></span> Essential apps mean a dozen separate installers, each with its own bundled toolbar to decline.</li>
-			<li><span class="wu-bullet"><Icon name="warning" /></span> Privacy and telemetry settings are scattered across half a dozen different settings panels.</li>
-			<li><span class="wu-bullet"><Icon name="warning" /></span> The tweaks worth applying live in year-old forum threads, mixed in with outdated or risky advice.</li>
-			<li><span class="wu-bullet"><Icon name="warning" /></span> Undoing a tweak means remembering exactly what you changed and how.</li>
-			<li><span class="wu-bullet"><Icon name="warning" /></span> Doing it all again on the next machine means starting from zero.</li>
+			<li><span class="wu-bullet"><Icon name="warning" /></span> 装齐必备软件要跑十几个不同的安装程序，每一个都得手动拒绝它自带的工具栏。</li>
+			<li><span class="wu-bullet"><Icon name="warning" /></span> 隐私和遥测相关的设置分散在好几个不同的设置面板里。</li>
+			<li><span class="wu-bullet"><Icon name="warning" /></span> 值得设置的优化项散落在几年前的论坛帖子里，还夹杂着过时或有风险的建议。</li>
+			<li><span class="wu-bullet"><Icon name="warning" /></span> 想撤销某个优化项，就得准确记起自己改过什么、是怎么改的。</li>
+			<li><span class="wu-bullet"><Icon name="warning" /></span> 换一台机器再来一遍，一切都得从零开始。</li>
 		</ul>
 	</div>
 </section>
@@ -96,39 +96,39 @@ import CornerCard from '../../components/CornerCard.astro';
 <section class="wu-section">
 	<div class="wu-section-inner">
 		<div class="wu-section-head">
-			<h2>WinUtil puts a real control panel on top of Windows</h2>
-			<p>Instead of stitching together installers, registry hacks, and forum wisdom, you manage the whole setup from one window.</p>
+			<h2>WinUtil 为 Windows 装上了一个真正的控制面板</h2>
+			<p>不必再把各种安装程序、注册表修改和论坛经验拼凑到一起，你可以在一个窗口里管理整套配置。</p>
 		</div>
 		<div class="wu-solution-grid">
 			<div class="wu-solution">
 				<div class="wu-solution-icon"><Icon name="download" /></div>
-				<h3>Install without the bloat</h3>
-				<p>WinGet and Chocolatey install clean builds of your everyday apps, with no bundled toolbars or bundled offers.</p>
+				<h3>安装不包含冗余软件</h3>
+				<p>WinGet 和 Chocolatey 安装的是常用软件的干净版本，没有捆绑的工具栏，也没有捆绑推广。</p>
 			</div>
 			<div class="wu-solution">
 				<div class="wu-solution-icon"><Icon name="setting" /></div>
-				<h3>Tweak with a checkbox</h3>
-				<p>Essential and advanced tweaks for privacy, performance, and UI behavior are one click away, grouped by what they actually do.</p>
+				<h3>勾选一下即可优化</h3>
+				<p>隐私、性能和界面行为方面的常规与高级优化项一键即可应用，并按实际作用分组呈现。</p>
 			</div>
 			<div class="wu-solution">
 				<div class="wu-solution-icon"><Icon name="approve-check-circle" /></div>
-				<h3>Undo what you don't like</h3>
-				<p>Nearly every tweak can be reverted from the same panel, so trying something risky doesn't mean a full reinstall.</p>
+				<h3>不喜欢就撤销</h3>
+				<p>几乎每一个优化项都能在同一个面板里还原，因此尝试有风险的设置并不意味着要重装系统。</p>
 			</div>
 			<div class="wu-solution">
 				<div class="wu-solution-icon"><Icon name="server" /></div>
-				<h3>Fix what's broken</h3>
-				<p>One-click repairs for networking, Windows Update, and WinGet handle the fixes people usually paste from a forum thread.</p>
+				<h3>修复出问题的地方</h3>
+				<p>针对网络、Windows 更新和 WinGet 的一键修复，覆盖了大家通常需要从论坛帖子里复制的那些解决办法。</p>
 			</div>
 			<div class="wu-solution">
 				<div class="wu-solution-icon"><Icon name="cloud-download" /></div>
-				<h3>Manage updates your way</h3>
-				<p>Switch between full updates, security-only updates, or fully paused — and back again — without digging through Group Policy.</p>
+				<h3>按你的方式管理更新</h3>
+				<p>在完整更新、仅安全更新和完全暂停之间自由切换，也能随时切回来，无需到组策略里翻找。</p>
 			</div>
 			<div class="wu-solution">
 				<div class="wu-solution-icon"><Icon name="desktop" /></div>
-				<h3>Build your own ISO</h3>
-				<p>Win11 Creator debloats and preconfigures an official Microsoft image, so new installs start from your baseline.</p>
+				<h3>制作属于自己的 ISO</h3>
+				<p>Win11 镜像制作功能会精简并预先配置官方的 Microsoft 镜像，让全新安装一开始就是你的基准配置。</p>
 			</div>
 		</div>
 	</div>
@@ -138,26 +138,26 @@ import CornerCard from '../../components/CornerCard.astro';
 <section class="wu-section wu-section--tint">
 	<div class="wu-section-inner">
 		<div class="wu-section-head">
-			<h2>Everything you need to set up a machine, once</h2>
+			<h2>一次性备齐装机所需的一切</h2>
 		</div>
 		<div class="wu-feature-grid">
-			<CornerCard icon="padlock" title="Nothing phones home">
-				WinUtil doesn't collect or transmit anything. It's a script that runs, makes the changes you selected, and exits.
+			<CornerCard icon="padlock" title="不会回传任何数据">
+				WinUtil 不会收集或上传任何信息。它就是一个运行、完成你所选更改然后退出的脚本。
 			</CornerCard>
-			<CornerCard icon="approve-check-circle" title="Reversible by default">
-				Tweaks are applied through documented, undoable actions instead of one-way registry edits.
+			<CornerCard icon="approve-check-circle" title="默认可撤销">
+				优化项通过有据可查、可撤销的操作来应用，而不是单向的注册表修改。
 			</CornerCard>
-			<CornerCard icon="setting" title="Grouped presets">
-				Minimal, Standard, and Advanced presets give you a sane starting point instead of picking through every tweak individually.
+			<CornerCard icon="setting" title="分组预设">
+				Minimal、Standard 和 Advanced 三档预设为你提供了合理的起点，不必逐个挑选每个优化项。
 			</CornerCard>
-			<CornerCard icon="cloud-download" title="WinGet & Chocolatey">
-				Application installs go through package managers you can audit, not opaque bundled installers.
+			<CornerCard icon="cloud-download" title="WinGet 与 Chocolatey">
+				应用安装走的是可供你审查的包管理器，而不是来路不明的捆绑安装程序。
 			</CornerCard>
-			<CornerCard icon="server" title="Automation-friendly">
-				Drive WinUtil unattended with config files and parameters for repeatable rollouts across machines.
+			<CornerCard icon="server" title="便于自动化">
+				借助配置文件和参数无人值守地驱动 WinUtil，实现跨机器的可重复部署。
 			</CornerCard>
-			<CornerCard icon="desktop" title="Custom Win11 ISOs">
-				Debloat and preconfigure a Windows 11 image before it's ever installed.
+			<CornerCard icon="desktop" title="定制 Win11 ISO">
+				在 Windows 11 镜像安装之前就完成精简与预配置。
 			</CornerCard>
 		</div>
 	</div>
@@ -167,29 +167,29 @@ import CornerCard from '../../components/CornerCard.astro';
 <section class="wu-section">
 	<div class="wu-section-inner">
 		<div class="wu-section-head">
-			<h2>From a blank terminal to a configured PC</h2>
+			<h2>从空白终端到配置完成的电脑</h2>
 		</div>
 		<div class="wu-timeline">
 			<div class="wu-timeline-step">
 				<span class="wu-timeline-number">1</span>
-				<h3>Open PowerShell as Administrator</h3>
-				<p>Right-click the Start button and choose Terminal (Admin), or launch PowerShell and elevate manually.</p>
+				<h3>以管理员身份打开 PowerShell</h3>
+				<p>右键点击「开始」按钮并选择「终端（管理员）」，或者启动 PowerShell 后手动提权。</p>
 			</div>
 			<div class="wu-timeline-step">
 				<span class="wu-timeline-number">2</span>
-				<h3>Run the launch command</h3>
-				<p>Downloads and starts the latest release.</p>
+				<h3>运行启动命令</h3>
+				<p>下载并启动最新版本。</p>
 				<Code code={'irm "https://christitus.com/win" | iex'} lang="powershell" />
 			</div>
 			<div class="wu-timeline-step">
 				<span class="wu-timeline-number">3</span>
-				<h3>Install, tweak, fix, update</h3>
-				<p>Work through the Install, Tweaks, Config, and Updates tabs — everything is undoable.</p>
+				<h3>安装、优化、修复、更新</h3>
+				<p>依次使用「安装」「优化项」「配置」和「更新」这几个标签页 —— 一切都可以撤销。</p>
 			</div>
 		</div>
 		<div class="wu-cta" style="margin-top: 3rem;">
 			<a class="wu-btn wu-btn-secondary" href="/guides/">
-				{'Read the Docs'}
+				{'阅读文档'}
 				<Icon name="right-arrow" size="1.5em" class="wu-icon-arrow" />
 			</a>
 		</div>
@@ -200,13 +200,13 @@ import CornerCard from '../../components/CornerCard.astro';
 <section class="wu-section wu-section--tint">
 	<div class="wu-section-inner wu-text-narrow">
 		<div class="wu-section-head wu-align-left">
-			<h2>Built for the gap between a fresh install and a finished machine</h2>
-			<p>Registry edits and PowerShell one-liners work. WinUtil makes them repeatable.</p>
+			<h2>专为填补「全新安装」到「成品机器」之间的空白而生</h2>
+			<p>改注册表和敲 PowerShell 单行命令确实管用，而 WinUtil 让这些操作可以反复复用。</p>
 		</div>
 		<ul class="wu-benefit-list">
-			<li><span class="wu-check"><Icon name="approve-check" /></span> You keep full control — every tweak is visible, documented, and reversible.</li>
-			<li><span class="wu-check"><Icon name="approve-check" /></span> You gain a single interface for installs, tweaks, fixes, and updates instead of five different tools.</li>
-			<li><span class="wu-check"><Icon name="approve-check" /></span> You avoid the bundled toolbars and bloat that come with most software installers.</li>
+			<li><span class="wu-check"><Icon name="approve-check" /></span> 控制权始终在你手上 —— 每个优化项都可见、有说明，并且可以撤销。</li>
+			<li><span class="wu-check"><Icon name="approve-check" /></span> 安装、优化、修复和更新共用一个界面，不必再切换五个不同的工具。</li>
+			<li><span class="wu-check"><Icon name="approve-check" /></span> 你不必再忍受多数软件安装程序自带的工具栏和冗余内容。</li>
 		</ul>
 	</div>
 </section>
@@ -214,18 +214,18 @@ import CornerCard from '../../components/CornerCard.astro';
 {/* Final CTA. */}
 <section class="wu-section">
 	<div class="wu-section-inner wu-text-narrow wu-cta">
-		<h2>Stop hunting for the same fixes every time</h2>
-		<p>Get a script that installs, tweaks, fixes, and updates Windows from one window.</p>
+		<h2>别再每次都去寻找同样的修复办法</h2>
+		<p>用一个脚本在同一个窗口里完成 Windows 的安装、优化、修复和更新。</p>
 		<div class="wu-btn-row">
 			<a class="wu-btn wu-btn-primary" href="/guides/">
-				{'Get Started'}
+				{'开始使用'}
 				<Icon name="right-arrow" size="1.5em" class="wu-icon-arrow" />
 			</a>
 			<a class="wu-btn wu-btn-secondary" href="https://github.com/ChrisTitusTech/winutil">
 				<Icon name="github" />
-				{' View on GitHub'}
+				{' 在 GitHub 上查看'}
 			</a>
 		</div>
-		<p class="wu-cta-footnote">Free and open source. No installer, no telemetry, no account required.</p>
+		<p class="wu-cta-footnote">免费且开源。无需安装程序、无遥测、无需注册账号。</p>
 	</div>
 </section>

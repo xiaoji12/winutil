@@ -1,274 +1,274 @@
 ---
-title: Getting Started
-description: The safest way to get started with WinUtil and the first actions most users take.
+title: 入门指南
+description: 最稳妥的 WinUtil 上手方式，以及大多数用户最先做的几件事。
 sidebar:
   order: 1
 ---
 
-## Welcome to WinUtil!
+## 欢迎使用 WinUtil！
 
-WinUtil helps you install apps, apply system tweaks, run common fixes, and manage Windows settings from one place. This guide covers the safest way to get started and the first actions most users take.
+WinUtil 可以帮你在一个地方完成安装应用、应用系统优化项、执行常见修复以及管理 Windows 设置。本指南介绍最稳妥的上手方式，以及大多数用户最先做的几件事。
 
-## System requirements
+## 系统要求
 
-Before running WinUtil, ensure your system meets these requirements:
+运行 WinUtil 之前，请确保你的系统满足以下要求：
 
 :::caution
-Windows 10 is not supported by WinUtil. Windows 10 reached the end of support on **October 14, 2025**.
+WinUtil 不支持 Windows 10。Windows 10 已于 **2025 年 10 月 14 日**终止支持。
 :::
 
-- **Operating system**: Windows 11
-- **PowerShell**: Version 5.1 or later (included by default in Windows 11)
-- **Administrator access**: Required for system-level changes
-- **Internet connection**: Required for downloading applications and updates
-- **.NET Framework**: Version 4.5 or later (usually pre-installed)
+- **操作系统**：Windows 11
+- **PowerShell**：5.1 或更高版本（Windows 11 默认已自带）
+- **管理员权限**：进行系统级更改时必需
+- **网络连接**：下载应用程序和更新时需要
+- **.NET Framework**：4.5 或更高版本（通常已预装）
 
-## Installation
+## 安装
 
-WinUtil doesn't require traditional installation. It runs directly from PowerShell as a script.
+WinUtil 不需要传统的安装过程。它作为脚本直接在 PowerShell 中运行。
 
-### Step 1: Open PowerShell as Administrator
+### 步骤 1：以管理员身份打开 PowerShell
 
-There are several ways to open PowerShell with admin rights:
+有多种方式可以打开具备管理员权限的 PowerShell：
 
-**Method 1: Start menu (recommended)**
+**方法 1：开始菜单（推荐）**
 
-1. Right-click the Windows Start button.
-2. Select "Terminal (Admin)".
+1. 右键点击 Windows 开始按钮。
+2. 选择「终端（管理员）」。
 
-**Method 2: Search method**
+**方法 2：搜索方式**
 
-1. Press the `Windows` key.
-2. Type "PowerShell" or "Terminal".
-3. Press `Ctrl + Shift + Enter` to launch as administrator.
-4. Or right-click and select "Run as administrator".
+1. 按下 `Windows` 键。
+2. 输入「PowerShell」或「终端」。
+3. 按 `Ctrl + Shift + Enter` 以管理员身份启动。
+4. 或者右键点击并选择「以管理员身份运行」。
 
-**Method 3: Run dialog**
+**方法 3：运行对话框**
 
-1. Press `Windows + R`.
-2. Type `powershell`.
-3. Press `Ctrl + Shift + Enter`.
+1. 按下 `Windows + R`。
+2. 输入 `powershell`。
+3. 按 `Ctrl + Shift + Enter`。
 
-### Step 2: Run the launch command
+### 步骤 2：运行启动命令
 
-With PowerShell running as Administrator, run one of the following commands depending on the release channel you want.
+在以管理员身份运行的 PowerShell 中，根据你需要的发布渠道运行以下某个命令。
 
-**Stable release (recommended)**
+**稳定版（推荐）**
 
 ```powershell
 irm "https://christitus.com/win" | iex
 ```
 
-**Development branch (bleeding edge — for testing only)**
+**开发分支（最前沿 —— 仅供测试）**
 
 ```powershell
 irm "https://christitus.com/windev" | iex
 ```
 
 :::note
-- The `irm` command downloads the script, and `iex` executes it. This is safe when downloading from the official source.
-- The development branch may contain experimental changes and should only be used for testing on non-production systems.
+- `irm` 命令用于下载脚本，`iex` 用于执行它。从官方来源下载时这是安全的。
+- 开发分支可能包含实验性改动，只应在非生产系统上用于测试。
 :::
 
-### Step 3: Wait for WinUtil to load
+### 步骤 3：等待 WinUtil 加载
 
-The first time you run WinUtil, it may take a few moments to:
+首次运行 WinUtil 时，可能需要一点时间来完成：
 
-- Download the latest version
-- Initialize the interface
-- Load all features and settings
+- 下载最新版本
+- 初始化界面
+- 加载所有功能与设置
 
-## First time setup
+## 首次设置
 
-### Understanding the interface
+### 了解界面
 
-WinUtil opens with a clean, tabbed interface:
+WinUtil 打开后是一个清爽的标签式界面：
 
-**Main tabs**:
+**主要标签页**：
 
-- **Install**: Browse and install applications
-- **Tweaks**: Apply system optimizations and customizations
-- **Config**: Access system tools and utilities
-- **Updates**: Manage Windows updates
-- **Win11 Creator**: Build a customized Windows 11 ISO from an official Microsoft image
+- **安装**：浏览并安装应用程序
+- **优化项**：应用系统优化与个性化设置
+- **配置**：使用系统工具和实用程序
+- **更新**：管理 Windows 更新
+- **Win11 镜像制作**：基于官方 Microsoft 镜像制作定制化的 Windows 11 ISO
 
-## Your first actions
+## 你的第一步操作
 
-Here are some recommended first steps for new users:
+以下是给新用户的一些推荐步骤：
 
-### 1. Create a restore point
+### 1. 创建还原点
 
-Before making any changes, create a system restore point:
+在做任何更改之前，先创建系统还原点：
 
-1. Go to the **Tweaks** tab.
-2. Find "Create Restore Point" under Essential Tweaks.
-3. Check the box and click **Run Tweaks**.
+1. 进入**优化项**标签页。
+2. 在常规优化项中找到「创建还原点」。
+3. 勾选它并点击**运行优化项**。
 
-This gives you a rollback point if needed.
+这样你就有了必要时的回退点。
 
-### 2. Install essential applications
+### 2. 安装必备应用程序
 
-1. Navigate to the **Install** tab.
-2. Browse categories or use the search bar.
-3. Check the applications you want to install.
-4. Click "Install/Upgrade Selected" at the bottom.
+1. 进入**安装**标签页。
+2. 浏览分类或使用搜索栏。
+3. 勾选你想安装的应用程序。
+4. 点击底部的「安装/升级所选」。
 
-### 3. Apply basic tweaks
+### 3. 应用基础优化项
 
-For a better Windows experience with minimal risk:
+以最小的风险获得更好的 Windows 体验：
 
-1. Go to the **Tweaks** tab.
-2. Select the **Standard** preset for a balanced configuration.
-3. Review the selected tweaks.
-4. Click **Run Tweaks**.
+1. 进入**优化项**标签页。
+2. 选择 **Standard** 预设，获得一套均衡的配置。
+3. 检查被选中的优化项。
+4. 点击**运行优化项**。
 
 :::note
-Some tweaks, fixes, and update changes may require a restart or sign-out before the full effect is visible.
+某些优化项、修复和更新改动可能需要重启或注销后才会完全生效。
 :::
 
-## Common tasks
+## 常见操作
 
-### Installing applications
+### 安装应用程序
 
-**Single application**:
+**单个应用程序**：
 
-1. Open the **Install** tab.
-2. Search for the application name.
-3. Check the box next to it.
-4. Click "Install/Upgrade Selected".
+1. 打开**安装**标签页。
+2. 搜索应用程序名称。
+3. 勾选它前面的复选框。
+4. 点击「安装/升级所选」。
 
-**Multiple applications**:
+**多个应用程序**：
 
-1. Check multiple application boxes.
-2. All checked apps will install in sequence.
-3. Install and uninstall progress is shown in the window-level bottom panel, including the current package or package-manager batch and overall completion.
+1. 勾选多个应用程序。
+2. 所有已勾选的应用会按顺序依次安装。
+3. 安装与卸载进度会显示在窗口底部的面板中，包括当前的软件包或包管理器批次，以及整体完成情况。
 
-### Applying tweaks
+### 应用优化项
 
-**Essential tweaks** (safe for all users):
+**常规优化项**（对所有用户都安全）：
 
-1. Go to the **Tweaks** tab.
-2. Select from the Essential Tweaks section.
-3. Click **Run Tweaks**.
+1. 进入**优化项**标签页。
+2. 在常规优化项部分进行选择。
+3. 点击**运行优化项**。
 
-**Advanced tweaks** (use with caution):
+**高级优化项**（请谨慎使用）：
 
-1. Only modify if you understand the implications.
-2. Always create a restore point first.
-3. Review documentation for each tweak.
+1. 只有在了解其影响后才去修改。
+2. 务必先创建还原点。
+3. 查阅每个优化项的说明文档。
 
-**Undoing tweaks**:
+**撤销优化项**：
 
-1. Select the same tweaks you applied.
-2. Click **Undo Selected Tweaks**.
-3. The system reverts to the previous state.
+1. 选中你应用过的相同优化项。
+2. 点击**撤销所选优化项**。
+3. 系统会恢复到之前的状态。
 
-### Using quick fixes
+### 使用快速修复
 
-For common Windows issues:
+针对常见的 Windows 问题：
 
-1. Go to the **Config** tab.
-2. Navigate to the **Fixes** section.
-3. Select the appropriate fix:
-   - **Reset Network**: Fixes network connectivity issues
-   - **Reset Windows Update**: Resolves update problems
-   - **System Corruption Scan**: Repairs corrupted system files
-   - **WinGet Reinstall**: Fixes package manager issues
+1. 进入**配置**标签页。
+2. 找到**修复**部分。
+3. 选择合适的修复项：
+   - **重置网络**：修复网络连接问题
+   - **重置 Windows 更新**：解决更新相关故障
+   - **系统损坏扫描**：修复损坏的系统文件
+   - **重新安装 WinGet**：解决包管理器问题
 
-### Changing DNS servers
+### 更改 DNS 服务器
 
-For improved privacy and speed:
+为了提升隐私和速度：
 
-1. Go to the **Tweaks** tab.
-2. Find the DNS section.
-3. Select a provider:
-   - **Cloudflare**: Fast and privacy-focused
-   - **Google**: Reliable and widely used
-   - **Quad9**: Security-focused with malware blocking
-   - **AdGuard**: Blocks ads and trackers
-4. Click **Apply**.
+1. 进入**优化项**标签页。
+2. 找到 DNS 部分。
+3. 选择服务商：
+   - **Cloudflare**：速度快且注重隐私
+   - **Google**：稳定可靠、使用广泛
+   - **Quad9**：注重安全，可拦截恶意软件
+   - **AdGuard**：拦截广告与跟踪器
+4. 点击**应用**。
 
-## Understanding presets
+## 了解预设
 
-WinUtil offers several preset configurations:
+WinUtil 提供以下几种预设配置：
 
-- **Minimal**: Minimal changes that keep most Windows features
-- **Standard**: A good middle ground for most users
-- **Advanced**: Selects a focused set of safer advanced tweaks
+- **Minimal**：改动最小，保留大部分 Windows 功能
+- **Standard**：对大多数用户来说恰到好处的折中方案
+- **Advanced**：精选一组更安全的高级优化项
 
-## Safety tips
+## 安全提示
 
-✅ **Do**:
+✅ **应该做的**：
 
-- Create restore points before major changes
-- Read tweak descriptions before applying
-- Start with Essential Tweaks
-- Keep Windows up to date
-- Back up important data
+- 进行重大更改前创建还原点
+- 应用前先阅读优化项的说明
+- 先从常规优化项开始
+- 保持 Windows 处于最新状态
+- 备份重要数据
 
-❌ **Don't**:
+❌ **不应该做的**：
 
-- Apply all tweaks at once without understanding them
-- Skip creating restore points
-- Use Advanced Tweaks without research
-- Disable security features unless necessary
-- Run on production systems without testing
+- 在不了解作用的情况下一次性应用全部优化项
+- 跳过创建还原点这一步
+- 不做功课就使用高级优化项
+- 除非必要，否则不要禁用安全功能
+- 未经测试就在生产系统上运行
 
-## Troubleshooting first run
+## 首次运行的故障排查
 
-### Script won't download
+### 脚本无法下载
 
-If the launch command fails:
+如果启动命令失败：
 
-- Make sure PowerShell or Terminal is running as Administrator.
-- Confirm the PC has internet access and can reach `christitus.com`.
-- Retry from a normal PowerShell session rather than a restricted enterprise shell profile.
-- If the command starts and then closes immediately, reopen Terminal as Administrator and run it again so you can read the error output.
+- 确认 PowerShell 或终端正以管理员身份运行。
+- 确认电脑可以上网，并且能够访问 `christitus.com`。
+- 改用普通的 PowerShell 会话重试，而不是受限的企业 shell 配置文件。
+- 如果命令启动后立即关闭，请以管理员身份重新打开终端再运行一次，以便看到错误输出。
 
-If it still fails, check the [Known Issues](/knownissues/) page.
+如果仍然失败，请查看[已知问题](/knownissues/)页面。
 
-## Next steps
+## 下一步
 
-Now that you're set up, explore these guides:
+完成设置后，可以继续阅读这些指南：
 
-- [Applications Guide](/guides/application/) — Learn about installing, upgrading, and uninstalling software
-- [Tweaks Guide](/guides/tweaks/) — Understand system optimizations
-- [FAQ](/faq/) — Common questions and answers
+- [应用程序指南](/guides/application/) — 了解软件的安装、升级与卸载
+- [优化项指南](/guides/tweaks/) — 了解系统优化
+- [常见问题](/faq/) — 常见问题与解答
 
-## Exporting a diagnostics report
+## 导出诊断报告
 
-If you're reporting a problem, click the gear icon in the top-right corner and choose **Export Environment Report**. It saves a read-only JSON file with:
+如果你要反馈问题，请点击右上角的齿轮图标并选择**导出环境报告**。它会保存一份只读的 JSON 文件，其中包含：
 
-- Windows edition, version, build, and architecture
-- CPU model, logical processor count, and total memory
-- PowerShell edition, version, and execution policy
-- Whether WinGet and Chocolatey are installed, and their versions
-- Whether a reboot is pending
-- The current applied/not-applied state of every tweak and toggle
+- Windows 版本、版本号、内部版本和系统架构
+- CPU 型号、逻辑处理器数量和内存总量
+- PowerShell 版本、版本号和执行策略
+- 是否安装了 WinGet 和 Chocolatey，以及它们的版本
+- 是否有待处理的重启
+- 每一个优化项和开关当前「已应用/未应用」的状态
 
-It does not include computer or user names, paths, IP or MAC addresses, serial numbers, installed-app inventories, services, raw registry paths or values, secrets, or logs. The tweak/toggle state is derived from a registry comparison, but only the resulting true/false per tweak is included, not any registry content itself. WinUtil never uploads the report — you choose where to save it and who to send it to.
+其中不包含计算机名或用户名、路径、IP 或 MAC 地址、序列号、已安装应用清单、服务、原始注册表路径或键值、密钥或日志。优化项/开关的状态来自注册表比对，但只包含每个优化项最终的 true/false 结果，不包含任何注册表内容本身。WinUtil 绝不会上传该报告 —— 保存位置和发送对象都由你自己决定。
 
-You'll be asked whether to also bundle the last 7 days of WinUtil logs into a companion `.txt` file, which maintainers often need alongside the report to diagnose an issue. This companion is raw log output and does not use the JSON report's privacy allowlist: it may contain local paths, commands, and error details. Review it before sharing.
+系统会询问你是否同时把最近 7 天的 WinUtil 日志打包成一个配套的 `.txt` 文件，维护者在排查问题时通常需要将它与报告一起查看。这个配套文件是原始日志输出，不适用 JSON 报告的隐私白名单：它可能包含本地路径、命令和错误详情。分享前请先检查。
 
-## Getting help
+## 获取帮助
 
-If you need assistance:
+如果你需要协助：
 
-- **Documentation**: Browse this documentation site
-- **Known Issues**: Check the [Known Issues](/knownissues/) page
-- **Discord**: Join the [community Discord server](https://discord.gg/RUbZUZyByQ)
-- **GitHub Issues**: Report bugs on [GitHub](https://github.com/ChrisTitusTech/winutil/issues)
-- **YouTube**: Watch [video tutorials](https://www.youtube.com/watch?v=6UQZ5oQg8XA)
+- **文档**：浏览本站文档
+- **已知问题**：查看[已知问题](/knownissues/)页面
+- **Discord**：加入 [Discord 社区服务器](https://discord.gg/RUbZUZyByQ)
+- **GitHub Issues**：在 [GitHub](https://github.com/ChrisTitusTech/winutil/issues) 上报告问题
+- **YouTube**：观看[视频教程](https://www.youtube.com/watch?v=6UQZ5oQg8XA)
 
-## Quick reference card
+## 快速参考卡
 
-| Task | Location | Action |
+| 操作 | 位置 | 动作 |
 | ---- | -------- | ------ |
-| Install or upgrade apps | Install tab | Check boxes → Install/Upgrade Selected |
-| Uninstall apps | Install tab | Check boxes → Uninstall Selected |
-| Apply tweaks | Tweaks tab | Select tweaks → Run Tweaks |
-| Undo tweaks | Tweaks tab | Select tweaks → Undo Selected Tweaks |
-| Create restore point | Tweaks tab | Essential Tweaks section |
-| Fix network | Config tab | Fixes → Reset Network |
-| Change DNS | Tweaks tab | DNS section |
-| Open Control Panel | Config tab | Legacy Windows Panels |
+| 安装或升级应用 | 安装标签页 | 勾选 → 安装/升级所选 |
+| 卸载应用 | 安装标签页 | 勾选 → 卸载所选 |
+| 应用优化项 | 优化项标签页 | 选择优化项 → 运行优化项 |
+| 撤销优化项 | 优化项标签页 | 选择优化项 → 撤销所选优化项 |
+| 创建还原点 | 优化项标签页 | 常规优化项部分 |
+| 修复网络 | 配置标签页 | 修复 → 重置网络 |
+| 更改 DNS | 优化项标签页 | DNS 部分 |
+| 打开控制面板 | 配置标签页 | 旧版 Windows 面板 |

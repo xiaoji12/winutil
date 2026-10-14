@@ -1,55 +1,55 @@
 ---
-title: Automation
-description: Run WinUtil from an exported configuration file or a preset to automate setups across multiple PCs.
+title: 自动化
+description: 通过导出的配置文件或预设来运行 WinUtil，在多台电脑上自动完成配置。
 sidebar:
   order: 6
 ---
 
-Use Automation to run WinUtil from an exported configuration file.
+使用自动化功能，可以通过导出的配置文件来运行 WinUtil。
 
-WinUtil supports predefined presets that apply common configurations automatically:
+WinUtil 支持一些预定义预设，能够自动套用常用配置：
 
 - `Standard`
 - `Minimal`
 - `Advanced`
 
-Example:
+示例：
 
 ```powershell
 & ([ScriptBlock]::Create((irm "https://christitus.com/win"))) -Preset Standard
 ```
 
-To view exactly what each preset does, see:
+想了解每个预设具体做了什么，请查看：
 https://github.com/ChrisTitusTech/winutil/blob/main/config/preset.json
 
-To find a key for a custom configuration, hover over a supported application, tweak, feature, or AppX entry in WinUtil. Its tooltip shows `Preset key: <key>`. Application keys are searchable on the Install tab, while tweak and AppX keys are searchable on their respective tabs. Feature keys are available from their tooltips because the Config/Features tab does not have search. Controls that cannot be applied from a preset, such as toggle switches, drop-downs, and package-manager choices, intentionally do not advertise a preset key.
+要查找自定义配置所需的键名，请在 WinUtil 中将鼠标悬停在受支持的应用程序、优化项、功能或 AppX 条目上，它的提示信息会显示 `Preset key: <key>`。应用程序的键可以在「安装」标签页中搜索，优化项和 AppX 的键则可以在各自对应的标签页中搜索。功能的键只能从其提示信息中获取，因为「配置/功能」标签页没有搜索功能。无法从预设中应用的控件（例如开关、下拉框和包管理器选项）刻意不提供预设键。
 
-To create your own config file:
+创建你自己的配置文件：
 
-1. Open WinUtil.
-2. Click the gear icon in the top-right corner.
-3. Choose **Export**.
-4. Save the exported JSON file.
+1. 打开 WinUtil。
+2. 点击右上角的齿轮图标。
+3. 选择**导出**。
+4. 保存导出的 JSON 文件。
 
-Once you have exported a config, launch WinUtil with it using this command:
+导出配置后，用下面的命令带上它来启动 WinUtil：
 ```powershell
 & ([ScriptBlock]::Create((irm "https://christitus.com/win"))) -Config "C:\Path\To\Config.json"
 ```
 
-This is useful for:
+它适用于以下场景：
 
-- Applying the same WinUtil configuration across multiple Windows 11 PCs
-- Reusing a known-good baseline after reinstalling Windows
-- Standardizing deployments for labs, workstations, or personal setups
+- 在多台 Windows 11 电脑上套用相同的 WinUtil 配置
+- 重装 Windows 后复用一份已知可用的基准配置
+- 为实验室、工作站或个人环境统一部署标准
 
-:::caution[Keep exported configurations current]
-Exported configurations contain the WinUtil catalog keys that existed when the file was created. Current exports use a flat JSON format: one string when a single setting is selected, or an array of strings when several settings are selected. If a later WinUtil version removes or renames any imported key, the entire import is rejected before current selections are changed. PowerShell reports the stale entry as `Unknown selection key '<key>'`.
+:::caution[保持导出的配置为最新]
+导出的配置包含创建该文件时存在的 WinUtil 目录键。当前的导出使用扁平化 JSON 格式：选中单个设置时为一个字符串，选中多个设置时为一个字符串数组。如果后续的 WinUtil 版本移除或重命名了任何被导入的键，整个导入会在更改当前选择之前被拒绝。PowerShell 会把失效的条目报告为 `Unknown selection key '<key>'`。
 
-Older WinUtil versions exported a JSON object with `Install` package metadata and grouped `WPFInstall`, `WPFTweaks`, `WPFToggle`, and `WPFFeature` selections. When importing one of these legacy files, WinUtil restores the keys that still exist and skips retired keys, recording them as a warning in the WinUtil log. If the file contains no supported selections, the import makes no changes.
+较早版本的 WinUtil 导出的是一个 JSON 对象，其中包含 `Install` 包的元数据，以及分组的 `WPFInstall`、`WPFTweaks`、`WPFToggle` 和 `WPFFeature` 选择项。导入这类旧文件时，WinUtil 会恢复仍然存在的键，跳过已废弃的键，并在 WinUtil 日志中记录为警告。如果文件中不包含任何受支持的选择项，导入不会做任何更改。
 
-To recover, compare the reported key with the current files in the [WinUtil configuration catalog](https://github.com/ChrisTitusTech/winutil/tree/main/config). Remove or replace the stale key in your JSON file, or create and export a new configuration with the current WinUtil version, then run the import again. Re-export long-lived baselines after catalog changes so they remain compatible.
+要恢复使用，请将报告的键与 [WinUtil 配置目录](https://github.com/ChrisTitusTech/winutil/tree/main/config)中的当前文件进行比对。在 JSON 文件中删除或替换失效的键，或者用当前版本的 WinUtil 创建并导出一份新配置，然后重新导入。目录发生变动后，请重新导出长期使用的基准配置，以保持兼容。
 :::
 
 :::note
-Run the command in an elevated PowerShell session so WinUtil can apply system-level changes.
+请在已提升权限的 PowerShell 会话中运行该命令，以便 WinUtil 能够应用系统级更改。
 :::

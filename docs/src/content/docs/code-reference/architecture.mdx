@@ -1,13 +1,13 @@
 ---
-title: Architecture & Design
-description: How WinUtil's GUI, functions, and JSON configuration files fit together, plus a deep dive into the Win11 Creator subsystem.
+title: 架构与设计
+description: WinUtil 的 GUI、函数与 JSON 配置文件如何协同工作，并深入介绍 Win11 Creator 子系统。
 ---
 
-## Overview
+## 概述
 
-WinUtil is a PowerShell-based Windows utility with a WPF (Windows Presentation Foundation) GUI. This document explains the architecture, code structure, and how different components work together.
+WinUtil 是一个基于 PowerShell 的 Windows 实用工具，带有 WPF（Windows Presentation Foundation）图形界面。本文档说明其架构、代码结构，以及各个组件之间如何协同工作。
 
-## High-Level Architecture
+## 总体架构
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -35,9 +35,9 @@ WinUtil is a PowerShell-based Windows utility with a WPF (Windows Presentation F
     └─────────────────────────┘
 ```
 
-## Project Structure
+## 项目结构
 
-### Directory Layout
+### 目录结构
 
 ```
 winutil/
@@ -64,104 +64,104 @@ winutil/
 └── docs/                     # Documentation
 ```
 
-### Key Components
+### 核心组件
 
 #### 1. Compile.ps1
-**Purpose**: Combines all separate script files into a single `winutil.ps1` for distribution.
+**用途**：把所有独立的脚本文件合并为一个 `winutil.ps1`，便于分发。
 
-**Process**:
-1. Reads all function files from `/functions/`
-2. Includes configuration JSON files
-3. Embeds XAML GUI definition
-4. Combines into a single script
-5. Outputs `winutil.ps1`
+**流程**：
+1. 从 `/functions/` 读取所有函数文件
+2. 包含配置 JSON 文件
+3. 嵌入 XAML GUI 定义
+4. 合并为单个脚本
+5. 输出 `winutil.ps1`
 
-**Why**: Makes distribution easier (single file) and improves load time.
+**原因**：分发更简单（单文件），同时提升加载速度。
 
 #### 2. scripts/main.ps1
-**Purpose**: Entry point that manages the run.
+**用途**：管理整个运行过程的入口点。
 
-**Responsibilities**:
-- Load configurations
-- Run the headless `-Preset` and `-Config` paths
-- Start the interface on a dedicated STA runspace and wait for it
-- Report anything the interface thread failed with, then clean up
+**职责**：
+- 加载配置
+- 执行无界面的 `-Preset` 与 `-Config` 路径
+- 在专用的 STA 运行空间（Runspace）上启动界面并等待其结束
+- 上报界面线程抛出的任何异常，然后进行清理
 
-The interface itself lives in `Start-WinUtilUserInterface`, not here. See [Threading Model](#threading-model).
+界面本身位于 `Start-WinUtilUserInterface`，而不是这里。参见 [线程模型](#threading-model)。
 
 #### 3. functions/public/
-**Purpose**: User-facing functions that implement main features.
+**用途**：面向用户的函数，实现各项主要功能。
 
-**Key Functions**:
-- `Initialize-WPFUI.ps1`: Sets up the GUI
-- `Invoke-WPFTweak*`: Applies system tweaks
-- `Invoke-WPFFeature*`: Enables Windows features
-- `Install-WinUtilProgram*`: Installs applications
+**关键函数**：
+- `Initialize-WPFUI.ps1`：初始化 GUI
+- `Invoke-WPFTweak*`：应用系统优化项
+- `Invoke-WPFFeature*`：启用 Windows 功能
+- `Install-WinUtilProgram*`：安装应用程序
 
-**Naming Convention**: Functions start with `WPF` or `Winutil` to be loaded into the runspace.
+**命名约定**：函数名以 `WPF` 或 `Winutil` 开头，以便被加载到运行空间（Runspace）中。
 
 #### 4. functions/private/
-**Purpose**: Internal helper functions not directly called by users.
+**用途**：不直接由用户调用的内部辅助函数。
 
-**Key Functions**:
-- `Get-WinUtilVariables.ps1`: Retrieves UI element references
-- `Install-WinUtilWinget.ps1`: Ensures WinGet is installed
-- `Get-WinUtilCheckBoxes.ps1`: Gets checkbox states
-- `Invoke-WinUtilCurrentSystem.ps1`: Gets system information
+**关键函数**：
+- `Get-WinUtilVariables.ps1`：获取 UI 元素引用
+- `Install-WinUtilWinget.ps1`：确保已安装 WinGet
+- `Get-WinUtilCheckBoxes.ps1`：获取复选框状态
+- `Invoke-WinUtilCurrentSystem.ps1`：获取系统信息
 
 #### 5. config/*.json
-**Purpose**: Define available applications, tweaks, and features declaratively.
+**用途**：以声明方式定义可用的应用程序、优化项和功能。
 
-**Files**:
-- `applications.json`: Application definitions with WinGet/Choco IDs
-- `tweaks.json`: Registry tweaks and their undo actions
-- `feature.json`: Windows features that can be enabled/disabled
-- `preset.json`: Predefined tweak combinations
-- `dns.json`: DNS provider configurations
+**文件**：
+- `applications.json`：应用程序定义，包含 WinGet/Choco ID
+- `tweaks.json`：注册表优化项及其撤销操作
+- `feature.json`：可启用/禁用的 Windows 功能
+- `preset.json`：预定义的优化项组合
+- `dns.json`：DNS 提供商配置
 
 #### 6. xaml/inputXML.xaml
-**Purpose**: WPF GUI layout and design.
+**用途**：WPF GUI 的布局与设计。
 
-**Structure**:
-- Buttons with event handlers
-- TextBoxes for input
-- CheckBoxes for options
-- ListBoxes for selections
+**结构**：
+- 带事件处理程序的按钮
+- 用于输入的文本框
+- 用于选项的复选框
+- 用于选择的列表框
 
-## Win11 Creator Architecture
+## Win11 Creator 架构
 
-The **Win11 Creator** is a specialized subsystem within Winutil that creates customized Windows 11 ISOs. It operates independently of the main package installation and tweak system.
+**Win11 Creator** 是 Winutil 中一个专用子系统，用于创建定制的 Windows 11 ISO。它独立于主程序包安装与优化项系统运行。
 
-### Win11 Creator Components
+### Win11 Creator 组件
 
-**Core Functions** (`functions/private/`):
-- `Invoke-WinUtilISO.ps1`: Main orchestrator containing ISO workflow and helper functions
-  - `Invoke-WinUtilISOBrowse`: ISO file selection dialog
-  - `Invoke-WinUtilISOMountAndVerify`: Validates and mounts ISO, verifies it is an official Windows 11 ISO
-  - `Invoke-WinUtilISOModify`: Launches modification in background runspace
-  - `Invoke-WinUtilISOExport`: Builds bootable ISO via `oscdimg.exe`
-  - `Invoke-WinUtilISOCheckExistingWork`: Recovers incomplete work sessions
-  - `Invoke-WinUtilISOCleanAndReset`: Cleans up temp directories and resets UI
-  - `Write-WinUtilISOLog`: Posts log messages to UI status box and session log
-  - `Set-WinUtilISOStep`: Controls wizard navigation state
-  - `Get-WinUtilEditionIdFromName`: Maps edition display names to setup edition IDs
-  - `Invoke-WinUtilRobocopy`: Copies files with exit code verification
-  - `Find-WinUtilOscdimg` / `Get-WinUtilOscdimgPath`: Locates or installs `oscdimg.exe`
+**核心函数**（`functions/private/`）：
+- `Invoke-WinUtilISO.ps1`：主编排器，包含 ISO 工作流及辅助函数
+  - `Invoke-WinUtilISOBrowse`：ISO 文件选择对话框
+  - `Invoke-WinUtilISOMountAndVerify`：校验并挂载 ISO，确认它是官方 Windows 11 ISO
+  - `Invoke-WinUtilISOModify`：在后台运行空间（Runspace）中启动修改
+  - `Invoke-WinUtilISOExport`：通过 `oscdimg.exe` 构建可启动 ISO
+  - `Invoke-WinUtilISOCheckExistingWork`：恢复未完成的工作会话
+  - `Invoke-WinUtilISOCleanAndReset`：清理临时目录并重置界面
+  - `Write-WinUtilISOLog`：向界面状态框与会话日志发送日志消息
+  - `Set-WinUtilISOStep`：控制向导的导航状态
+  - `Get-WinUtilEditionIdFromName`：把版本显示名称映射为安装程序的版本 ID
+  - `Invoke-WinUtilRobocopy`：复制文件并校验退出码
+  - `Find-WinUtilOscdimg` / `Get-WinUtilOscdimgPath`：定位或安装 `oscdimg.exe`
 
-- `Invoke-WinUtilISOUSB.ps1`: USB drive detection and formatting
-  - `Invoke-WinUtilISORefreshUSBDrives`: Enumerates USB drives
-  - `Get-WinUtilFreeDriveLetter`: Finds available drive letters
-  - `Invoke-WinUtilISOWriteUSB`: Formats USB drive as GPT/FAT32, splits WIM if needed, and copies files
+- `Invoke-WinUtilISOUSB.ps1`：U 盘检测与格式化
+  - `Invoke-WinUtilISORefreshUSBDrives`：枚举 U 盘
+  - `Get-WinUtilFreeDriveLetter`：查找可用的驱动器号
+  - `Invoke-WinUtilISOWriteUSB`：把 U 盘格式化为 GPT/FAT32，必要时拆分 WIM，并复制文件
 
-- `Invoke-WinUtilISOScript.ps1`: Prepares setup media and customizations
-  - Stages AppX removal (19 bloatware packages) into `autounattend.xml` for first logon
-  - Applies 50+ registry tweaks during Windows Setup and first logon; removes scheduled tasks at first logon
-  - Triggers OneDrive uninstall during first logon
-  - Stages setup script fallbacks to `sources\$OEM$\$$\Setup\Scripts\`
-  - Pins selected edition in `autounattend.xml` and writes `sources\ei.cfg`
-  - Injects eligible current system drivers into WIM images if enabled (WIM mount is only used for driver servicing)
+- `Invoke-WinUtilISOScript.ps1`：准备安装介质与自定义内容
+  - 把 AppX 卸载（19 个预装软件包）暂存进 `autounattend.xml`，在首次登录时执行
+  - 在 Windows 安装过程与首次登录时应用 50 多项注册表优化；首次登录时移除计划任务
+  - 在首次登录时触发 OneDrive 卸载
+  - 把安装脚本回退方案暂存到 `sources\$OEM$\$$\Setup\Scripts\`
+  - 在 `autounattend.xml` 中固定所选版本，并写入 `sources\ei.cfg`
+  - 若已启用，则把当前系统符合条件的驱动程序注入 WIM 映像（仅在驱动维护时挂载 WIM）
 
-### Win11 Creator Data Flow
+### Win11 Creator 数据流
 
 ```
 User selects official Windows 11 ISO
@@ -214,91 +214,91 @@ Invoke-WinUtilISOCleanAndReset (optional)
     └─ Reset UI to initial state
 ```
 
-### Win11 Creator Validation & Safety
+### Win11 Creator 校验与安全
 
-**ISO Validation**:
-- Only accepts official Microsoft Windows 11 ISOs
-- Validates presence of install.wim or install.esd
-- Checks image metadata for "Windows 11" string
-- Rejects custom, modified, or non-Windows 11 ISOs
+**ISO 校验**：
+- 只接受微软官方的 Windows 11 ISO
+- 校验 install.wim 或 install.esd 是否存在
+- 检查映像元数据中是否包含 “Windows 11” 字符串
+- 拒绝自定义的、已修改的或非 Windows 11 的 ISO
 
-**WIM Metadata Validation**:
-- During driver injection, `Assert-WinUtilISOWimMetadata` validates critical fields (`Languages`, `Installation`, `Edition`, `ProductSuite`, `ProductType`) before and after WIM servicing
-- Driver injection stops before export if the required metadata is missing or changes
-- Without driver injection, WinUtil preserves the original installation image and skips WIM metadata validation
+**WIM 元数据校验**：
+- 驱动注入期间，`Assert-WinUtilISOWimMetadata` 会在 WIM 维护前后校验关键字段（`Languages`、`Installation`、`Edition`、`ProductSuite`、`ProductType`）
+- 若缺少必需元数据或元数据发生变化，驱动注入会在导出之前中止
+- 未启用驱动注入时，WinUtil 会保留原始安装映像，并跳过 WIM 元数据校验
 
-**Edition Pinning & Setup Fallback**:
-- Writes `sources\ei.cfg` and removes `sources\PID.txt` so setup does not use mismatched OEM product keys
-- Pins the selected edition index in `autounattend.xml` (`/IMAGE/INDEX`)
-- Stages fallback setup scripts under `sources\$OEM$\$$\Setup\Scripts\` with `UseConfigurationSet` enabled
+**版本固定与安装回退**：
+- 写入 `sources\ei.cfg` 并删除 `sources\PID.txt`，使安装程序不会使用不匹配的 OEM 产品密钥
+- 在 `autounattend.xml`（`/IMAGE/INDEX`）中固定所选版本的索引
+- 在 `sources\$OEM$\$$\Setup\Scripts\` 下暂存回退安装脚本，并启用 `UseConfigurationSet`
 
-**Work Session Recovery**:
-- Auto-detects incomplete work from previous sessions
-- Allows resuming the export step without re-running selection and modification
-- Prevents redundant modifications
+**工作会话恢复**：
+- 自动检测上一次会话中未完成的工作
+- 允许直接恢复导出步骤，无需重新执行选择与修改
+- 避免重复修改
 
-**Modification Safety**:
-- Windows PE and specialize set hardware bypass and setup safeguards; `WinUtil-PostInstall.ps1` applies additional registry changes at first logon
-- Original ISO never modified; only working copy
-- Logged to the WinUtil session log and the live UI status panel
-- DISM handles image dismount with automatic cleanup and discard on error
+**修改安全性**：
+- Windows PE 与 specialize 阶段设置了硬件绕过与安装保护；`WinUtil-PostInstall.ps1` 在首次登录时应用额外的注册表更改
+- 原始 ISO 从不被修改，只修改工作副本
+- 记录到 WinUtil 会话日志以及实时界面状态面板
+- DISM 负责映像卸载，出错时自动清理并放弃更改
 
-### Win11 Creator Registry Tweaks
+### Win11 Creator 注册表优化
 
-The `Invoke-WinUtilISOScript` function applies **50+ registry tweaks** during setup and first logon:
+`Invoke-WinUtilISOScript` 函数会在安装过程与首次登录时应用 **50 多项注册表优化**：
 
-**Hardware Bypass**:
-- TPM 2.0 check bypass
-- Secure Boot requirement bypass
-- CPU compatibility bypass
-- RAM requirement bypass
-- Storage check bypass
+**硬件绕过**：
+- 绕过 TPM 2.0 检查
+- 绕过安全启动要求
+- 绕过 CPU 兼容性检查
+- 绕过内存（RAM）要求
+- 绕过存储检查
 
-**Privacy & Telemetry**:
-- Disable advertising ID
-- Disable tailored experiences
-- Disable input personalization
-- Disable speech online privacy
-- Disable cloud content suggestions
-- Disable app suggestion subscriptions
-- Remove CEIP, Appraiser, WaaSMedic, etc.
+**隐私与遥测**：
+- 禁用广告 ID
+- 禁用个性化体验
+- 禁用输入个性化
+- 禁用语音在线隐私
+- 禁用云内容建议
+- 禁用应用建议订阅
+- 移除 CEIP、Appraiser、WaaSMedic 等
 
-**OOBE & Setup**:
-- Enable local account setup
-- Skip Microsoft account requirement
-- Dark mode by default
-- Empty taskbar and Start Menu
+**OOBE 与安装**：
+- 启用本地账户设置
+- 跳过 Microsoft 账户要求
+- 默认深色模式
+- 清空任务栏与开始菜单
 
-**Post-Setup Installations**:
-- Prevent DevHome auto-installation
-- Prevent new Outlook Mail app installation
-- Prevent Teams auto-installation
+**安装后处理**：
+- 阻止 DevHome 自动安装
+- 阻止新版 Outlook Mail 应用安装
+- 阻止 Teams 自动安装
 
-**System Features**:
-- Disable BitLocker and device encryption
-- Disable Chat icon from the Taskbar
-- Disable OneDrive folder backup
-- Disable Copilot
-- Disable Windows Update during OOBE (re-enabled at first login)
+**系统功能**：
+- 禁用 BitLocker 与设备加密
+- 从任务栏移除 Chat 图标
+- 禁用 OneDrive 文件夹备份
+- 禁用 Copilot
+- 在 OOBE 期间禁用 Windows 更新（首次登录时重新启用）
 
-### Driver Injection Feature
+### 驱动注入功能
 
-**Optional Enhancement**: When enabled, exports all drivers from the running system and injects them into:
-- `install.wim` (main OS image), excluding stale duplicates
-- `boot.wim` index 2 (Windows Setup PE environment), storage controllers only (`SCSIAdapter` / `HDC`)
+**可选增强**：启用后，会从当前运行的系统导出所有驱动程序，并注入到：
+- `install.wim`（主系统映像），排除过时的重复项
+- `boot.wim` 索引 2（Windows 安装 PE 环境），仅注入存储控制器（`SCSIAdapter` / `HDC`）
 
-**Use Case**: Enables offline installation on systems with missing drivers.
+**使用场景**：用于在缺少驱动程序的系统上完成离线安装。
 
-### Disk Space Requirements
+### 磁盘空间需求
 
-- **Temporary working directory**: ~10-15 GB
-- **Original ISO**: 4-6 GB
-- **Modified ISO**: close to the source ISO size
-- **Total needed**: ~25 GB for safe operation
+- **临时工作目录**：约 10-15 GB
+- **原始 ISO**：4-6 GB
+- **修改后的 ISO**：接近源 ISO 的大小
+- **总计需要**：约 25 GB，以确保操作安全
 
-## Data Flow
+## 数据流
 
-### Application Installation Flow
+### 应用程序安装流程
 
 ```
 User clicks "Install"
@@ -318,7 +318,7 @@ Update UI with progress
 Display completion message
 ```
 
-### Tweak Application Flow
+### 优化项应用流程
 
 ```
 User selects tweaks and clicks "Run Tweaks"
@@ -340,7 +340,7 @@ Update UI
 Display completion
 ```
 
-### Undo Tweak Flow
+### 撤销优化项流程
 
 ```
 User selects tweaks and clicks "Undo"
@@ -358,9 +358,9 @@ Remove from the applied tweaks log
 Update UI
 ```
 
-## Configuration File Format
+## 配置文件格式
 
-### applications.json Structure
+### applications.json 结构
 
 ```json title="config/applications.json"
 {
@@ -375,15 +375,15 @@ Update UI
 }
 ```
 
-**Fields**:
-- `category`: Which section in the Install tab
-- `content`: Display name in GUI
-- `description`: Tooltip/description text
-- `winget`: WinGet package ID
-- `choco`: Chocolatey package name
-- `link`: Official website
+**字段**：
+- `category`：属于 Install（安装）选项卡中的哪个分类
+- `content`：GUI 中的显示名称
+- `description`：提示/说明文本
+- `winget`：WinGet 包 ID
+- `choco`：Chocolatey 包名
+- `link`：官方网站
 
-### tweaks.json Structure
+### tweaks.json 结构
 
 ```json title="config/tweaks.json"
 {
@@ -405,29 +405,27 @@ Update UI
 }
 ```
 
-**Fields**:
-- `Content`: Display name
-- `Description`: What it does
-- `category`: Essential/Advanced/Customize
-- `registry`: Registry changes to make
-- `registry[].Values`: Per-state values for a registry-backed combobox
-- `registry[].DefaultValue`: Effective value when the registry entry is absent
-- `service`: Services to change
-- `OriginalValue/State`: For undo functionality
+**字段**：
+- `Content`：显示名称
+- `Description`：作用说明
+- `category`：Essential/Advanced/Customize
+- `registry`：要进行的注册表更改
+- `registry[].Values`：注册表支持的下拉框在各个状态下的取值
+- `registry[].DefaultValue`：注册表项不存在时生效的值
+- `service`：要更改的服务
+- `OriginalValue/State`：用于撤销功能
 
-## Threading Model
+## 线程模型
 
-WinUtil runs on three kinds of thread, and each has one job:
+WinUtil 运行在三类线程上，每类线程各司其职：
 
-| Thread | Runspace | Responsibility |
+| 线程 | 运行空间（Runspace） | 职责 |
 | --- | --- | --- |
-| Main | The one the script started in | Start the interface, wait for it, surface its errors, clean up |
-| Interface | `$sync.UIRunspace`, a dedicated STA runspace | Own the window. Paint and dispatch, nothing else |
-| Workers | `$sync.runspace`, a shared pool | Run everything long: installs, tweaks, features, AppX, Win11 Creator |
+| 主线程 | 脚本启动时所在的那个线程 | 启动界面、等待其结束、上报界面错误、清理 |
+| 界面线程 | `$sync.UIRunspace`，一个专用的 STA 运行空间 | 拥有窗口。只负责绘制与调度，不做其他事 |
+| 工作线程 | `$sync.runspace`，一个共享池 | 执行所有耗时任务：安装、优化项、功能、AppX、Win11 Creator |
 
-All three are created from the same starting point, `New-WinUtilSessionState`, which carries
-`$sync`, the compiled script's globals, and every WinUtil function. That is what lets any
-thread call any helper without the caller injecting function definitions.
+这三类线程都由同一个起点 `New-WinUtilSessionState` 创建，它携带着 `$sync`、已编译脚本的全局变量以及所有 WinUtil 函数。正因如此，任意线程都能调用任意辅助函数，而无需调用方注入函数定义。
 
 ```powershell
 # main.ps1 - the interface gets its own thread
@@ -442,19 +440,13 @@ $uiHandle = $uiShell.BeginInvoke()
 $uiHandle.AsyncWaitHandle.WaitOne()
 ```
 
-**Why**: the window never blocks on work, and a failure on the interface thread is reported
-instead of disappearing.
+**原因**：窗口永远不会因为工作而阻塞，界面线程上发生的故障会被上报，而不是无声消失。
 
-## Long-Running Work
+## 长时间运行的任务
 
-Every long action goes through `Start-WinUtilJob`, which owns everything a running operation
-needs: refusing to start while another job runs, the busy flag (`$sync.ActiveJob`), the progress
-bar and taskbar item, the boxed console banner, a start/finish/failure line in the log, and
-restoring the interface in a `finally` whatever happens.
+每个耗时操作都经由 `Start-WinUtilJob`，它掌管运行中的操作所需的一切：拒绝在已有作业运行时启动、忙碌标志（`$sync.ActiveJob`）、进度条与任务栏项、带框的控制台横幅、日志中的开始/完成/失败记录，以及无论发生什么都在 `finally` 中恢复界面。
 
-`Invoke-WPFButton` decides what counts as a long action. Anything that changes the system gets a
-job; anything that only changes what the interface is showing runs on the interface thread.
-That single classification is why no workflow arranges its own progress, banner or busy state.
+`Invoke-WPFButton` 决定什么算作耗时操作。任何会更改系统的操作都会启动一个作业；只改变界面显示内容的操作则在界面线程上运行。正是这一种分类，使得任何工作流都不必自行安排进度、横幅或忙碌状态。
 
 ```powershell
 Start-WinUtilJob -Name "Features" -Description "Installing Windows Features" -Parameters @{
@@ -472,15 +464,13 @@ Start-WinUtilJob -Name "Features" -Description "Installing Windows Features" -Pa
 }
 ```
 
-The body only has to do the work and call `Step-WinUtilJob`. Anything it throws is
-caught, logged, and shown on the taskbar as a failure.
+作业主体只需要完成工作并调用 `Step-WinUtilJob`。它抛出的任何异常都会被捕获、记录，并在任务栏上标记为失败。
 
-**Values, not closures**: the body is rebuilt inside the worker from its text, so it receives
-what it needs through `-Parameters` rather than capturing the caller's variables.
+**传值，而非闭包**：作业主体会在工作线程内按文本重建，因此它通过 `-Parameters` 接收所需内容，而不是捕获调用方的变量。
 
-## WPF Event Handling
+## WPF 事件处理
 
-Events are wired up via XAML element names:
+事件通过 XAML 元素名称进行绑定：
 
 ```powershell
 # Get all named elements
@@ -494,11 +484,11 @@ $sync.keys | ForEach-Object {
 }
 ```
 
-**Convention**: Button named `WPFInstallButton` calls function `Invoke-WPFInstallButton`.
+**约定**：名为 `WPFInstallButton` 的按钮会调用 `Invoke-WPFInstallButton` 函数。
 
-## Package Manager Integration
+## 包管理器集成
 
-### WinGet Integration
+### WinGet 集成
 
 ```powershell
 # Check if installed
@@ -510,7 +500,7 @@ if (!(Get-Command winget -ErrorAction SilentlyContinue)) {
 winget install --id $app.winget --silent --accept-source-agreements
 ```
 
-### Chocolatey Integration
+### Chocolatey 集成
 
 ```powershell
 # Check if installed
@@ -522,25 +512,20 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
 choco install $app.choco -y
 ```
 
-## Error Handling And Logging
+## 错误处理与日志
 
-A job body does not need its own error handling. `Start-WinUtilJob` catches whatever the body
-throws, logs it, and marks the run as failed on the taskbar, so a failure can never leave the
-interface stuck busy. Only catch inside a body when you have something specific to do first,
-such as cleaning up a mounted image, and then rethrow.
+作业主体不需要自己的错误处理。`Start-WinUtilJob` 会捕获主体抛出的任何异常并记录下来，同时在任务栏上把该次运行标记为失败，因此失败绝不会让界面卡在忙碌状态。只有在捕获后还需要先做某些特定处理时，才在主体内捕获，例如清理已挂载的映像，然后重新抛出。
 
 ```powershell
 Write-WinUtilLog -Level "ERROR" -Component "Install" -Message "winget install failed: $($_.Exception.Message)"
 ```
 
-Entries and console diagnostics go to the same
-`%LocalAppData%\winutil\logs\winutil_<timestamp>.log` session file. While `Start-Transcript`
-owns that file, `Write-WinUtilLog` writes through the host so the transcript captures the entry
-without a competing direct file write.
+日志条目与控制台诊断信息都写入同一个会话文件
+`%LocalAppData%\winutil\logs\winutil_<timestamp>.log`。在 `Start-Transcript` 占用该文件期间，`Write-WinUtilLog` 通过主机写入，这样 transcript 就能捕获到日志条目，而无需与之竞争直接写文件。
 
-## Configuration Loading
+## 配置加载
 
-At startup, Winutil loads all configurations:
+启动时，Winutil 会加载所有配置：
 
 ```powershell
 # Load JSON configs
@@ -550,12 +535,11 @@ $sync.configs.tweaks = Get-Content "config/tweaks.json" | ConvertFrom-Json
 $sync.configs.features = Get-Content "config/feature.json" | ConvertFrom-Json
 ```
 
-**Sync Hash**: `$sync` hashtable shares state across runspaces.
+**同步哈希表**：`$sync` 哈希表用于在多个运行空间之间共享状态。
 
-## UI Update Pattern
+## 界面更新模式
 
-Controls may only be touched from the thread that owns the window, so background work reaches
-them through `Invoke-WPFUIThread`:
+控件只能由拥有窗口的那个线程操作，因此后台工作通过 `Invoke-WPFUIThread` 访问它们：
 
 ```powershell
 Invoke-WPFUIThread -Parameters @{ Count = $installed.Count } -ScriptBlock {
@@ -564,19 +548,15 @@ Invoke-WPFUIThread -Parameters @{ Count = $installed.Count } -ScriptBlock {
 }
 ```
 
-Add `-Async` to post the update instead of waiting for it. `Step-WinUtilJob` and the
-Win11 Creator status log use that so a per-item update never stalls the worker.
+加上 `-Async` 可以改为投递更新而不等待其完成。`Step-WinUtilJob` 与 Win11 Creator 的状态日志就是这样做的，这样逐项更新就永远不会拖慢工作线程。
 
-**Values, not closures**: the body is rebuilt inside the interface runspace, so it takes what it
-needs through `-Parameters`. Handing over a scriptblock from a worker instead would keep that
-worker's session state, which loses the caller's variables on an async post and costs roughly
-twenty times as much per command - enough to turn a checkbox refresh into a visible freeze.
+**传值，而非闭包**：主体会在界面运行空间内重建，因此它通过 `-Parameters` 获取所需内容。若改为从工作线程传递脚本块，则会保留该工作线程的会话状态 —— 在异步投递时会丢失调用方的变量，而且每条命令的开销约为前者的二十倍，足以让一次复选框刷新变成肉眼可见的卡顿。
 
-## Adding New Features
+## 添加新功能
 
-### Adding a New Application
+### 添加新应用程序
 
-1. Edit `config/applications.json`:
+1. 编辑 `config/applications.json`：
 ```json title="config/applications.json"
 {
   "WPFInstallNewApp": {
@@ -589,12 +569,12 @@ twenty times as much per command - enough to turn a checkbox refresh into a visi
 }
 ```
 
-2. Recompile: `.\Compile.ps1`
-3. The app appears automatically in the Install tab
+2. 重新编译：`.\Compile.ps1`
+3. 该应用会自动出现在 Install（安装）选项卡中
 
-### Adding a New Tweak
+### 添加新优化项
 
-1. Edit `config/tweaks.json`:
+1. 编辑 `config/tweaks.json`：
 ```json title="config/tweaks.json"
 {
   "WPFTweaksNewTweak": {
@@ -614,12 +594,12 @@ twenty times as much per command - enough to turn a checkbox refresh into a visi
 }
 ```
 
-2. Recompile: `.\Compile.ps1`
-3. Tweak appears in the Tweaks tab
+2. 重新编译：`.\Compile.ps1`
+3. 优化项会出现在 Tweaks（优化）选项卡中
 
-### Adding a New Function
+### 添加新函数
 
-1. Create file in `functions/public/` or `functions/private/`:
+1. 在 `functions/public/` 或 `functions/private/` 中创建文件：
 ```powershell
 # functions/public/Invoke-WPFNewFeature.ps1
 function Invoke-WPFNewFeature {
@@ -631,114 +611,114 @@ function Invoke-WPFNewFeature {
 }
 ```
 
-2. File naming must include "WPF" or "Winutil" to load
-3. Recompile: `.\Compile.ps1`
+2. 文件名必须包含 “WPF” 或 “Winutil” 才能被加载
+3. 重新编译：`.\Compile.ps1`
 
-## Testing
+## 测试
 
-### Manual Testing
+### 手动测试
 
 ```powershell
 # Compile and run with -run flag
 .\Compile.ps1 -run
 ```
 
-### Automated Tests
+### 自动化测试
 
-Tests are in `/pester/`:
-- `configs.Tests.ps1`: Validates JSON configurations
-- `functions.Tests.ps1`: Tests PowerShell functions
+测试位于 `/pester/`：
+- `configs.Tests.ps1`：校验 JSON 配置
+- `functions.Tests.ps1`：测试 PowerShell 函数
 
-Run tests:
+运行测试：
 ```powershell
 Install-Module -Name Pester -RequiredVersion 5.8.0 -Scope CurrentUser -Force -SkipPublisherCheck
 Import-Module Pester -RequiredVersion 5.8.0 -Force
 Invoke-Pester -Path 'pester/*.Tests.ps1' -Output Detailed -CI
 ```
 
-## Build Process
+## 构建流程
 
-### Development Build
+### 开发构建
 
 ```powershell
 .\Compile.ps1
 ```
 
-Outputs `winutil.ps1` in the root directory.
+在根目录输出 `winutil.ps1`。
 
-### Production Release
+### 正式发布
 
-1. Tag release in Git
-2. GitHub Actions builds and uploads `winutil.ps1`
-3. Release appears on GitHub Releases
-4. Users download via `irm christitus.com/win`
+1. 在 Git 中打发布标签
+2. GitHub Actions 构建并上传 `winutil.ps1`
+3. 发布出现在 GitHub Releases
+4. 用户通过 `irm christitus.com/win` 下载
 
-## Dependencies
+## 依赖项
 
-**Required**:
+**必需**：
 - PowerShell 5.1+
 - .NET Framework 4.5+
 - Windows 11
 
-**Optional (auto-installed)**:
-- WinGet (Windows Package Manager)
+**可选（自动安装）**：
+- WinGet（Windows 程序包管理器）
 - Chocolatey
 
-## Performance Considerations
+## 性能考量
 
-**Optimization Strategies**:
-- Lazy-load configurations (only when needed)
-- Use runspaces for long operations
-- Cache expensive lookups
-- Minimize registry reads/writes
-- Batch operations when possible
+**优化策略**：
+- 延迟加载配置（仅在需要时加载）
+- 对耗时操作使用运行空间（Runspace）
+- 缓存开销较大的查询
+- 尽量减少注册表读写
+- 尽可能批量处理操作
 
-## Security Considerations
+## 安全考量
 
-**Safety Measures**:
-- All operations logged
-- Registry backups for undo
-- No credential storage
-- Open source (auditable)
-- Digitally signed (future)
+**安全措施**：
+- 所有操作都记入日志
+- 为撤销操作备份注册表
+- 不存储凭据
+- 开源（可审计）
+- 数字签名（未来支持）
 
-## Contributing Guidelines
+## 贡献指南
 
-**Code Standards**:
-- Use proper PowerShell cmdlet naming (Verb-Noun)
-- Include comment-based help
-- Follow existing code style
-- Test thoroughly before PR
-- Document significant changes
+**代码规范**：
+- 使用正确的 PowerShell cmdlet 命名（动词-名词）
+- 包含基于注释的帮助
+- 遵循现有代码风格
+- 提交 PR 前充分测试
+- 记录重大变更
 
-**File Naming**:
-- Public functions: `Invoke-WPF*.ps1` or `Invoke-Winutil*.ps1`
-- Private functions: `Get-WinUtil*.ps1` or verb-WinUtil*.ps1`
-- Must include "WPF" or "Winutil" to load
+**文件命名**：
+- 公共函数：`Invoke-WPF*.ps1` 或 `Invoke-Winutil*.ps1`
+- 私有函数：`Get-WinUtil*.ps1` 或 verb-WinUtil*.ps1`
+- 必须包含 “WPF” 或 “Winutil” 才能被加载
 
-## Future Architecture Plans
+## 未来架构规划
 
-**Roadmap Considerations**:
-- Plugin system for community extensions
-- Config import/export
-- Cloud sync for configurations
-- Enhanced logging dashboard
-- Modular compilation (choose features)
+**路线图考量**：
+- 面向社区扩展的插件系统
+- 配置导入/导出
+- 配置云端同步
+- 增强的日志仪表板
+- 模块化编译（可自选功能）
 
-## Related Documentation
+## 相关文档
 
-- [Contributing Guide](/contributing/) - How to contribute code
-- [User Guide](/guides/) - End-user documentation
-- [Win11 Creator Guide](/guides/win11creator/) - Building customized Windows 11 ISOs
-- [FAQ](/faq/) - Common questions
+- [贡献指南](/contributing/) - 如何贡献代码
+- [用户指南](/guides/) - 面向最终用户的文档
+- [Win11 Creator 指南](/guides/win11creator/) - 构建定制的 Windows 11 ISO
+- [常见问题](/faq/) - 常见问题
 
-## Additional Resources
+## 其他资源
 
-- **GitHub Repository**: [ChrisTitusTech/winutil](https://github.com/ChrisTitusTech/winutil)
-- **PowerShell Docs**: [Microsoft Docs](https://docs.microsoft.com/powershell/)
-- **WPF Guide**: [WPF Documentation](https://docs.microsoft.com/dotnet/desktop/wpf/)
+- **GitHub 仓库**：[ChrisTitusTech/winutil](https://github.com/ChrisTitusTech/winutil)
+- **PowerShell 文档**：[Microsoft Docs](https://docs.microsoft.com/powershell/)
+- **WPF 指南**：[WPF Documentation](https://docs.microsoft.com/dotnet/desktop/wpf/)
 
 ---
 
-**Last Updated**: January 2026
-**Maintainers**: Chris Titus Tech and contributors
+**最后更新**：2026 年 1 月
+**维护者**：Chris Titus Tech 及贡献者

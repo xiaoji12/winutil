@@ -1,64 +1,64 @@
 ---
-title: Frequently Asked Questions
-description: Common questions about installing, running, and troubleshooting WinUtil.
+title: 常见问题
+description: 关于 WinUtil 的安装、运行与故障排查的常见问题。
 ---
 
-## General questions
+## 一般问题
 
-### Is Windows 10 still supported?
+### 还支持 Windows 10 吗？
 
-No. Windows 10 is no longer supported by WinUtil because it reached the end of support on **October 14, 2025**. WinUtil is focused on Windows 11.
+不支持。WinUtil 已不再支持 Windows 10，因为 Windows 10 已于 **2025 年 10 月 14 日**终止支持。WinUtil 目前专注于 Windows 11。
 
-### How do I uninstall WinUtil?
+### 如何卸载 WinUtil？
 
-You do not need to uninstall WinUtil. Because it runs as a PowerShell script, it is loaded into memory only while it is open. Once you close it, it is removed from memory and does not remain installed on your system.
+你不需要卸载 WinUtil。它以 PowerShell 脚本的形式运行，只在打开期间被加载到内存中。关闭之后，它就会从内存中移除，不会残留安装在你的系统上。
 
-### Is WinUtil safe to use?
+### WinUtil 使用安全吗？
 
-Yes, WinUtil is open source, and the code is publicly available on GitHub. Thousands of users run it daily. However, like any system modification tool, you should:
+安全，WinUtil 是开源项目，代码公开在 GitHub 上，每天都有成千上万的用户在运行它。不过，与任何系统修改工具一样，你应该：
 
-- Run it as Administrator (required)
-- Create a restore point before major changes
-- Understand what tweaks you're applying
-- Run only from the [official source](https://github.com/ChrisTitusTech/winutil/)
+- 以管理员身份运行（必需）
+- 进行重大更改前创建还原点
+- 了解自己正在应用哪些优化项
+- 只从[官方来源](https://github.com/ChrisTitusTech/winutil/)运行
 
-### Do I need to keep running WinUtil?
+### 需要一直运行 WinUtil 吗？
 
-No. Once you've applied tweaks or installed applications, you can close WinUtil. Changes persist after closing. You only need to run WinUtil again when you want to make additional changes or undo tweaks.
+不需要。应用优化项或安装完应用程序后，你就可以关闭 WinUtil，所做的更改在关闭后依然保留。只有在想要进行更多更改或撤销优化项时，才需要再次运行 WinUtil。
 
-### Does WinUtil require internet access?
+### WinUtil 需要联网吗？
 
-- **For downloading**: Yes, installing applications requires the internet
-- **For tweaks**: No, most tweaks work offline
-- **Initial run**: Yes, to run the latest script
+- **下载时**：需要，安装应用程序必须联网
+- **应用优化项时**：不需要，大多数优化项可离线使用
+- **首次运行时**：需要，以便运行最新的脚本
 
-### How often is WinUtil updated?
+### WinUtil 多久更新一次？
 
-WinUtil is actively maintained with frequent updates. New features, bug fixes, and application additions are released regularly. The script auto-downloads the latest version each time you run it.
+WinUtil 维护活跃，更新频繁。新功能、错误修复和新增应用程序都会定期发布。脚本每次运行时都会自动下载最新版本。
 
-## Installation & running
+## 安装与运行
 
-### How do I run WinUtil?
+### 如何运行 WinUtil？
 
-1. Open PowerShell as Administrator
-2. Run: `irm "https://christitus.com/win" | iex`
-3. Wait for the GUI to appear
+1. 以管理员身份打开 PowerShell
+2. 运行：`irm "https://christitus.com/win" | iex`
+3. 等待图形界面出现
 
-### Why do I need Administrator rights?
+### 为什么需要管理员权限？
 
-WinUtil makes system-level changes (registry edits, service modifications, software installation) that require elevated permissions. Without admin rights, most features won't work.
+WinUtil 会进行系统级更改（修改注册表、调整服务、安装软件），这些操作都需要提升的权限。没有管理员权限，大多数功能都无法正常工作。
 
-### The script won't download. What do I do?
+### 脚本下载不了，怎么办？
 
-Try these solutions in order:
+请按顺序尝试以下解决办法：
 
-1. **Use the direct GitHub link**:
+1. **使用 GitHub 直接链接**：
 
    ```powershell
    irm https://github.com/ChrisTitusTech/winutil/releases/latest/download/Winutil.ps1 | iex
    ```
 
-2. **Force TLS 1.2**:
+2. **强制使用 TLS 1.2**：
 
    ```powershell
    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -66,256 +66,256 @@ Try these solutions in order:
    ```
 
    :::note
-   On Windows 11, you usually do not need the TLS 1.2 command. Use it only if you encounter download or security protocol errors.
+   在 Windows 11 上，通常不需要使用 TLS 1.2 命令。只有在遇到下载或安全协议错误时才使用它。
    :::
 
-3. **Change DNS** to Cloudflare (1.1.1.1) or Google (8.8.8.8)
-4. **Use a VPN** if GitHub is blocked in your region
+3. **更换 DNS** 为 Cloudflare（1.1.1.1）或 Google（8.8.8.8）
+4. **使用 VPN**（如果你所在地区无法访问 GitHub）
 
-### I get an "Execution Policy" error. How do I fix it?
+### 出现「执行策略」错误，如何解决？
 
-Run this command first to allow script execution:
+先运行下面这条命令以允许脚本执行：
 
 ```powershell
 Set-ExecutionPolicy Unrestricted -Scope Process -Force
 irm "https://christitus.com/win" | iex
 ```
 
-This only affects the current PowerShell session and is safe.
+这只会影响当前的 PowerShell 会话，是安全的。
 
-## Tweaks & modifications
+## 优化项与系统修改
 
-### I applied a tweak and now something doesn't work. What do I do?
+### 应用了某个优化项后出问题了，怎么办？
 
-If you applied a tweak and it breaks something, you can revert it:
+如果你应用了某个优化项并导致故障，可以将其还原：
 
-1. Open WinUtil again
-2. Go to the **Tweaks** tab
-3. Select the same tweak you applied
-4. Click **Undo Selected Tweaks**
-5. The system will revert to the previous state
+1. 再次打开 WinUtil
+2. 进入**优化项**标签页
+3. 选中你应用过的同一个优化项
+4. 点击**撤销所选优化项**
+5. 系统会恢复到之前的状态
 
-Alternatively, use System Restore if you created a restore point.
+或者，如果你创建过还原点，可以使用系统还原。
 
-### Which tweaks are safe to apply?
+### 哪些优化项是安全的？
 
-**Safe for everyone (Essential Tweaks)**:
+**所有人都可以放心使用（常规优化项）**：
 
-- Disable Telemetry
-- Disable Activity History
-- Disable Location Tracking
-- Delete Temporary Files
-- Run Disk Cleanup
-- Create Restore Point
+- 禁用遥测
+- 禁用活动历史记录
+- 禁用位置跟踪
+- 删除临时文件
+- 运行磁盘清理
+- 创建还原点
 
-**Advanced Tweaks** should only be run by advanced users.
+**高级优化项**只应由高级用户使用。
 
-### Will tweaks survive Windows Updates?
+### 优化项在 Windows 更新后还有效吗？
 
-Most tweaks persist through updates, but some may be reset by major Windows feature updates. You may need to reapply certain tweaks afterwards.
+大多数优化项在更新后依然保留，但某些优化项可能会被 Windows 的重大功能更新重置。之后你可能需要重新应用部分优化项。
 
-### Can I create my own tweak presets?
+### 可以创建自己的优化项预设吗？
 
-Currently, WinUtil uses predefined presets (Standard, Minimal). Custom presets aren't directly supported in the GUI, but you can script your preferred configuration.
+目前 WinUtil 使用的是预定义预设（Standard、Minimal）。图形界面暂不直接支持自定义预设，但你可以用脚本来实现自己偏好的配置。
 
-### What's the difference between Essential and Advanced tweaks?
+### 常规优化项和高级优化项有什么区别？
 
-- **Essential Tweaks**: Safe for most users, improve performance/privacy with minimal risk
-- **Advanced Tweaks**: More aggressive changes that may break functionality or compatibility. Use with caution.
+- **常规优化项**：对大多数用户安全，能提升性能与隐私保护，风险极低
+- **高级优化项**：改动更激进，可能影响功能或兼容性。请谨慎使用。
 
-## Application installation
+## 应用程序安装
 
-### How does WinUtil install applications?
+### WinUtil 是如何安装应用程序的？
 
-WinUtil uses Windows Package Manager (WinGet) and Chocolatey to automate installations. It downloads applications from official sources and installs them silently without bloatware.
+WinUtil 使用 Windows 程序包管理器（WinGet）和 Chocolatey 来自动完成安装。它从官方来源下载应用程序，并以静默方式安装，不附带任何预装冗余软件。
 
-### Can I install multiple applications at once?
+### 可以同时安装多个应用程序吗？
 
-Yes! Check the boxes for all applications you want, then click "Install Selected". They'll install sequentially.
+可以！勾选你想要的所有应用程序，然后点击「安装所选」，它们会按顺序依次安装。
 
-### WinGet isn't working. How do I fix it?
+### WinGet 无法使用，如何修复？
 
-1. Go to the **Config** tab
-2. Find the **Fixes** section
-3. Click **WinGet Reinstall**
-4. Wait for completion
-5. Try installing applications again
+1. 进入**配置**标签页
+2. 找到**修复**部分
+3. 点击**重新安装 WinGet**
+4. 等待完成
+5. 再次尝试安装应用程序
 
-### Do installed applications have bloatware or bundled software?
+### 安装的应用程序会带预装冗余软件或捆绑程序吗？
 
-No. WinGet and Chocolatey install clean versions of applications without bundled offers, toolbars, or bloatware.
+不会。WinGet 和 Chocolatey 安装的都是应用程序的干净版本，没有捆绑推广、工具栏或冗余软件。
 
-### Can I uninstall applications through WinUtil?
+### 可以通过 WinUtil 卸载应用程序吗？
 
-WinUtil primarily focuses on installing and managing applications rather than providing a full GUI for uninstalling every program. To remove applications you can:
+WinUtil 主要专注于安装和管理应用程序，并没有为卸载每一个程序提供完整的图形界面。要移除应用程序，你可以：
 
-- Use Windows Settings > Apps > Installed apps to uninstall programs.
-- Use package manager commands in PowerShell (for example `winget uninstall <package>` or `choco uninstall <package>`).
-- Some packages installed by WinUtil (AppX/MSIX) include removal helpers; check the app entry or use WinUtil's remove helpers when available.
+- 使用 Windows 设置 > 应用 > 已安装的应用来卸载程序。
+- 在 PowerShell 中使用包管理器命令（例如 `winget uninstall <package>` 或 `choco uninstall <package>`）。
+- WinUtil 安装的某些包（AppX/MSIX）带有移除辅助功能；请查看该应用条目，或在可用时使用 WinUtil 的移除辅助功能。
 
-### Will installed apps auto-update?
+### 已安装的应用程序会自动更新吗？
 
-Applications with built-in update mechanisms will auto-update. You can also update them via WinGet/Chocolatey commands or through WinUtil's "Upgrade Selected" feature.
+带有内置更新机制的应用程序会自动更新。你也可以通过 WinGet/Chocolatey 命令或 WinUtil 的「升级所选」功能来更新它们。
 
-## Updates & maintenance
+## 更新与维护
 
-### Should I disable Windows Updates?
+### 应该禁用 Windows 更新吗？
 
-Generally, **no**. Security updates are important. However, you might:
+一般来说**不应该**。安全更新很重要。不过你可以：
 
-- Use "Security Updates Only" to avoid feature updates
-- Pause updates temporarily for stability
-- Disable only during critical work periods
+- 使用「仅安全更新」来避开功能更新
+- 为保持稳定临时暂停更新
+- 仅在处理关键工作期间禁用更新
 
-### How do I re-enable updates after disabling them?
+### 禁用更新后如何重新启用？
 
-1. Open WinUtil
-2. Go to the **Updates** tab
-3. Click **Default Updates**
-4. Updates will resume normally
+1. 打开 WinUtil
+2. 进入**更新**标签页
+3. 点击**默认更新**
+4. 更新将恢复正常
 
-### What's the difference between "Security Updates Only" and "Disable Updates"?
+### 「仅安全更新」和「禁用更新」有什么区别？
 
-- **Security Updates Only**: Installs critical security patches, blocks feature updates (major versions)
-- **Disable Updates**: Blocks ALL updates including security (not recommended)
+- **仅安全更新**：安装关键安全补丁，阻止功能更新（大版本）
+- **禁用更新**：阻止**所有**更新，包括安全更新（不推荐）
 
-## Troubleshooting
+## 故障排查
 
-### WinUtil won't open after running the command
+### 运行命令后 WinUtil 打不开
 
-Possible causes:
+可能的原因：
 
-1. **Antivirus blocking**: Add PowerShell exception
-2. **Not run as Admin**: Restart PowerShell as Administrator
-3. **Corrupted download**: Close PowerShell, reopen, try again
-4. **Windows Defender**: Allow the script
+1. **杀毒软件拦截**：为 PowerShell 添加例外
+2. **未以管理员身份运行**：以管理员身份重新启动 PowerShell
+3. **下载文件损坏**：关闭 PowerShell，重新打开后再试一次
+4. **Windows Defender**：允许该脚本运行
 
-### My antivirus flags WinUtil as malicious
+### 我的杀毒软件把 WinUtil 报成恶意软件
 
-This is a false positive. WinUtil makes system changes that antivirus programs may flag. The code is open source and audited. Add an exception if needed.
+这是误报。WinUtil 会进行系统更改，杀毒软件可能会因此报警。代码是开源的，可以接受审查。如有需要，请添加例外。
 
-### An application failed to install
+### 某个应用程序安装失败
 
-Troubleshooting steps:
+排查步骤：
 
-1. Check your internet connection
-2. Try installing just that one application
-3. Review error messages in the output panel
-4. Check if the antivirus is blocking
-5. Try the WinGet Reinstall fix
+1. 检查网络连接
+2. 尝试只安装这一个应用程序
+3. 查看输出面板中的错误信息
+4. 检查是否被杀毒软件拦截
+5. 尝试「重新安装 WinGet」修复
 
-### Network tweaks broke my internet connection
+### 网络优化项导致我的网络连接中断
 
-1. Open WinUtil
-2. Go to **Config** > **Fixes**
-3. Click **Reset Network**
-4. Restart your computer
-5. Connection should be restored
+1. 打开 WinUtil
+2. 进入**配置** > **修复**
+3. 点击**重置网络**
+4. 重启电脑
+5. 连接应该会恢复
 
-### I can't access certain Windows features after applying tweaks
+### 应用优化项后某些 Windows 功能无法使用
 
-Undo the tweaks that might have affected those features:
+撤销可能影响到这些功能的优化项：
 
-1. Reopen WinUtil
-2. Select the tweaks you applied
-3. Click **Undo Selected Tweaks**
+1. 重新打开 WinUtil
+2. 选中你应用过的优化项
+3. 点击**撤销所选优化项**
 
-If that doesn't work, use System Restore to revert to a previous state.
+如果这样不起作用，请使用系统还原回到之前的状态。
 
-## Advanced topics
+## 高级话题
 
-### Can I run WinUtil on Windows Server?
+### WinUtil 可以在 Windows Server 上运行吗？
 
-Yes, WinUtil works on Windows Server editions, though some features may not be applicable or may behave differently.
+可以，WinUtil 能在 Windows Server 版本上运行，不过部分功能可能不适用或表现有所不同。
 
-### Does WinUtil work with Windows LTSC?
+### WinUtil 支持 Windows LTSC 吗？
 
-WinUtil currently targets Windows 11. Windows 10 LTSC is not supported, consistent with the Windows 10 support policy above. Some features and applications may vary by Windows 11 edition.
+WinUtil 目前面向 Windows 11。按照上面提到的 Windows 10 支持策略，Windows 10 LTSC 不受支持。部分功能和应用程序可能因 Windows 11 的版本不同而有差异。
 
-### Can I use WinUtil in a corporate/enterprise environment?
+### 可以在企业/公司环境中使用 WinUtil 吗？
 
-Yes, but check your organization's policies first. Some tweaks may conflict with Group Policy or other corporate requirements.
+可以，但请先确认你所在组织的相关策略。某些优化项可能与组策略或其他企业要求相冲突。
 
-### How do I automate WinUtil for multiple PCs?
+### 如何在多台电脑上自动化运行 WinUtil？
 
-See the [Automation Guide](/guides/automation/) for details on:
+请参阅[自动化指南](/guides/automation/)，其中介绍了：
 
-- Configuration files
-- PowerShell parameters
-- Batch deployment
-- Silent installation
+- 配置文件
+- PowerShell 参数
+- 批量部署
+- 静默安装
 
-### Can I contribute to WinUtil?
+### 我可以为 WinUtil 做贡献吗？
 
-Yes! Contributions are welcome:
+当然可以！欢迎贡献：
 
-- Report bugs on GitHub Issues
-- Submit pull requests for fixes/features
-- Improve documentation
-- Help others in Discord
+- 在 GitHub Issues 上报告问题
+- 提交修复或新功能的拉取请求
+- 改进文档
+- 在 Discord 上帮助他人
 
-See the [Contributing Guide](/contributing/) for details.
+详情请参阅[贡献指南](/contributing/)。
 
-## Privacy & security
+## 隐私与安全
 
-### Does WinUtil collect any data?
+### WinUtil 会收集数据吗？
 
-No, WinUtil itself doesn't collect or transmit any user data. It's a local PowerShell script.
+不会，WinUtil 本身不收集或传输任何用户数据。它是一个本地 PowerShell 脚本。
 
-### What telemetry does the Disable Telemetry tweak block?
+### 「禁用遥测」优化项会屏蔽哪些遥测？
 
-It disables:
+它会禁用：
 
-- Windows diagnostic data collection
-- Activity history tracking
-- Feedback requests
-- Usage statistics
-- Error reporting (optional)
+- Windows 诊断数据收集
+- 活动历史记录跟踪
+- 反馈请求
+- 使用情况统计
+- 错误报告（可选）
 
-### Will removing Microsoft Store affect security updates?
+### 移除 Microsoft Store 会影响安全更新吗？
 
-No, Windows security updates are independent of the Microsoft Store.
+不会，Windows 安全更新与 Microsoft Store 相互独立。
 
-## Performance
+## 性能
 
-### Will WinUtil make my PC faster?
+### WinUtil 会让我的电脑变快吗？
 
-Tweaks can improve performance by:
+优化项可以通过以下方式提升性能：
 
-- Reducing background processes
-- Disabling unnecessary services
-- Cleaning temporary files
-- Optimizing startup programs
+- 减少后台进程
+- 禁用不必要的服务
+- 清理临时文件
+- 优化开机启动项
 
-Results may vary depending on your system.
+具体效果因系统而异。
 
-### What's the best preset for gaming?
+### 玩游戏最适合用哪个预设？
 
-Use the **Desktop** preset, then additionally apply:
+使用 **Desktop** 预设，然后再额外应用：
 
-- Disable GameDVR
-- Ultimate Performance power plan
-- Disable full-screen optimizations (Advanced)
-- Set display for performance (Advanced)
+- 禁用 GameDVR
+- 卓越性能电源计划
+- 禁用全屏优化（高级）
+- 将显示设置为性能优先（高级）
 
-### How much RAM does WinUtil use?
+### WinUtil 占用多少内存？
 
-WinUtil itself uses about 50-100 MB while running. Once closed, it is removed from memory.
+WinUtil 运行时自身大约占用 50-100 MB。关闭后就会从内存中移除。
 
-## Error messages
+## 错误提示
 
-### "Access Denied" errors
+### 「拒绝访问」错误
 
-- Ensure PowerShell is running as Administrator
-- Check if the antivirus is blocking changes
-- Verify you have ownership of files/registry keys
+- 确认 PowerShell 正以管理员身份运行
+- 检查杀毒软件是否拦截了更改
+- 确认你拥有相关文件/注册表项的所有权
 
-## Still need help?
+## 还需要帮助？
 
-Can't find your answer? Try these resources:
+没找到答案？可以试试以下资源：
 
-- **[Known Issues](/knownissues/)** — Check if it's a known problem
-- **[User Guide](/guides/getting-started/)** — Comprehensive documentation
-- **[Discord Community](https://discord.gg/RUbZUZyByQ)** — Get help from other users
-- **[GitHub Issues](https://github.com/ChrisTitusTech/winutil/issues)** — Report bugs
-- **[YouTube Tutorial](https://www.youtube.com/watch?v=6UQZ5oQg8XA)** — Video walkthrough
+- **[已知问题](/knownissues/)** — 看看是否属于已知问题
+- **[用户指南](/guides/getting-started/)** — 完整文档
+- **[Discord 社区](https://discord.gg/RUbZUZyByQ)** — 从其他用户那里获得帮助
+- **[GitHub Issues](https://github.com/ChrisTitusTech/winutil/issues)** — 报告问题
+- **[YouTube 教程](https://www.youtube.com/watch?v=6UQZ5oQg8XA)** — 视频演示
