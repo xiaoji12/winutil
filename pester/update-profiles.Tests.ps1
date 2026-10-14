@@ -137,7 +137,7 @@ Describe "Invoke-WPFUpdatesdisable" {
         Invoke-WPFUpdatesdisable
 
         Should -Invoke Show-WinUtilMessage -Times 1 -Exactly -ParameterFilter {
-            $Title -eq "Disable Windows Update?" -and
+            $Title -eq "禁用 Windows 更新？" -and
                 $Button -eq "YesNo" -and
                 $Icon -eq "Warning"
         }

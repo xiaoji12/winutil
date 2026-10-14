@@ -99,7 +99,7 @@ Describe "Invoke-WPFOOSU" {
             $Status -eq "Downloading O&O ShutUp10++ (35%)" -and $Percent -eq 35
         }
         Should -Invoke Step-WinUtilJob -Times 1 -Exactly -ParameterFilter {
-            $Status -eq "Launching O&O ShutUp10++" -and $Percent -eq 100
+            $Status -eq "正在启动 O&O ShutUp10++" -and $Percent -eq 100
         }
         Should -Invoke Start-Process -Times 1 -Exactly -ParameterFilter {
             $FilePath -eq (Join-Path $TestDrive "ooshutup10.exe")

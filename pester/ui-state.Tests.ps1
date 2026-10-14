@@ -335,7 +335,7 @@ Describe "Invoke-WPFImpex import selection state" {
             $Message -eq "Skipped unsupported legacy selections: WPFInstallRetired"
         }
         Should -Invoke -CommandName Show-WinUtilMessage -Times 1 -Exactly -ParameterFilter {
-            $Title -eq "Legacy Configuration Partially Imported" -and
+            $Title -eq "旧版配置已部分导入" -and
             $Message -like "*WPFInstallRetired*"
         }
         Should -Invoke -CommandName Write-Error -Times 0 -Exactly
@@ -355,7 +355,7 @@ Describe "Invoke-WPFImpex import selection state" {
         Should -Invoke -CommandName Reset-WPFCheckBoxes -Times 1 -Exactly
         Should -Invoke -CommandName Write-WinUtilLog -Times 1 -Exactly -ParameterFilter {
             $Component -eq "Impex" -and
-            $Message -eq "Detected legacy WinUtil config structure; flattening import object."
+            $Message -eq "检测到旧版 WinUtil 配置结构，正在展平导入对象。"
         }
         Should -Invoke -CommandName Show-WinUtilMessage -Times 0 -Exactly
         Should -Invoke -CommandName Write-Error -Times 0 -Exactly
@@ -379,7 +379,7 @@ Describe "Invoke-WPFImpex import selection state" {
             $Message -eq "Skipped unsupported legacy selections: WPFInstallRetired"
         }
         Should -Invoke -CommandName Show-WinUtilMessage -Times 1 -Exactly -ParameterFilter {
-            $Title -eq "Unsupported Legacy Configuration"
+            $Title -eq "不受支持的旧版配置"
         }
         Should -Invoke -CommandName Write-Error -Times 0 -Exactly
     }
@@ -475,7 +475,7 @@ Describe "Invoke-WPFSelectedCheckboxesUpdate" {
         $script:sync.selectedToggles.Count | Should -Be 0
         $script:sync.selectedFeatures.Count | Should -Be 0
         $script:sync.selectedAppx.Count | Should -Be 0
-        $script:sync.WPFselectedAppsButton.Content | Should -Be "Selected Apps: 0"
+        $script:sync.WPFselectedAppsButton.Content | Should -Be "已选应用：0"
         $script:sync.selectedAppsstackPanel.Children.Count | Should -Be 0
     }
 }

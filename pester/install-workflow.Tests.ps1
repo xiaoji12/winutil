@@ -181,7 +181,7 @@ Describe "Invoke-WPFInstall entrypoint" {
         Invoke-WPFInstall
 
         Should -Invoke -CommandName Show-WinUtilMessage -Times 1 -Exactly -ParameterFilter {
-            $Message -eq "Please select the program(s) to install or upgrade." -and
+            $Message -eq "请选择要安装或升级的程序。" -and
                 $Title -eq "WinUtil" -and
                 $Button -eq "OK" -and
                 $Icon -eq "Warning"
@@ -310,7 +310,7 @@ Describe "Invoke-WPFUnInstall entrypoint" {
         Invoke-WPFUnInstall
 
         Should -Invoke -CommandName Show-WinUtilMessage -Times 1 -Exactly -ParameterFilter {
-            $Message -eq "Please select the program(s) to uninstall"
+            $Message -eq "请选择要卸载的程序"
         }
         Should -Invoke -CommandName Start-WinUtilJob -Times 0 -Exactly
     }

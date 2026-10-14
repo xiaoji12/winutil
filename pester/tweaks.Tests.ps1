@@ -290,7 +290,7 @@ Describe "Invoke-WinUtilTweaks completion status" {
 
         $log = Get-Content -Path $script:logPath -Raw
         $log | Should -Match "\[ERROR\] \[Script\] Runtime exception while running script for WPFTweaksFailing"
-        $log | Should -Match "\[WARN\] \[Tweaks\] Apply tweak finished with 1 error\(s\): WPFTweaksFailing"
+        $log | Should -Match "\[WARN\] \[Tweaks\] Apply tweak 完成，出现 1 个错误：WPFTweaksFailing"
         $log | Should -Not -Match "tweak completed: WPFTweaksFailing"
     }
 
@@ -299,7 +299,7 @@ Describe "Invoke-WinUtilTweaks completion status" {
 
         $log = Get-Content -Path $script:logPath -Raw
         $log | Should -Match "\[ERROR\] \[Script\] Runtime exception while running script for WPFTweaksFailing"
-        $log | Should -Match "\[WARN\] \[Tweaks\] Undo tweak finished with 1 error\(s\): WPFTweaksFailing"
+        $log | Should -Match "\[WARN\] \[Tweaks\] Undo tweak 完成，出现 1 个错误：WPFTweaksFailing"
         $log | Should -Not -Match "tweak completed: WPFTweaksFailing"
     }
 
@@ -317,7 +317,7 @@ Describe "Invoke-WinUtilTweaks completion status" {
 
         $log = Get-Content -Path $script:logPath -Raw
         $log | Should -Match "\[INFO\] \[Tweaks\] Apply tweak completed: WPFTweaksDuringJob"
-        $log | Should -Not -Match "tweak finished with"
+        $log | Should -Not -Match "tweak 完成，出现"
     }
 }
 
@@ -359,7 +359,7 @@ Describe "Invoke-WPFtweaksbutton" {
         Invoke-WPFtweaksbutton
 
         Should -Invoke -CommandName Show-WinUtilMessage -Times 1 -Exactly -ParameterFilter {
-            $Message -eq "Please check the tweaks you wish to perform."
+            $Message -eq "请勾选要执行的优化项。"
         }
         Should -Invoke -CommandName Start-WinUtilJob -Times 0 -Exactly
     }
@@ -433,7 +433,7 @@ Describe "Invoke-WPFtweaksbutton" {
 
         $script:appliedOrder | Should -Be @("WPFTweaksRestorePoint", "WPFTweaksTelemetry")
         Should -Invoke -CommandName Step-WinUtilJob -Times 1 -Exactly -ParameterFilter {
-            $Status -eq "Creating restore point" -and $Percent -eq 0
+            $Status -eq "正在创建还原点" -and $Percent -eq 0
         }
         Should -Invoke -CommandName Step-WinUtilJob -Times 1 -Exactly -ParameterFilter {
             $Status -eq "Applying WPFTweaksTelemetry (2/2)" -and $Percent -eq 50
@@ -471,7 +471,7 @@ Describe "Invoke-WPFundoall" {
         Invoke-WPFundoall
 
         Should -Invoke -CommandName Show-WinUtilMessage -Times 1 -Exactly -ParameterFilter {
-            $Message -eq "Please check the tweaks you wish to undo."
+            $Message -eq "请勾选要撤销的优化项。"
         }
         Should -Invoke -CommandName Start-WinUtilJob -Times 0 -Exactly
     }

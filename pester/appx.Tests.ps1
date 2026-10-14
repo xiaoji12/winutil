@@ -417,7 +417,7 @@ Describe "Invoke-WPFAppxInstall" {
         Invoke-WPFAppxInstall
 
         Should -Invoke -CommandName Show-WinUtilMessage -Times 1 -Exactly -ParameterFilter {
-            $Message -eq "No AppX Package selected" -and
+            $Message -eq "未选择任何 AppX 应用" -and
                 $Title -eq "Error" -and
                 $Button -eq "OK" -and
                 $Icon -eq "Error"
@@ -558,7 +558,7 @@ Describe "Invoke-WPFAppxRemoval" {
         Invoke-WPFAppxRemoval
 
         Should -Invoke -CommandName Show-WinUtilMessage -Times 1 -Exactly -ParameterFilter {
-            $Message -eq "No AppX Package selected" -and
+            $Message -eq "未选择任何 AppX 应用" -and
                 $Title -eq "Error" -and
                 $Button -eq "OK" -and
                 $Icon -eq "Error"
@@ -606,7 +606,7 @@ Describe "Invoke-WPFAppxRemoval" {
             $Status -eq "Removed Example App (1/1)" -and $Percent -eq 90
         }
         Should -Invoke -CommandName Step-WinUtilJob -Times 1 -Exactly -ParameterFilter {
-            $Status -eq "Removing provisioned AppX packages" -and $Percent -eq 90
+            $Status -eq "正在卸载预置的 AppX 应用" -and $Percent -eq 90
         }
     }
 
