@@ -17,7 +17,7 @@ CCC::::::::::::C         T:::::::::T            T:::::::::T
   CCCCCCCCCCCCC          TTTTTTTTTTT            TTTTTTTTTTT
 
 ====Chris Titus Tech=====
-=====Windows Toolbox=====
+=====Windows 工具箱=====
 "@
 
 # Load the configuration files
@@ -70,18 +70,18 @@ if ($Preset -or $Config) {
             if (-not $sync.configs.preset.$Preset) {
                 throw "There is no preset called '$Preset'. Available: $(($sync.configs.preset.PSObject.Properties.Name) -join ', ')"
             }
-            Write-WinUtilLog -Component "AutoRun" -Message "Applying preset '$Preset'."
+            Write-WinUtilLog -Component "AutoRun" -Message "正在应用预设“$Preset”。"
             # SkipUnknown so a retired entry in a preset is named and stepped over rather than
             # ending a headless run that has nobody to read the error
             $skipped = @(Update-WinUtilSelections -flatJson $sync.configs.preset.$Preset -SkipUnknown)
             if ($skipped.Count -gt 0) {
-                Write-WinUtilLog -Level "WARN" -Component "AutoRun" -Message "Preset '$Preset' names $($skipped.Count) entr(y/ies) this version does not have: $($skipped -join ', ')"
+                Write-WinUtilLog -Level "WARN" -Component "AutoRun" -Message "预设“$Preset”中有 $($skipped.Count) 个条目在当前版本中不存在：$($skipped -join ', ')"
             }
         }
 
         # Both may be given: the preset sets a baseline and the config adds to it
         if ($Config) {
-            Write-WinUtilLog -Component "AutoRun" -Message "Importing selections from '$Config'."
+            Write-WinUtilLog -Component "AutoRun" -Message "正在从“$Config”导入选择项。"
             Invoke-WPFImpex -type "import" -Config $Config -Merge:([bool]$Preset) -ThrowOnError
         }
 
@@ -89,7 +89,7 @@ if ($Preset -or $Config) {
         $headlessCode = Write-WinUtilAutoRunSummary -Summary $summary
     } catch {
         Write-WinUtilErrorRecord -ErrorRecord $_ -Component "AutoRun" -Context "Headless run"
-        Write-Host "WinUtil could not complete the headless run: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "WinUtil 无法完成无界面运行：$($_.Exception.Message)" -ForegroundColor Red
         $headlessCode = 1
     } finally {
         Close-WinUtilRunspacePool
@@ -125,7 +125,7 @@ $uiShell = [powershell]::Create()
 $uiShell.Runspace = $sync.UIRunspace
 [void]$uiShell.AddScript({ Start-WinUtilUserInterface })
 
-Write-WinUtilLog -Component "UI" -Message "Starting the interface thread."
+Write-WinUtilLog -Component "UI" -Message "正在启动界面线程。"
 $uiHandle = $uiShell.BeginInvoke()
 
 # This thread has nothing to do but wait, so it pays for the overlay render rather than
@@ -139,7 +139,7 @@ try {
     $uiShell.EndInvoke($uiHandle) | Out-Null
 } catch {
     $uiFailed = $true
-    Write-WinUtilErrorRecord -ErrorRecord $_ -Component "UI" -Context "Interface thread stopped"
+    Write-WinUtilErrorRecord -ErrorRecord $_ -Component "UI" -Context "界面线程已停止"
 }
 
 foreach ($uiWarning in $uiShell.Streams.Warning) {
@@ -147,7 +147,7 @@ foreach ($uiWarning in $uiShell.Streams.Warning) {
 }
 
 foreach ($uiError in $uiShell.Streams.Error) {
-    Write-WinUtilErrorRecord -ErrorRecord $uiError -Component "UI" -Context "Interface thread"
+    Write-WinUtilErrorRecord -ErrorRecord $uiError -Component "UI" -Context "界面线程"
 }
 
 $uiShell.Dispose()
@@ -162,7 +162,7 @@ Close-WinUtilRunspacePool
 [System.GC]::Collect()
 
 Remove-WinUtilTempScript
-Write-Host "Bye bye!" -ForegroundColor Cyan
+Write-Host "再见！" -ForegroundColor Cyan
 Stop-Transcript
 
 if ($uiFailed) {

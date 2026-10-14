@@ -134,7 +134,7 @@ if ($Offline) {
 }
 
 if ($ExecutionContext.SessionState.LanguageMode -ne 'FullLanguage') {
-    Write-Host "WinUtil is unable to run on your system. PowerShell execution is restricted by security policies." -ForegroundColor Red
+    Write-Host "WinUtil 无法在你的系统上运行。PowerShell 的执行已被安全策略限制。" -ForegroundColor Red
     $global:LASTEXITCODE = 1
     if ($env:WINUTIL_HEADLESS_CHILD -eq "1" -or $script:WinUtilIsFileProcess) { exit 1 }
     return 1
@@ -178,7 +178,7 @@ if (`$launch.ScriptPath) {
 }
 
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Output "WinUtil needs to be run as Administrator. Attempting to relaunch."
+    Write-Output "WinUtil 需要以管理员身份运行。正在尝试重新启动。"
     $elevationParameters = @{}
     foreach ($parameter in $PSBoundParameters.GetEnumerator()) {
         $elevationParameters[$parameter.Key] = if ($parameter.Value -is [switch]) {
@@ -200,7 +200,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
             $elevationCommand = New-WinUtilElevationCommand -ScriptPath $PSCommandPath -Parameters $elevationParameters -Headless
             $elevated = Start-Process $powershellCmd -ArgumentList @("-ExecutionPolicy", "Bypass", "-NoProfile", "-EncodedCommand", $elevationCommand) -Verb RunAs -Wait -PassThru -ErrorAction Stop
         } catch {
-            Write-Host "Elevation was declined or failed: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "提权被拒绝或失败：$($_.Exception.Message)" -ForegroundColor Red
             $global:LASTEXITCODE = 1
             if ($script:WinUtilIsFileProcess) { exit 1 }
             return 1
